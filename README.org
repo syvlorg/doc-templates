@@ -1200,20 +1200,11 @@ cmd_push-all()
 [remote "doom"]
 	url = https://github.com/hlissner/.emacs.d
 	fetch = +refs/heads/*:refs/remotes/doom/*
-[remote "doom"]
-	url = https://github.com/hlissner/.emacs.d
-	fetch = +refs/heads/*:refs/remotes/doom/*
-[remote "doom"]
-	url = https://github.com/hlissner/.emacs.d
-	fetch = +refs/heads/*:refs/remotes/doom/*
-[remote "doom"]
-	url = https://github.com/hlissner/.emacs.d
-	fetch = +refs/heads/*:refs/remotes/doom/*
 [remote "a.el"]
 	url = https://github.com/plexus/a.el
 	fetch = +refs/heads/*:refs/remotes/a.el/*
 [remote "s.el"]
-	url = https://github.com/magnar/s.el
+	url = https://github.com/magnars/s.el
 	fetch = +refs/heads/*:refs/remotes/s.el/*
 [remote "dash.el"]
 	url = https://github.com/magnars/dash.el
