@@ -26,3 +26,7 @@
 	url = alamode
 	path = lib/alamode
 	branch = main
+[subtree "lib/use-package-extras"]
+	url = use-package-extras
+	path = lib/use-package-extras
+	branch = main
