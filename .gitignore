@@ -1,0 +1,11 @@
+straight
+\#*\#
+auto-save-list
+backup-tangle
+*.elc
+transient
+eln-cache
+var
+.cosmog.
+elpa
+quelpa
