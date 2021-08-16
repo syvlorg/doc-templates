@@ -46,3 +46,7 @@
 	url = janus
 	path = lib/janus
 	branch = main
+[subtree "lib/aiern"]
+	url = aiern
+	path = lib/aiern
+	branch = master
