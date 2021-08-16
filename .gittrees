@@ -1,0 +1,4 @@
+[subtree "profiles/doom"]
+	url = doom
+	path = profiles/doom
+	branch = develop

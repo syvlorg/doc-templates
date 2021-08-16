@@ -1247,6 +1247,9 @@ tangle: tangle-setup
 |yes yes | fd . $(mkfileDir) \
     -HIe org \
     -E yankpad.org \
+    -E testing.aiern.org \
+    -E resting.aiern.org \
+	-E profiles
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
