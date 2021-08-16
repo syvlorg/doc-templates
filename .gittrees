@@ -30,3 +30,7 @@
 	url = use-package-extras
 	path = lib/use-package-extras
 	branch = main
+[subtree "lib/use-package-deino"]
+	url = use-package-deino
+	path = lib/use-package-deino
+	branch = main
