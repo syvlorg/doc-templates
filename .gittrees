@@ -70,3 +70,7 @@
 	url = aiern-god-state
 	path = lib/aiern-god-state
 	branch = master
+[subtree "lib/cosmoem"]
+	url = cosmoem
+	path = lib/cosmoem
+	branch = master
