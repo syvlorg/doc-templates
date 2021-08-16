@@ -34,3 +34,7 @@
 	url = use-package-deino
 	path = lib/use-package-deino
 	branch = main
+[subtree "lib/lode"]
+	url = lode
+	path = lib/lode
+	branch = main
