@@ -54,3 +54,7 @@
 	url = doom-aiern-modeline
 	path = lib/doom-aiern-modeline
 	branch = master
+[subtree "lib/alloy"]
+	url = alloy
+	path = lib/alloy
+	branch = master
