@@ -50,3 +50,7 @@
 	url = aiern
 	path = lib/aiern
 	branch = master
+[subtree "lib/doom-aiern-modeline"]
+	url = doom-aiern-modeline
+	path = lib/doom-aiern-modeline
+	branch = master
