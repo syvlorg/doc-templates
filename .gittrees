@@ -62,3 +62,7 @@
 	url = deino
 	path = lib/deino
 	branch = master
+[subtree "lib/sorrow"]
+	url = sorrow
+	path = lib/sorrow
+	branch = master
