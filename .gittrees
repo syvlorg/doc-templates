@@ -14,3 +14,7 @@
 	url = a.el
 	path = lib/a.el
 	branch = master
+[subtree "lib/dash.el"]
+	url = dash.el
+	path = lib/dash.el
+	branch = master
