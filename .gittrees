@@ -2,3 +2,7 @@
 	url = doom
 	path = profiles/doom
 	branch = develop
+[subtree "lib/f.el"]
+	url = f.el
+	path = lib/f.el
+	branch = master
