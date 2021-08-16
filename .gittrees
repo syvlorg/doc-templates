@@ -22,3 +22,7 @@
 	url = damascus
 	path = profiles/damascus
 	branch = main
+[subtree "lib/alamode"]
+	url = alamode
+	path = lib/alamode
+	branch = main
