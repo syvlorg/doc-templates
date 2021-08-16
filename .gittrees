@@ -6,3 +6,7 @@
 	url = f.el
 	path = lib/f.el
 	branch = master
+[subtree "lib/s.el"]
+	url = s.el
+	path = lib/s.el
+	branch = master
