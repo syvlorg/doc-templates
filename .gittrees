@@ -66,3 +66,7 @@
 	url = sorrow
 	path = lib/sorrow
 	branch = master
+[subtree "lib/aiern-god-state"]
+	url = aiern-god-state
+	path = lib/aiern-god-state
+	branch = master
