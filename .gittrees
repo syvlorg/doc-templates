@@ -18,3 +18,7 @@
 	url = dash.el
 	path = lib/dash.el
 	branch = master
+[subtree "profiles/damascus"]
+	url = damascus
+	path = profiles/damascus
+	branch = main
