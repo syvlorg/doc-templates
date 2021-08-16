@@ -58,3 +58,7 @@
 	url = alloy
 	path = lib/alloy
 	branch = master
+[subtree "lib/deino"]
+	url = deino
+	path = lib/deino
+	branch = master
