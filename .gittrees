@@ -38,3 +38,7 @@
 	url = lode
 	path = lib/lode
 	branch = main
+[subtree "lib/meq"]
+	url = meq
+	path = lib/meq
+	branch = main
