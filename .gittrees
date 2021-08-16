@@ -42,3 +42,7 @@
 	url = meq
 	path = lib/meq
 	branch = main
+[subtree "lib/janus"]
+	url = janus
+	path = lib/janus
+	branch = main
