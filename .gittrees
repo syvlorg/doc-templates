@@ -94,3 +94,7 @@
 	url = uru
 	path = lib/uru
 	branch = main
+[subtree "lib/prime"]
+	url = prime
+	path = lib/prime
+	branch = main
