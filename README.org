@@ -1125,9 +1125,9 @@ cmd_push-all()
         bare = false
         logallrefupdates = true
 [remote "origin"]
-        url = https://github.com/shadowrylander/.emacs.d
-        fetch = +refs/heads/*:refs/remotes/origin/*
-        pushurl = git@github.com:shadowrylander/.emacs.d
+	url = https://github.com/shadowrylander/.emacs.d
+	fetch = +refs/heads/*:refs/remotes/origin/*
+	pushurl = git@github.com:shadowrylander/.emacs.d
 [branch "main"]
         remote = origin
         merge = refs/heads/main
@@ -1198,20 +1198,25 @@ cmd_push-all()
     url = git@github.com:shadowrylander/damascus
     fetch = +refs/heads/*:refs/remotes/damascus/*
 [remote "doom"]
-        url = https://github.com/hlissner/.emacs.d
-        fetch = +refs/heads/*:refs/remotes/doom/*
+	url = https://github.com/hlissner/.emacs.d
+	fetch = +refs/heads/*:refs/remotes/doom/*
+	pushurl = null
 [remote "a.el"]
-        url = https://github.com/plexus/a.el
-        fetch = +refs/heads/*:refs/remotes/a.el/*
+	url = https://github.com/plexus/a.el
+	fetch = +refs/heads/*:refs/remotes/a.el/*
+	pushurl = null
 [remote "s.el"]
-        url = https://github.com/magnars/s.el
-        fetch = +refs/heads/*:refs/remotes/s.el/*
+	url = https://github.com/magnars/s.el
+	fetch = +refs/heads/*:refs/remotes/s.el/*
+	pushurl = null
 [remote "dash.el"]
-        url = https://github.com/magnars/dash.el
-        fetch = +refs/heads/*:refs/remotes/dash.el/*
+	url = https://github.com/magnars/dash.el
+	fetch = +refs/heads/*:refs/remotes/dash.el/*
+	pushurl = null
 [remote "f.el"]
-        url = https://github.com/rejeep/f.el
-        fetch = +refs/heads/*:refs/remotes/f.el/*
+	url = https://github.com/rejeep/f.el
+	fetch = +refs/heads/*:refs/remotes/f.el/*
+	pushurl = null
 #+end_src
 
 * makefile
