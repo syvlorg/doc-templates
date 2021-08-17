@@ -1,11 +1,10 @@
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
 (setq pre-user-emacs-directory (file-name-directory load-file-name))
-(load (format "%s/lib/f.el/f.el" pre-user-emacs-directory))
 
 (mapc #'(lambda (lib) (interactive)
-            (load (f-join pre-user-emacs-directory "lib" (symbol-name lib) (symbol-name lib))))
-    '(a.el dash.el s.el))
+            (load (format "%slib/%s/%s" pre-user-emacs-directory (symbol-name lib) (symbol-name lib))))
+    '(a.el dash.el s.el f.el))
 
 (defun meq/ued1 (&rest args) (apply #'f-join pre-user-emacs-directory args))
 (defun meq/ued2 (&rest args) (apply #'f-join user-emacs-directory args))
@@ -15,12 +14,14 @@
 (defun meq/cli (&rest args) (apply #'meq/cl (-snoc args "init.el")))
 
 (defun meq/ps (&rest args)
-    (setq user-emacs-directory (apply #'meq/ued1 "profiles" args))
-    (apply #'meq/cle args) (apply #'meq/cli args))
+	(setq user-emacs-directory (apply #'meq/ued1 "profiles" args)) (meq/cle) (meq/cli))
 
 (cond ((member "--damascus" command-line-args)
             (delete "--damascus" command-line-args)
             (meq/ps "damascus"))
+		((member "--mecca" command-line-args)
+            (delete "--mecca" command-line-args)
+            (meq/ps "mecca"))
         ((or
                 (member "--doom" command-line-args)
                 (member "--udoom" command-line-args))

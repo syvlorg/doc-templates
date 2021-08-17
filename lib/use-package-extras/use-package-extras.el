@@ -34,7 +34,7 @@
 
 ;;;###autoload
 (defun meq/load-emacs-file (path) (interactive)
-    (load (concat user-emacs-directory "lib/" path)))
+    (load (concat user-emacs-directory "../lib/" path)))
 
 ;;;###autoload
 (defmacro meq/up (&rest args) (interactive)
