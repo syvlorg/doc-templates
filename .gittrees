@@ -106,3 +106,7 @@
 	url = riot
 	path = lib/riot
 	branch = main
+[subtree "profiles/mecca"]
+	url = damascus
+	path = profiles/mecca
+	branch = develop
