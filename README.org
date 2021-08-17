@@ -1268,6 +1268,12 @@ tangle: tangle-setup
 	-E profiles \
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/profiles/damascus \
+    -HIe org \
+    -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/profiles/mecca \
+    -HIe org \
+    -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
     -HIe sh \
     -E straight \

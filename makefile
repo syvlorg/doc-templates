@@ -40,7 +40,6 @@ tangle: tangle-setup
     -E yankpad.org \
     -E testing.aiern.org \
     -E resting.aiern.org \
-	-E profiles \
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
