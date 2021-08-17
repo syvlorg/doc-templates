@@ -139,7 +139,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 <<20210601225235077502200>>
 
 (meq/upnsd meq
-    :load-path "lib/meq"
+    :load-path "../../lib/meq"
     :load-emacs-file-preconfig ("naked"))
 
 (unless (or
@@ -182,7 +182,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 <<20210601225231422834500>>
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up* use-package-extras :straight nil :load-path "lib/use-package-extras")
+(meq/up* use-package-extras :straight nil :load-path "../../lib/use-package-extras")
 (meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
 #+end_src
 
@@ -362,10 +362,10 @@ And in my experience... Not a good idea; much too confusing. Use
     :custom (hydra-hint-display-type 'lv)
     :bind (:map hydra-base-map ("~" . hydra--universal-argument))
     :use-package-postconfig (use-package-hydra)
-    :upnsd-preconfig (janus :load-path "lib/janus")
+    :upnsd-preconfig (janus :load-path "../../lib/janus")
     :upnsd-postconfig
-        (use-package-deino :load-path "lib/use-package-deino")
-        (deino :load-path "lib/deino" :custom (deino-hint-display-type 'lv)))
+        (use-package-deino :load-path "../../lib/use-package-deino")
+        (deino :load-path "../../lib/deino" :custom (deino-hint-display-type 'lv)))
 #+end_src
 
 *** alloy
@@ -378,11 +378,11 @@ And in my experience... Not a good idea; much too confusing. Use
 #+name: 20210603105149525867500
 #+begin_src emacs-lisp
 (meq/upnsd alloy
-    :load-path "lib/alloy"
+    :load-path "../../lib/alloy"
     :upnsd-postconfig
-        (lode :load-path "lib/lode")
-        (prime :load-path "lib/prime")
-        (uru :load-path "lib/uru"
+        (lode :load-path "../../lib/lode")
+        (prime :load-path "../../lib/prime")
+        (uru :load-path "../../lib/uru"
             :config (prime "u u" uru "uru")
                     (prime "u m" minoru "minoru"))
     :use-package-preconfig (command-log-mode)
@@ -420,7 +420,7 @@ And in my experience... Not a good idea; much too confusing. Use
 #+name: 20210601225307809867100
 #+begin_src emacs-lisp
 (meq/upnsd cosmoem
-    :upnsd-postconfig (meta :load-path "lib/meta")
+    :upnsd-postconfig (meta :load-path "../../lib/meta")
     :use-package-preconfig
         (which-key :deino (deino/which-key (:color blue :columns 4) "w"
                     ("`" nil "cancel")
@@ -452,7 +452,7 @@ And in my experience... Not a good idea; much too confusing. Use
                 (which-key-side-window-max-width 0.5)
 
                 (which-key-side-window-max-height 0.25))
-    :load-path "lib/cosmoem"
+    :load-path "../../lib/cosmoem"
     :config (prime ", m" map-of-infinity/body "map-of-infinity")
     :which-key-change-ryo ("," "damascus")
     :deino (map-of-infinity nil ", m"
@@ -479,7 +479,7 @@ And in my experience... Not a good idea; much too confusing. Use
 #+name: 20210624151540904695400
 #+begin_src emacs-lisp
 (meq/upnsd sorrow
-    :load-path "lib/sorrow"
+    :load-path "../../lib/sorrow"
     :primer+ ("t" "toggles")
     :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
         (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
@@ -554,7 +554,7 @@ And in my experience... Not a good idea; much too confusing. Use
         (push "aiern" meq/var/ignored-modal-prefixes)))
     :use-package-preconfig (bind-map)
     :straight nil
-    :load-path "lib/aiern"
+    :load-path "../../lib/aiern"
     ;; :demon
         ;; TODO
         ;; ((alloy-chord "") 'meq/toggle-aiern-ex-cosmoem)
@@ -785,9 +785,9 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 (use-package doom-aiern-modeline
     :straight nil
     :hook (after-init . doom-aiern-modeline-mode)
-    :load-path "lib/doom-aiern-modeline"
+    :load-path "../../lib/doom-aiern-modeline"
     :use-package-preconfig (all-the-icons) (shrink-path)
-            (god-mode :upnsd-postconfig (aiern-god-state :load-path "lib/aiern-god-state")
+            (god-mode :upnsd-postconfig (aiern-god-state :load-path "../../lib/aiern-god-state")
                 :use-package-postconfig
                     (evil-god-state :straight (evil-god-state
                         :type git
@@ -1197,8 +1197,8 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+begin_src emacs-lisp
 (use-package doc :straight nil
     :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "lib/titan")
-    :load-path "lib/doc"
+    :upnsd-preconfig (titan :load-path "../../lib/titan")
+    :load-path "../../lib/doc"
     :mode (("\\.doc\\.md\\'" . doc-md-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
     :uru (doc-org-mode deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
@@ -1228,8 +1228,8 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+begin_src emacs-lisp
 (use-package fell :straight nil
     :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "lib/titan")
-    :load-path "lib/fell"
+    :upnsd-preconfig (titan :load-path "../../lib/titan")
+    :load-path "../../lib/fell"
     :mode (("\\.fell\\.md\\'" . fell-md-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
     :uru (fell-org-mode deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
@@ -1316,7 +1316,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)
-        (ox-pandoc :upnsd-postconfig (riot :if (not (member "--anti-riot" command-line-args)) :load-path "lib/riot")
+        (ox-pandoc :upnsd-postconfig (riot :if (not (member "--anti-riot" command-line-args)) :load-path "../../lib/riot")
             :deino (deino-ob-export-as (:color blue) "o e a"
                 ("`" nil "cancel")
                 ("a" org-pandoc-export-as-asciidoc "asciidoc")
@@ -1737,7 +1737,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 #+name: 20210622004411529714900
 #+begin_src emacs-lisp
-(meq/upnsd alamode :load-path "lib/alamode")
+(meq/upnsd alamode :load-path "../../lib/alamode")
 #+end_src
 
 **** buffer
@@ -1779,7 +1779,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 #+begin_src emacs-lisp
 (meq/up cosmog
     :straight nil
-    :load-path "lib/cosmog"
+    :load-path "../../lib/cosmog"
     :prime ("c" deino-cosmog/body "cosmog"))
 #+end_src
 
