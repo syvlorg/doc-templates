@@ -1,15 +1,3 @@
-[subtree "profiles/doom"]
-	url = doom
-	path = profiles/doom
-	branch = develop
-[subtree "lib/s.el"]
-	url = s.el
-	path = lib/s.el
-	branch = master
-[subtree "lib/a.el"]
-	url = a.el
-	path = lib/a.el
-	branch = master
 [subtree "profiles/damascus"]
 	url = damascus
 	path = profiles/damascus
