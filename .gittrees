@@ -2,10 +2,6 @@
 	url = doom
 	path = profiles/doom
 	branch = develop
-[subtree "lib/f.el"]
-	url = f.el
-	path = lib/f.el
-	branch = master
 [subtree "lib/s.el"]
 	url = s.el
 	path = lib/s.el
@@ -13,10 +9,6 @@
 [subtree "lib/a.el"]
 	url = a.el
 	path = lib/a.el
-	branch = master
-[subtree "lib/dash.el"]
-	url = dash.el
-	path = lib/dash.el
 	branch = master
 [subtree "profiles/damascus"]
 	url = damascus

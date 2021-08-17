@@ -1,0 +1,15 @@
+[submodule "lib/dash.el"]
+	path = lib/dash.el
+	url = https://github.com/magnars/dash.el
+[submodule "lib/s.el"]
+	path = lib/s.el
+	url = https://github.com/magnars/s.el
+[submodule "lib/a.el"]
+	path = lib/a.el
+	url = https://github.com/plexus/a.el
+[submodule "lib/f.el"]
+	path = lib/f.el
+	url = https://github.com/rejeep/f.el
+[submodule "profiles/doom"]
+	path = profiles/doom
+	url = https://github.com/hlissner/.emacs.d
