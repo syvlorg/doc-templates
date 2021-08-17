@@ -98,3 +98,7 @@
 	url = prime
 	path = lib/prime
 	branch = main
+[subtree "lib/meta"]
+	url = meta
+	path = lib/meta
+	branch = main
