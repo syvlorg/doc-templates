@@ -102,3 +102,7 @@
 	url = meta
 	path = lib/meta
 	branch = main
+[subtree "lib/riot"]
+	url = riot
+	path = lib/riot
+	branch = main
