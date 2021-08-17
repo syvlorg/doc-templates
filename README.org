@@ -611,7 +611,7 @@ rejoin_msg()
                 git-subtree-dir: $dir
                 git-subtree-mainline: $latest_old
                 git-subtree-split: $latest_new
-        EOF
+		EOF
 }
 
 squash_msg()
