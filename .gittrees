@@ -86,3 +86,7 @@
 	url = doc
 	path = lib/doc
 	branch = main
+[subtree "lib/cosmog"]
+	url = cosmog
+	path = lib/cosmog
+	branch = main
