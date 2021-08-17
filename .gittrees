@@ -82,3 +82,7 @@
 	url = fell
 	path = lib/fell
 	branch = main
+[subtree "lib/doc"]
+	url = doc
+	path = lib/doc
+	branch = main
