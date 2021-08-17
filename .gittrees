@@ -90,3 +90,7 @@
 	url = cosmog
 	path = lib/cosmog
 	branch = main
+[subtree "lib/uru"]
+	url = uru
+	path = lib/uru
+	branch = main
