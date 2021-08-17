@@ -78,3 +78,7 @@
 	url = titan
 	path = lib/titan
 	branch = main
+[subtree "lib/fell"]
+	url = fell
+	path = lib/fell
+	branch = main
