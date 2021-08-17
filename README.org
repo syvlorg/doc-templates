@@ -578,12 +578,12 @@ add_msg()
                 commit_message="Add '$dir/' from commit '$latest_new'"
         fi
         cat <<-EOF
-                $commit_message
-                
-                git-subtree-dir: $dir
-                git-subtree-mainline: $latest_old
-                git-subtree-split: $latest_new
-        EOF
+				$commit_message
+
+				git-subtree-dir: $dir
+				git-subtree-mainline: $latest_old
+				git-subtree-split: $latest_new
+		EOF
 }
 
 add_squashed_msg()
