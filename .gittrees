@@ -74,3 +74,7 @@
 	url = cosmoem
 	path = lib/cosmoem
 	branch = master
+[subtree "lib/titan"]
+	url = titan
+	path = lib/titan
+	branch = main
