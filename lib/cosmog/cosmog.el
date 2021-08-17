@@ -28,13 +28,14 @@
 (require 'meq)
 (require 'org)
 (require 'dash)
+(require 'f)
 (require 'deino)
 (require 'alloy)
 
-(let* ((dir (concat user-emacs-directory ".cosmog.")))
+(let* ((dir (concat user-emacs-directory "/.cosmog.")))
     (unless (file-directory-p dir) (mkdir dir)))
 
-(defvar meq/var/cosmog-nibs-dir (concat user-emacs-directory ".cosmog."))
+(defvar meq/var/cosmog-nibs-dir (concat user-emacs-directory "/.cosmog."))
 (defvar meq/var/cosmog-nibs (meq/remove-dot-dirs (directory-files meq/var/cosmog-nibs-dir)))
 (defvar meq/var/cosmog-update-timer nil)
 (defvar meq/var/cosmog-update-time "0 min 5 sec")

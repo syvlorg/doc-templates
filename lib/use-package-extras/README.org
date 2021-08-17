@@ -53,11 +53,12 @@
 ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
 (require 'cl-lib)
 (require 'dash)
+(require 'f)
 (require 'use-package-core)
 
 ;;;###autoload
 (defun meq/load-emacs-file (path) (interactive)
-    (load (concat user-emacs-directory "../../lib/" path)))
+    (load (f-join user-emacs-directory ".." ".." "lib" path)))
 
 ;;;###autoload
 (defmacro meq/up (&rest args) (interactive)

@@ -125,11 +125,11 @@
 (delete "--always-defer" command-line-args)
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up* use-package-extras :straight nil :load-path "lib/use-package-extras")
+(meq/up* use-package-extras :straight nil :load-path "../../lib/use-package-extras")
 (meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
 
 (meq/upnsd meq
-    :load-path "lib/meq"
+    :load-path "../../lib/meq"
     :load-emacs-file-preconfig ("naked"))
 
 (unless (or

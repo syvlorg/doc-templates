@@ -1,388 +1,8 @@
-#!/usr/bin/env mdsh
-#+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
-#+startup: show3levels
-
-* early-init.el
-
-Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210604182053300746900
-
-#+name: 20210604182053300746900
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
-
-(setq meq/var/phone (member "-p" command-line-args))
-(delete "-p" command-line-args)
-
-;; Emacs 27.1 introduced early-init.el, which is run before init.el, before
-;; package and UI initialization happens, and before site files are loaded.
-
-;; A big contributor to startup times is garbage collection. We up the gc
-;; threshold to temporarily prevent it from running, then reset it later by
-;; enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
-(setq gc-cons-threshold most-positive-fixnum)
-
-;; In noninteractive sessions, prioritize non-byte-compiled source files to
-   ;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
-;; to skip the mtime checks on every *.elc file.
-(setq load-prefer-newer noninteractive)
-
-;; In Emacs 27+, package initialization occurs before `user-init-file' is
-;; loaded, but after `early-init-file'. Doom handles package initialization, so
-;; we must prevent Emacs from doing it early!
-(setq package-enable-at-startup nil)
-
-;; Adapted From:
-;; Answer: https://emacs.stackexchange.com/a/31662/31428
-;; User: https://emacs.stackexchange.com/users/1979/stefan
-(setq initial-directory default-directory)
-
-;; Adapted From: https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body
-(eval-and-compile
-  (defun meq/emacs-path (path)
-    (expand-file-name path user-emacs-directory)))
-
-(defvar default-file-name-handler-alist file-name-handler-alist)
-
-(setq-default auto-window-vscroll nil
-              file-name-handler-alist nil
-              frame-inhibit-implied-resize t
-              gc-cons-percentage 0.6
-              inhibit-compacting-font-caches t
-              package-enable-at-startup nil)
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (setq file-name-handler-alist default-file-name-handler-alist)
-            (setq gc-cons-percentage 0.1)
-
-            (defun meq/gc-on-lose-focus ()
-              (unless (frame-focus-state)
-                (garbage-collect)))
-
-            (if (boundp 'after-focus-change-function)
-                (add-function :after after-focus-change-function #'meq/gc-on-lose-focus))))
-
-(fset 'yes-or-no-p 'y-or-n-p)
-(fset 'view-hello-file 'ignore)
-(fset 'display-startup-echo-area-message 'ignore)
-
-(put 'narrow-to-region 'disabled nil)
-(put 'up-case-rgion 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'erase-buffer 'disabled nil)
-
-(push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . nil) default-frame-alist)
-(push '(internal-border . 0) default-frame-alist)
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars . 0) default-frame-alist)
-(push '(left-fringe . 0) default-frame-alist)
-(push '(right-fringe . 0) default-frame-alist)
-
-;; Tell straight.el about the profiles we are going to be using.
-(setq straight-profiles
-      '((nil . "default.el")
-        ;; Packages which are pinned to a specific commit.
-        (pinned . "pinned.el")))
-
-(with-no-warnings
-    (setq straight-cache-autoloads t)
-    (setq straight-check-for-modifications '(check-on-save))
-    (setq straight-repository-branch "develop")
-    (setq straight-use-package-by-default t)
-    ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
-    (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
-(delete "--no-byte-compilation" command-line-args)
-(unless straight-disable-byte-compilation
-    (byte-recompile-directory (meq/ued1 "lib") nil t)
-    (byte-recompile-directory (meq/ued1 "themes") nil t))
-
-(with-no-warnings
-  (setq use-package-verbose t)
-  (setq use-package-enable-imenu-support t))
-
-(eval-and-compile
-  (defvar straight-recipes-gnu-elpa-use-mirror t)
-  (defvar straight-recipes-emacsmirror-use-mirror t)
-  (defvar bootstrap-version 5)
-  (defvar bootstrap-file (meq/emacs-path "straight/repos/straight.el/bootstrap.el")))
-
-(unless (file-exists-p bootstrap-file)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-       'silent 'inhibit-cookies)
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
-
-(load bootstrap-file nil 'nomessage)
-
-(autoload #'straight-x-pull-all "straight-x")
-(autoload #'straight-x-freeze-versions "straight-x")
-
-(straight-use-package '(use-package :type git :host github :repo "jwiegley/use-package" :branch "master"))
-
-(defmacro meq/up* (&rest args) (interactive) `(use-package ,@args :demand ,(cl-getf args :demand t)))
-
-(meq/up* no-littering)
-(meq/up* gcmh
-    :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
-    :config (gcmh-mode 1))
-
-;; use-package
-<<20210601225235077502200>>
-
-(meq/upnsd meq
-    :load-path "../../lib/meq"
-    :load-emacs-file-preconfig ("naked"))
-
-(unless (or
-            (eq system-type 'windows-nt)
-            (eq system-type 'ms-dos))
-    (meq/up exec-path-from-shell
-        :straight (exec-path-from-shell
-            :type git
-            :host github
-            :repo "purcell/exec-path-from-shell"
-            :branch "master")
-        :custom
-            (exec-path-from-shell-check-startup-files nil)
-            (exec-path-from-shell-variables '("PATH" "MANPATH" "CACHE_HOME" "FPATH" "PYENV_ROOT"))
-            (exec-path-from-shell-arguments '("-l"))
-        :config
-            (exec-path-from-shell-initialize)))
-
-(add-to-list 'load-path (meq/ued1 "lib"))
-(add-to-list 'custom-theme-load-path (meq/ued1 "themes"))
-(setq custom-safe-themes t)
-
-;; Adapted From: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation
-(ignore-errors
-    ;; Silence compiler warnings as they can be pretty disruptive
-    (setq native-comp-async-report-warnings-errors nil)
-    ;; Set the right directory to store the native comp cache
-    (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
-#+end_src
-
-** use-package
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225235077502200
-
-#+name: 20210601225235077502200
-#+begin_src emacs-lisp
-<<20210601225231422834500>>
-(setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
-(delete "--always-demand" command-line-args)
-(meq/up* use-package-extras :straight nil :load-path "../../lib/use-package-extras")
-(meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
-#+end_src
-
-*** always defer package loading
-
-Quoted from [[https://github.com/jwiegley/use-package#loading-packages-in-sequence][Use-Package's Loading packages in sequence]]:
-
-#+begin_quote
-NOTE: pay attention if you set use-package-always-defer to t, and also use the :after keyword, as you will need to specify how the
-declared package is to be loaded: e.g., by some :bind. If you're not using one of the mechanisms that registers autoloads, such as
-:bind or :hook, and your package manager does not provide autoloads, it's possible that without adding :defer 2 to those declarations,
-your package will never be loaded.
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#notes-about-lazy-loading][Use-Package's Notes about lazy loading]]:
-
-#+begin_quote
-In almost all cases you don't need to manually specify :defer t. This is implied whenever :bind or :mode or :interpreter is used.
-Typically, you only need to specify :defer if you know for a fact that some other package will do something to cause your package to
-load at the appropriate time, and thus you would like to defer loading even though use-package isn't creating any autoloads for you.
-You can override package deferral with the :demand keyword. Thus, even if you use :bind, using :demand will force loading to occur
-immediately and not establish an autoload for the bound key.
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#modes-and-interpreters][Use-Package's Modes and interpreters]]:
-
-#+begin_quote
-Similar to :bind, you can use :mode and :interpreter to establish a deferred binding within the auto-mode-alist and interpreter-mode-alist variables.
-...
-If you aren't using :commands, :bind, :bind*, :bind-keymap, :bind-keymap*, :mode, :interpreter, or :hook
-(all of which imply :defer; see the docstring for use-package for a brief description of each), you can still defer loading with the :defer keyword...
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#magic-handlers][Use-Package's Magic handlers]]:
-
-#+begin_quote
-Similar to :mode and :interpreter, you can also use :magic and :magic-fallback to cause certain function to be run if the beginning of a file matches
-a given regular expression.
-...
-This registers an autoloaded command for pdf-view-mode, defers loading of pdf-tools, and runs pdf-view-mode if the beginning of a buffer matches the string "%PDF".
-#+end_quote
-
-Quoted from [[https://github.com/Kungsgeten/ryo-modal#use-package-keyword][RYO-Modal's Use-package keyword]]:
-
-#+begin_quote
-Ryo-modal also provides a use-package keyword: :ryo, which is similar to :bind in that it implies :defer t and create autoloads for the bound commands.
-The keyword is followed by one or more key-binding commands, using the same syntax as used by ryo-modal-keys...
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#use-package-keywords][General's Use-package Keywords]]:
-
-#+begin_quote
-:general is similar to :bind in that it implies :defer t whenever there are bound commands that can be autoloaded
-(e.g. it will not imply :defer t if the only bound command is to a lambda, for example). Whenever autoloadable commands are bound,
-use-package will create autoloads for them (though this is usually not necessary).
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#ghook-keyword][General's :ghook Keyword]]:
-
-#+begin_quote
-:ghook is intended to be used to add a package’s minor mode enabling function to a user-specified hook, so that when hook is run,
-the package will be loaded and the mode enabled. This means that :ghook will usually imply :defer t. While it does not always imply :defer t,
-it will add any non-lambda functions to :commands (this is the same behavior as :hook).
-Though this is usually unnecessary (the commands probably already have autoloads), it will in turn imply :defer t.
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#gfhook-keyword][General's :gfhook Keyword]]:
-
-#+begin_quote
-Unlike :ghook, :gfhook never adds functions to :commands and therefore never implies :defer t.
-This is because the functions specified are ones that should be run when turning on (or toggling) the mode(s) the package provides.
-The specified functions are external to the package, could be called elsewhere, and therefore should not trigger the package to load.
-#+end_quote
-
-Also see [[https://github.com/jwiegley/use-package/issues/738#issuecomment-447631609][this comment]].
-
-Note that I assume that [[https://github.com/jwiegley/use-package#use-package-chords][chords]] also defer and create autoloads.
-
-And in my experience... Not a good idea; much too confusing. Use
-[[https://www.reddit.com/r/emacs/comments/j2xezg/usepackage_best_practices/][the arguments here]] to decide whether to use this or =:defer <n>= instead.
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225231422834500
-
-#+name: 20210601225231422834500
-#+begin_src emacs-lisp
-(setq use-package-always-defer (member "--always-defer" command-line-args))
-(delete "--always-defer" command-line-args)
-#+end_src
-
-* init.el
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210811234927547343000
-
-#+name: 20210811234927547343000
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
-;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
-(when (version< emacs-version "27") (load (meq/ued "early-init.el")))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(meq/var/current-theme 'dracula-purple-dark)
- '(meq/var/current-theme-mode "dark")
- '(safe-local-variable-values '((eval message "eval 1"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-(load (meq/ued "late-init.el"))
-#+end_src
-
-* late-init.el
-
-#+call: hash() :exports none
-
-#+name: 
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
 ;; with use-package keywords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-<<20210810202254862110100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-<<20210810202255917884600>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; major-modes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-<<20210810202305285189000>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; doom-themes
-<<20210708190315158163500>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; postface
-<<20210810194211455535300>>
-#+end_src
-
-** with use-package keywords
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810202254862110100
-
-#+name: 20210810202254862110100
-#+begin_src emacs-lisp :exports none
 ;; hydra
-<<20210802040601573536600>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; alloy
-<<20210603105149525867500>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; cosmoem
-<<20210601225307809867100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; sorrow
-<<20210624151540904695400>>
-#+end_src
-
-*** hydra
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210802040601573536600
-
-#+name: 20210802040601573536600
-#+begin_src emacs-lisp
 (meq/up hydra
     :custom (hydra-hint-display-type 'lv)
     :bind (:map hydra-base-map ("~" . hydra--universal-argument))
@@ -391,17 +11,10 @@ And in my experience... Not a good idea; much too confusing. Use
     :upnsd-postconfig
         (use-package-deino :load-path "../../lib/use-package-deino")
         (deino :load-path "../../lib/deino" :custom (deino-hint-display-type 'lv)))
-#+end_src
 
-*** alloy
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210603105149525867500
-
-#+name: 20210603105149525867500
-#+begin_src emacs-lisp
+;; alloy
 (meq/upnsd alloy
     :load-path "../../lib/alloy"
     :upnsd-postconfig
@@ -433,17 +46,10 @@ And in my experience... Not a good idea; much too confusing. Use
             ("l" meq/reload-emacs "reload")
             ("s" restart-emacs "restart"))
     :custom (alloy-implicit-naked t))
-#+end_src
 
-*** cosmoem
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225307809867100
-
-#+name: 20210601225307809867100
-#+begin_src emacs-lisp
+;; cosmoem
 (meq/upnsd cosmoem
     :upnsd-postconfig (meta :load-path "../../lib/meta")
     :use-package-preconfig
@@ -492,86 +98,24 @@ And in my experience... Not a good idea; much too confusing. Use
             ("h" cosmoem-hide-all-modal-modes "hide all modal modes"))
         (toggles (:color blue) ", t" ("`" nil "cancel"))
         (all-keymaps (:color blue) ", k" ("`" nil "cancel")))
-#+end_src
 
-*** sorrow
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210624151540904695400
-
-#+name: 20210624151540904695400
-#+begin_src emacs-lisp
+;; sorrow
 (meq/upnsd sorrow
     :load-path "../../lib/sorrow"
     :primer+ ("t" "toggles")
     :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
         (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
-#+end_src
 
-** startup
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
+;; startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+RESULTS:
-: 20210810202255917884600
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+name: 20210810202255917884600
-#+begin_src emacs-lisp :exports none
 ;; aiern
-<<20210613162401887306100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; counsel
-<<20210721205302528744400>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; damascus
-<<20210708190855491868100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; doom-aiern-modeline
-<<20210708192934464242100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; exwm
-<<20210601225348036290600>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; olivetti
-<<20210812042326874868200>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; rainbow-identifiers
-<<20210804005112256006500>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; vlf
-<<20210708190315949480300>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; writeroom-mode
-<<20210708193616488934300>>
-#+end_src
-
-*** aiern
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210613162401887306100
-
-#+name: 20210613162401887306100
-#+begin_src emacs-lisp
 (use-package aiern
     :hook (after-init . (lambda nil (interactive)
         (aiern-mode 1)
@@ -618,17 +162,10 @@ And in my experience... Not a good idea; much too confusing. Use
                     ;; ("q" (funcall (alloy-simulate-key ":q! <RET>")) ":q!"))
                     ("q" (aiern-quit t) ":q!"))
                 :name "aiern exits"))
-#+end_src
 
-*** counsel
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210721205302528744400
-
-#+name: 20210721205302528744400
-#+begin_src emacs-lisp
+;; counsel
 (meq/up counsel :use-package-preconfig (smex)
         (ivy :sorrow ("x" :deino '(deino-execute (:color blue) "x" "A deino for launching stuff!"
                 ("`" nil "cancel")
@@ -652,17 +189,10 @@ And in my experience... Not a good idea; much too confusing. Use
                             (propertize name 'face 'font-lock-builtin-face)
                             (or comment "")))
    :gsetq (counsel-linux-app-format-function #'meq/counsel-linux-app-format-function))
-#+end_src
 
-*** damascus
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210708190855491868100
-
-#+name: 20210708190855491868100
-#+begin_src emacs-lisp
+;; damascus
 (meq/upnsd damascus
     :use-package-postconfig (rainbow-mode :config (rainbow-mode 1))
     :alloy (:keymaps demon-run
@@ -793,19 +323,10 @@ And in my experience... Not a good idea; much too confusing. Use
 
         ;; (toggle-debug-on-error)
         )
-#+end_src
 
-*** doom-aiern-modeline
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210708192934464242100
-
-#+name: 20210708192934464242100
-#+begin_src emacs-lisp :comments link
+;; doom-aiern-modeline
 (use-package doom-aiern-modeline
     :straight nil
     :hook (after-init . doom-aiern-modeline-mode)
@@ -980,17 +501,10 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
         ;; Hooks that run before/after the modeline version string is updated
         (doom-aiern-modeline-before-update-env-hook nil)
         (doom-aiern-modeline-after-update-env-hook nil))
-#+end_src
 
-*** exwm
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225348036290600
-
-#+name: 20210601225348036290600
-#+begin_src emacs-lisp
+;; exwm
 (meq/up exwm
     :init/defun* (post-exwm nil (interactive)
                     (unless (get-buffer "Alacritty") (meq/run "alacritty"))
@@ -1082,29 +596,15 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
         ("w" exwm-workspace-switch "workspace switch")
         ("i" meq/run-interactive "run")
         ("b" deino-buffer/body "buffers")))
-#+end_src
 
-*** olivetti
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210812042326874868200
-
-#+name: 20210812042326874868200
-#+begin_src emacs-lisp
+;; olivetti
 (meq/up olivetti :gsetq (olivetti-body-width 0.60))
-#+end_src
 
-*** rainbow-identifiers
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210804005112256006500
-
-#+name: 20210804005112256006500
-#+begin_src emacs-lisp
+;; rainbow-identifiers
 (meq/up rainbow-identifiers
     ;; Adapted From:
     ;; Answer: https://stackoverflow.com/a/31253253/10827766
@@ -1113,30 +613,16 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
     ;;                                                             (rainbow-identifiers-mode 1)))
     ;; :upnsd-preconfig (xxh :load-path "emacs-xxhash")
     )
-#+end_src
 
-*** vlf
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210708190315949480300
-
-#+name: 20210708190315949480300
-#+begin_src emacs-lisp
+;; vlf
 (meq/up vlf :gsetq (vlf-application 'always)
     :straight (vlf :type git :host github :repo "m00natic/vlfi" :branch "master"))
-#+end_src
 
-*** writeroom-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210708193616488934300
-
-#+name: 20210708193616488934300
-#+begin_src emacs-lisp
+;; writeroom-mode
 (meq/up writeroom-mode
     :disabled t
     :use-package-postconfig (focus
@@ -1154,145 +640,31 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
         (writeroom-fringes-outside-margins t)
         (writeroom-width 0.75)
         (writeroom-mode-line t))
-#+end_src
 
-** major-modes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
+;; major-modes ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+RESULTS:
-: 20210810202305285189000
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+name: 20210810202305285189000
-#+begin_src emacs-lisp :exports none
 ;; dockerfile-mode
-<<20210810190118561501100>>
+(use-package dockerfile-mode :mode ("\\Dockerfile\\'"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; hy-mode
-<<20210723152410557176300>>
+(use-package hy-mode :mode ("\\.hy\\'") :use-package-preconfig (lispy) (sly) (ob-hy))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; markdown-mode
 
-<<20210810223427024592800>>
+(use-package markdown-mode :mode ("\\.md\\'"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; nix-mode
-<<20210810190126824923000>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; org-mode
-<<20210601225236550932600>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; vimrc-mode
-<<20210810190142253819200>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; xonsh-mode
-<<20210810190150971585600>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; doc
-<<20210810191825486923500>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; fell
-<<20210810191826364422800>>
-#+end_src
-
-*** doc
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810191825486923500
-
-#+name: 20210810191825486923500
-#+begin_src emacs-lisp
-(use-package doc :straight nil
-    :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "../../lib/titan")
-    :load-path "../../lib/doc"
-    :mode (("\\.doc\\.md\\'" . doc-md-mode)
-            ("\\.doc\\.org\\'" . doc-org-mode))
-    :uru (doc-org-mode deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
-            ("d" (meq/insert-snippet "org titan template") "template")))
-#+end_src
-
-*** dockerfile-mode
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810190118561501100
-
-#+name: 20210810190118561501100
-#+begin_src emacs-lisp
-(use-package dockerfile-mode :mode ("\\Dockerfile\\'"))
-#+end_src
-
-*** fell
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810191826364422800
-
-#+name: 20210810191826364422800
-#+begin_src emacs-lisp
-(use-package fell :straight nil
-    :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "../../lib/titan")
-    :load-path "../../lib/fell"
-    :mode (("\\.fell\\.md\\'" . fell-md-mode)
-            ("\\.fell\\.org\\'" . fell-org-mode))
-    :uru (fell-org-mode deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
-            ("f" (meq/insert-snippet "org titan template") "template")))
-#+end_src
-
-*** hy-mode
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210723152410557176300
-
-#+name: 20210723152410557176300
-#+begin_src emacs-lisp
-(use-package hy-mode :mode ("\\.hy\\'") :use-package-preconfig (lispy) (sly) (ob-hy))
-#+end_src
-
-*** markdown-mode
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810223427024592800
-
-#+name: 20210810223427024592800
-#+begin_src emacs-lisp
-(use-package markdown-mode :mode ("\\.md\\'"))
-#+end_src
-
-*** nix-mode
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810190126824923000
-
-#+name: 20210810190126824923000
-#+begin_src emacs-lisp
 (use-package nix-mode
     :commands (org-babel-execute:nix)
     :mode ("\\.nix\\'")
@@ -1322,17 +694,10 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
                     (if (eq args nil) "" args)
                     (org-babel-process-file-name in-file))
             ""))))
-#+end_src
 
-*** org-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225236550932600
-
-#+name: 20210601225236550932600
-#+begin_src emacs-lisp
+;; org-mode
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/ouzud7/error_usepackage_yankpadcatch_invalid_version/h76b6vo?utm_source=share&utm_medium=web2x&context=3
 (meq/up org
     :mode ("\\.org\\'" . org-mode)
@@ -1377,7 +742,19 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
             '((python . t)
             (shell . t))))
 
-        <<20210601225401786848500>>
+        (when (file-exists-p "~/.emacs.d/README.org")
+            (org-babel-lob-ingest "~/.emacs.d/README.org"))
+        (when (file-exists-p "~/.emacs.d/strange.aiern.org")
+            (org-babel-lob-ingest "~/.emacs.d/strange.aiern.org"))
+        
+        (defun meq/get-header nil (interactive)
+            (nth 4 (org-heading-components)))
+        (defun meq/tangle-path nil (interactive)
+            (string-remove-prefix "/" (concat
+                (org-format-outline-path (org-get-outline-path)) "/"
+                    (meq/get-header))))
+        (defun meq/get-theme-from-header nil (interactive)
+            (string-remove-suffix "-theme.el" (meq/get-header)))
     ;; :demon ((naked "backtab") 'evil-close-fold)
     :meta (org-mode-map)
     :meta-rename (org-mode-map "ESC" "org-metadir")
@@ -1416,34 +793,20 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
         ;; User: https://emacs.stackexchange.com/users/29861/doltes
         (org-edit-src-content-indentation 0))
 (delete "--anti-riot" command-line-args)
-#+end_src
 
-*** vimrc-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810190142253819200
-
-#+name: 20210810190142253819200
-#+begin_src emacs-lisp
+;; vimrc-mode
 (use-package vimrc-mode
     :straight (vimrc-mode :type git :host github :repo "mcandre/vimrc-mode" :branch "master")
     :commands
         (org-babel-execute:vimrc
         org-babel-expand-body:vimrc)
     :mode "\\.vim\\(rc\\)?\\'")
-#+end_src
 
-*** xonsh-mode
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810190150971585600
-
-#+name: 20210810190150971585600
-#+begin_src emacs-lisp
+;; xonsh-mode
 (use-package xonsh-mode
     :straight (xonsh-mode :type git :host github :repo "seanfarley/xonsh-mode" :branch "master")
     :commands (org-babel-execute:xonsh org-babel-expand-body:xonsh)
@@ -1466,17 +829,34 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
                     (if (eq args nil) "" args)
                     (org-babel-process-file-name in-file))
             ""))))
-#+end_src
 
-** doom-themes
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
+;; doc
+(use-package doc :straight nil
+    :use-package-preconfig (yasnippet)
+    :upnsd-preconfig (titan :load-path "../../lib/titan")
+    :load-path "../../lib/doc"
+    :mode (("\\.doc\\.md\\'" . doc-md-mode)
+            ("\\.doc\\.org\\'" . doc-org-mode))
+    :uru (doc-org-mode deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
+            ("d" (meq/insert-snippet "org titan template") "template")))
 
-#+RESULTS:
-: 20210708190315158163500
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+name: 20210708190315158163500
-#+begin_src emacs-Lisp
+;; fell
+(use-package fell :straight nil
+    :use-package-preconfig (yasnippet)
+    :upnsd-preconfig (titan :load-path "../../lib/titan")
+    :load-path "../../lib/fell"
+    :mode (("\\.fell\\.md\\'" . fell-md-mode)
+            ("\\.fell\\.org\\'" . fell-org-mode))
+    :uru (fell-org-mode deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
+            ("f" (meq/insert-snippet "org titan template") "template")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; doom-themes
 (meq/up doom-themes
     :deino (deino-themes-light (:color blue) nil "A deino for light themes!" ("`" nil "cancel"))
         (deino-themes-dark (:color blue) nil "A deino for dark themes!" ("`" nil "cancel"))
@@ -1536,134 +916,315 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
             (lio-fotia . l)
             (orange-purple . C-o)
             (flamingo-pink-purple . C-p))))
-#+end_src
 
-** postface
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810194211455535300
-
-#+name: 20210810194211455535300
-#+begin_src emacs-lisp :exports none
-<<20210810194339916976700>>
+;; postface
+(defvar meq/var/everything-else-initialized nil)
+(defun meq/initialize-everything-else nil (interactive)
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; windmove
-    <<20210716142114947169200>>
+    (meq/up windmove
+        :config (winner-mode)
+        :deino (deino-wb nil nil ("b" deino-buffer/body "buffer") ("w" deino-window/body "window"))
+        :sorrow ("w" :deino '(deino-window (:columns 5) "w"
+            ("b" balance-windows "balance-windows")
+            ("t" toggle-window-spilt "toggle-window-spilt")
+            ("H" shrink-window-horizontally "shrink-window-horizontally")
+            ("K" shrink-window "shrink-window")
+            ("J" enlarge-window "enlarge-window")
+            ("L" enlarge-window-horizontally "enlarge-window-horizontally")
+            ("R" reverse-windows "reverse-windows")
+            ("h" windmove-left "←")
+            ("j" windmove-down "↓")
+            ("k" windmove-up "↑")
+            ("l" windmove-right "→")
+            ("q" deino-move-splitter-left "X←")
+            ("w" deino-move-splitter-down "X↓")
+            ("e" deino-move-splitter-up "X↑")
+            ("r" deino-move-splitter-right "X→")
+            ("F" follow-mode "Follow")
+            ("v" (lambda nil (interactive) (split-window-right) (windmove-right)) "vertical")
+            ("x" (lambda nil (interactive) (split-window-below) (windmove-down)) "horizontal")
+            ("S" save-buffer "save-buffer")
+            ("d" delete-window "delete")
+            ("o" delete-other-windows "only this")
+            ("z" (progn (winner-undo) (setq this-command 'winner-undo)) "undo")
+            ("Z" winner-redo "reset")
+            ("`" nil "cancel"))))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; ace-window
-    <<20210716142507942248800>>
+    (meq/up ace-window
+        :deino+ (deino-window (:color red)
+            ("a" (lambda nil (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook
+                                                                    'deino-window/body)) "ace 1")
+            ("s" (lambda nil (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook
+                                                                    'deino-window/body)) "swap")
+            ("D" (lambda nil (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook
+                                                                    'deino-window/body)) "Delete Other")
+            ("E" ace-swap-window "ace-swap-window")
+            ("W" ace-delete-window "ace-delete-window" :exit t)))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; alamode
-    <<20210622004411529714900>>
+    (meq/upnsd alamode :load-path "../../lib/alamode")
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; buffer
-    <<20210709153546184642900>>
+    (sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
+      "
+                    Buffers :
+      "
+      ("`" nil "cancel")
+      ("<right>" next-buffer "next")
+      ("b" ivy-switch-buffer "switch" :color blue)
+      ("B" ibuffer "ibuffer" :color blue)
+      ("<left>" previous-buffer "prev")
+      ("C-b" buffer-menu "buffer menu" :color blue)
+      ("N" evil-buffer-new "new" :color blue)
+      ("d" kill-this-buffer "delete")
+      ;; don't come back to previous buffer after delete
+      ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
+      ("s" save-buffer "save")))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; cosmog
-    <<20210720041944274541900>>
+    (meq/up cosmog
+        :straight nil
+        :load-path "../../lib/cosmog"
+        :prime ("c" deino-cosmog/body "cosmog"))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; evil
-    <<20210601225311301844400>>
+    (meq/up evil
+        :use-package-preconfig (bind-map)
+        :use-package-postconfig
+            ;; Adapted From: https://github.com/mohsenil85/evil-evilified-state and
+            ;; https://github.com/syl20bnr/spacemacs
+            (evil-evilified-state
+                :straight (evil-evilified-state
+                    :type git
+                    :host github
+                    :repo "shadowrylander/evil-evilified-state"
+                    :branch "master"))
+        :gsetq (evil-escape-key-sequence nil)
+        ;; :demon
+            ;; TODO
+            ;; ((alloy-chord "") 'meq/toggle-evil-ex-cosmoem)
+        :leaf (evil :advice
+            (:override evil-insert-state (lambda (&optional _) (interactive)
+                (meq/disable-all-modal-modes))))
+        :config
+            ;; From: https://www.reddit.com/r/emacs/comments/lp45zd/help_requested_in_configuring_ryomodal/gp3rfx9?utm_source=share&utm_medium=web2x&context=3
+            ;; Kept for documentation porpoises
+            ;; (eval
+            ;;       `(ryo-modal-keys
+            ;;             ("l l" ,(alloy-simulate-key ":wq <RET>") :first '(evil-normal-state) :name "wq")
+            ;;             ("l p" ,(alloy-simulate-key ":q <RET>") :first '(evil-normal-state) :name "q")
+            ;;             ("l o" ,(alloy-simulate-key ":w <RET>") :first '(evil-normal-state) :name "w")
+            ;;             ("l q" ,(alloy-simulate-key ":q! <RET>") :first '(evil-normal-state) :name "q!")))
+    
+            ;; Use to get command name:
+            ;; Eg: (cdr (assoc "q" evil-ex-commands))
+            ;; Then "C-x C-e" (eval-last-sexp)
+    
+            ;; TODO: How do I create a keymap `evil-ex-keymap' out of the `evil-ex-commands' alist?
+    
+            ;; (cosmoem-def :show-funs #'meq/evil-ex-cosmoem-show
+            ;;     :hide-funs #'meq/evil-ex-cosmoem-hide
+            ;;     :toggle-funs #'meq/evil-ex-cosmoem-toggle
+            ;;     :keymap 'evil-ex-keymap
+            ;;     ;; :transient t
+            ;; )
+    
+            ;; (defun meq/evil-ex-cosmoem-toggle nil (interactive))
+            ;; (defun meq/evil-ex-show-top-level nil (interactive)
+            ;;     (meq/which-key-show-top-level 'evil-ex-keymap))
+    
+            ;; (defun meq/toggle-evil-ex (ua) (interactive "p")
+            ;;     (if (= ua 4)
+            ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap nil t)
+            ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap)))
+            ;; (defun meq/toggle-evil-ex-cosmoem (ua) (interactive "p")
+            ;;     (if (= ua 4)
+            ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t t)
+            ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t)))
+        )
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; helm
-    <<20210601225322706724000>>
+    (meq/up helm
+        ;; :commands (helm-M-x helm-mini helm-mode)
+        :deino+ (deino-execute nil
+                    ("h" helm-smex-major-mode-commands "helm smex major mode")
+                    ("s" helm-smex "helm smex"))
+                (deino-window nil ("B" helm-mini "helm-mini")
+                    ("f" helm-find-files "helm-find-files"))
+        :use-package-postconfig ;; Adapted From: https://github.com/clemera/helm-ido-like-guide
+            (helm-smex)
+            (helm-flx)
+            (helm-swoop)
+            (helm-ido-like
+                :straight (helm-ido-like
+                    :type git
+                    :host github
+                    :repo "shadowrylander/helm-ido-like-guide"
+                    :branch "master")))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; magit
-    <<20210711201145451520000>>
+    (meq/up magit :deino (deino-magit (:color blue :columns 8) "g"
+      "It's just like magit!"
+      ("s" magit-status "status")
+      ("c" magit-checkout "checkout")
+      ("b" magit-branch-manager "branch manager")
+      ("m" magit-merge "merge")
+      ("l" magit-log "log")
+      ("c" magit-git-command "command")
+      ("p" magit-process "process")
+      ("`" nil "cancel")))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; modalka
-    <<20210601225319683820700>>
+    (meq/up modalka)
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; objed
-    <<20210601225316366565400>>
+    (meq/up objed)
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; one-on-one
-    <<20210716142349656093500>>
+    ;; !!! THE ORDER HERE MATTERS! !!!
+    (meq/up oneonone
+        :if (not (meq/exwm-p))
+        :load-emacs-file-preconfig
+            ("fit-frame") ("autofit-frame")
+            ;; ("buff-menu+")
+            ("compile-") ("compile+") ("grep+") ("dired+") ("dired-details") ("dired-details+")
+            ("doremi") ("hexrgb") ("frame-fns") ("faces+") ("doremi-frm") ("eyedropper") ("facemenu+")
+            ("frame+") ("help+") ("info+") ("menu-bar+") ("mouse+") ("setup-keys") ("strings")
+            ;; ("simple+")
+            ("frame-cmds") ("thumb-frm") ("window+") ("zoom-frm") ("oneonone")
+        :gsetq
+            (1on1-minibuffer-frame-width 10000)
+            (1on1-minibuffer-frame-height 10000))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; projectile
-    <<20210709160719628334100>>
+    (meq/up projectile
+        :use-package-preconfig (counsel-projectile :config (counsel-projectile-mode 1)) (helm-projectile)
+        :sorrow ("p" :deino '(deino-projectile
+                    (:color teal :columns 4) "p p"
+                    ("a"   counsel-projectile-ag "counsel-projectile-ag")
+                    ("g"   counsel-projectile-rg "counsel-projectile-rg")
+                    ("c"   counsel-projectile "counsel-projectile")
+                    ("b"   counsel-projectile-switch-to-buffer "switch to buffer")
+                    ("C"   projectile-invalidate-cache "cache clear")
+                    ("d"   counsel-projectile-find-dir "find-dir")
+                    ("f"   counsel-projectile-find-file "find-file")
+                    ("F"   counsel-projectile-find-file-dwim "find-file-dwim")
+                    ("C-f" projectile-find-file-in-directory "find-file-in-dir")
+                    ("G"   ggtags-update-tags "update gtags")
+                    ("i"   projectile-ibuffer "Ibuffer")
+                    ("K"   projectile-kill-buffers "kill all buffers")
+                    ("o"   projectile-multi-occur "multi-occur")
+                    ("p"   counsel-projectile-switch-project "switch project")
+                    ("r"   projectile-recentf "recent file")
+                    ("x"   projectile-remove-known-project "remove known project")
+                    ("X"   projectile-cleanup-known-projects "cleanup non-existing projects")
+                    ("z"   projectile-cache-current-file "cache current file")
+                    ("h"   deino-helm-projectile/body "deino-helm-projectile")
+                    ("`"   nil "cancel")))
+                ("P" :deino '(deino-helm-projectile
+                    (:color teal :columns 4) "p h"
+                    ("h"   helm-projectile "helm-projectile")
+                    ("c"   helm-projectile-switch-project "switch-project")
+                    ("f"   helm-projectile-find-file "find-file")
+                    ("F"   helm-projectile-find-file-dwim "find-file-dwim")
+                    ("d"   helm-projectile-find-dir "find-dir")
+                    ("r"   helm-projectile-recentf "recent file")
+                    ("b"   helm-projectile-switch-to-buffer "switch to buffer")
+                    ("a"   helm-projectile-ag "helm-projectile-ag")
+                    ("g"   helm-projectile-rg "helm-projectile-rg")
+                    ("C-f" helm-projectile-find-file-in-known-projects "find file in known projects")
+                    ("`"   nil "cancel"))))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; restart-emacs
-    <<20210801160655843639600>>
+    (meq/up restart-emacs)
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; ryo modal
-    <<20210601225309546041800>>
+    (meq/up ryo-modal
+        :straight (ryo-modal :type git :host github :repo "kungsgeten/ryo-modal" :branch "master")
+        :config ;; From: https://github.com/Kungsgeten/ryo-modal#which-key-integration
+            (push '((nil . "ryo:.*:") . (nil . "")) which-key-replacement-alist))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; vterm
-    <<20210601225339037191900>>
+    (meq/up vterm :use-package-postconfig (multi-vterm)
+        :gsetq
+            (vterm-shell (meq/ued1 "vterm-start.sh"))
+            (vterm-always-compile-module t)
+            (vterm-kill-buffer-on-exit t))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; xah-fly-keys
-    <<20210601225314671168300>>
+    (meq/up xah-fly-keys
+        :commands xah-fly-keys
+        :sorrow ("m" :deino
+                    '(modal-modes (:color blue) "m"
+                        "A modal deino!"
+                        ("`" nil "cancel")
+                        ("x" meq/toggle-xah "xah-fly-keys")) :name "modal modes"))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; yankpad
-    <<20210709012558336017000>>
+    (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
+    (meq/up yankpad
+        :if (not (member "--disable-yankpad" command-line-args))
+        :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
+            (meq/remove-default-yankpad-buffer nil
+                (let* ((yankpad-file meq/var/yankpad-file)
+                        (yankpad-buffer (get-file-buffer yankpad-file)))
+                    (when (and
+                            (when yankpad-buffer (get-buffer yankpad-buffer))
+                            (not (string= (expand-file-name (car (last command-line-args))) yankpad-file)))
+                        (kill-buffer yankpad-buffer))))
+        :gsetq (yankpad-file meq/var/yankpad-file)
+        :config (yankpad-map) (meq/remove-default-yankpad-buffer)
+        :cosmoem
+            (:show-funs #'meq/yankpad-cosmoem-show
+                :hide-funs #'meq/yankpad-cosmoem-hide
+                :toggle-funs #'meq/yankpad-cosmoem-toggle
+                :keymap 'yankpad-keymap
+                ;; :transient t
+            ))
+    (delete "--disable-yankpad" command-line-args)
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-<<20210810194341280479100>>
-#+end_src
-
-*** parts
-**** beginning
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810194339916976700
-
-#+name: 20210810194339916976700
-#+begin_src emacs-lisp
-(defvar meq/var/everything-else-initialized nil)
-(defun meq/initialize-everything-else nil (interactive)
-#+end_src
-
-**** end
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810194341280479100
-
-#+name: 20210810194341280479100
-#+begin_src emacs-lisp
     (setq meq/var/everything-else-initialized t))
 
 (with-eval-after-load 'alloy (mapc #'(lambda (kons) (interactive)
@@ -1735,430 +1296,3 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
             (delete-file testing)
             (copy-file resting testing))))
     (add-hook 'after-init-hook #'(lambda nil (interactive) (meq/generate-obdar init README)))))
-#+end_src
-
-*** packages
-**** ace-window
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210716142507942248800
-
-#+name: 20210716142507942248800
-#+begin_src emacs-lisp
-(meq/up ace-window
-    :deino+ (deino-window (:color red)
-        ("a" (lambda nil (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook
-                                                                'deino-window/body)) "ace 1")
-        ("s" (lambda nil (interactive) (ace-window 4) (add-hook 'ace-window-end-once-hook
-                                                                'deino-window/body)) "swap")
-        ("D" (lambda nil (interactive) (ace-window 16) (add-hook 'ace-window-end-once-hook
-                                                                'deino-window/body)) "Delete Other")
-        ("E" ace-swap-window "ace-swap-window")
-        ("W" ace-delete-window "ace-delete-window" :exit t)))
-#+end_src
-
-**** alamode
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210622004411529714900
-
-#+name: 20210622004411529714900
-#+begin_src emacs-lisp
-(meq/upnsd alamode :load-path "../../lib/alamode")
-#+end_src
-
-**** buffer
-
-Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210709153546184642900
-
-#+name: 20210709153546184642900
-#+begin_src emacs-lisp
-(sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
-  "
-                Buffers :
-  "
-  ("`" nil "cancel")
-  ("<right>" next-buffer "next")
-  ("b" ivy-switch-buffer "switch" :color blue)
-  ("B" ibuffer "ibuffer" :color blue)
-  ("<left>" previous-buffer "prev")
-  ("C-b" buffer-menu "buffer menu" :color blue)
-  ("N" evil-buffer-new "new" :color blue)
-  ("d" kill-this-buffer "delete")
-  ;; don't come back to previous buffer after delete
-  ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
-  ("s" save-buffer "save")))
-#+end_src
-
-**** cosmog
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210720041944274541900
-
-#+name: 20210720041944274541900
-#+begin_src emacs-lisp
-(meq/up cosmog
-    :straight nil
-    :load-path "../../lib/cosmog"
-    :prime ("c" deino-cosmog/body "cosmog"))
-#+end_src
-
-**** evil
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225311301844400
-
-#+name: 20210601225311301844400
-#+begin_src emacs-lisp
-(meq/up evil
-    :use-package-preconfig (bind-map)
-    :use-package-postconfig
-        ;; Adapted From: https://github.com/mohsenil85/evil-evilified-state and
-        ;; https://github.com/syl20bnr/spacemacs
-        (evil-evilified-state
-            :straight (evil-evilified-state
-                :type git
-                :host github
-                :repo "<<username>>/evil-evilified-state"
-                :branch "master"))
-    :gsetq (evil-escape-key-sequence nil)
-    ;; :demon
-        ;; TODO
-        ;; ((alloy-chord "") 'meq/toggle-evil-ex-cosmoem)
-    :leaf (evil :advice
-        (:override evil-insert-state (lambda (&optional _) (interactive)
-            (meq/disable-all-modal-modes))))
-    :config
-        ;; From: https://www.reddit.com/r/emacs/comments/lp45zd/help_requested_in_configuring_ryomodal/gp3rfx9?utm_source=share&utm_medium=web2x&context=3
-        ;; Kept for documentation porpoises
-        ;; (eval
-        ;;       `(ryo-modal-keys
-        ;;             ("l l" ,(alloy-simulate-key ":wq <RET>") :first '(evil-normal-state) :name "wq")
-        ;;             ("l p" ,(alloy-simulate-key ":q <RET>") :first '(evil-normal-state) :name "q")
-        ;;             ("l o" ,(alloy-simulate-key ":w <RET>") :first '(evil-normal-state) :name "w")
-        ;;             ("l q" ,(alloy-simulate-key ":q! <RET>") :first '(evil-normal-state) :name "q!")))
-
-        ;; Use to get command name:
-        ;; Eg: (cdr (assoc "q" evil-ex-commands))
-        ;; Then "C-x C-e" (eval-last-sexp)
-
-        ;; TODO: How do I create a keymap `evil-ex-keymap' out of the `evil-ex-commands' alist?
-
-        ;; (cosmoem-def :show-funs #'meq/evil-ex-cosmoem-show
-        ;;     :hide-funs #'meq/evil-ex-cosmoem-hide
-        ;;     :toggle-funs #'meq/evil-ex-cosmoem-toggle
-        ;;     :keymap 'evil-ex-keymap
-        ;;     ;; :transient t
-        ;; )
-
-        ;; (defun meq/evil-ex-cosmoem-toggle nil (interactive))
-        ;; (defun meq/evil-ex-show-top-level nil (interactive)
-        ;;     (meq/which-key-show-top-level 'evil-ex-keymap))
-
-        ;; (defun meq/toggle-evil-ex (ua) (interactive "p")
-        ;;     (if (= ua 4)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap nil t)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap)))
-        ;; (defun meq/toggle-evil-ex-cosmoem (ua) (interactive "p")
-        ;;     (if (= ua 4)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t t)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t)))
-    )
-#+end_src
-
-**** helm
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225322706724000
-
-#+name: 20210601225322706724000
-#+begin_src emacs-lisp
-(meq/up helm
-    ;; :commands (helm-M-x helm-mini helm-mode)
-    :deino+ (deino-execute nil
-                ("h" helm-smex-major-mode-commands "helm smex major mode")
-                ("s" helm-smex "helm smex"))
-            (deino-window nil ("B" helm-mini "helm-mini")
-                ("f" helm-find-files "helm-find-files"))
-    :use-package-postconfig ;; Adapted From: https://github.com/clemera/helm-ido-like-guide
-        (helm-smex)
-        (helm-flx)
-        (helm-swoop)
-        (helm-ido-like
-            :straight (helm-ido-like
-                :type git
-                :host github
-                :repo "<<username>>/helm-ido-like-guide"
-                :branch "master")))
-#+end_src
-
-**** magit
-
-Adapted From: https://github.com/asok/.emacs.d/blob/master/inits/init-hydra.el#L62
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210711201145451520000
-
-#+name: 20210711201145451520000
-#+begin_src emacs-lisp
-(meq/up magit :deino (deino-magit (:color blue :columns 8) "g"
-  "It's just like magit!"
-  ("s" magit-status "status")
-  ("c" magit-checkout "checkout")
-  ("b" magit-branch-manager "branch manager")
-  ("m" magit-merge "merge")
-  ("l" magit-log "log")
-  ("c" magit-git-command "command")
-  ("p" magit-process "process")
-  ("`" nil "cancel")))
-#+end_src
-
-**** modalka
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225319683820700
-
-#+name: 20210601225319683820700
-#+begin_src emacs-lisp
-(meq/up modalka)
-#+end_src
-
-**** objed
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225316366565400
-
-#+name: 20210601225316366565400
-#+begin_src emacs-lisp
-(meq/up objed)
-#+end_src
-
-**** one-on-one
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210716142349656093500
-
-#+name: 20210716142349656093500
-#+begin_src emacs-lisp
-;; !!! THE ORDER HERE MATTERS! !!!
-(meq/up oneonone
-    :if (not (meq/exwm-p))
-    :load-emacs-file-preconfig
-        ("fit-frame") ("autofit-frame")
-        ;; ("buff-menu+")
-        ("compile-") ("compile+") ("grep+") ("dired+") ("dired-details") ("dired-details+")
-        ("doremi") ("hexrgb") ("frame-fns") ("faces+") ("doremi-frm") ("eyedropper") ("facemenu+")
-        ("frame+") ("help+") ("info+") ("menu-bar+") ("mouse+") ("setup-keys") ("strings")
-        ;; ("simple+")
-        ("frame-cmds") ("thumb-frm") ("window+") ("zoom-frm") ("oneonone")
-    :gsetq
-        (1on1-minibuffer-frame-width 10000)
-        (1on1-minibuffer-frame-height 10000))
-#+end_src
-
-**** projectile
-
-Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210709160719628334100
-
-#+name: 20210709160719628334100
-#+begin_src emacs-lisp
-(meq/up projectile
-    :use-package-preconfig (counsel-projectile :config (counsel-projectile-mode 1)) (helm-projectile)
-    :sorrow ("p" :deino '(deino-projectile
-                (:color teal :columns 4) "p p"
-                ("a"   counsel-projectile-ag "counsel-projectile-ag")
-                ("g"   counsel-projectile-rg "counsel-projectile-rg")
-                ("c"   counsel-projectile "counsel-projectile")
-                ("b"   counsel-projectile-switch-to-buffer "switch to buffer")
-                ("C"   projectile-invalidate-cache "cache clear")
-                ("d"   counsel-projectile-find-dir "find-dir")
-                ("f"   counsel-projectile-find-file "find-file")
-                ("F"   counsel-projectile-find-file-dwim "find-file-dwim")
-                ("C-f" projectile-find-file-in-directory "find-file-in-dir")
-                ("G"   ggtags-update-tags "update gtags")
-                ("i"   projectile-ibuffer "Ibuffer")
-                ("K"   projectile-kill-buffers "kill all buffers")
-                ("o"   projectile-multi-occur "multi-occur")
-                ("p"   counsel-projectile-switch-project "switch project")
-                ("r"   projectile-recentf "recent file")
-                ("x"   projectile-remove-known-project "remove known project")
-                ("X"   projectile-cleanup-known-projects "cleanup non-existing projects")
-                ("z"   projectile-cache-current-file "cache current file")
-                ("h"   deino-helm-projectile/body "deino-helm-projectile")
-                ("`"   nil "cancel")))
-            ("P" :deino '(deino-helm-projectile
-                (:color teal :columns 4) "p h"
-                ("h"   helm-projectile "helm-projectile")
-                ("c"   helm-projectile-switch-project "switch-project")
-                ("f"   helm-projectile-find-file "find-file")
-                ("F"   helm-projectile-find-file-dwim "find-file-dwim")
-                ("d"   helm-projectile-find-dir "find-dir")
-                ("r"   helm-projectile-recentf "recent file")
-                ("b"   helm-projectile-switch-to-buffer "switch to buffer")
-                ("a"   helm-projectile-ag "helm-projectile-ag")
-                ("g"   helm-projectile-rg "helm-projectile-rg")
-                ("C-f" helm-projectile-find-file-in-known-projects "find file in known projects")
-                ("`"   nil "cancel"))))
-#+end_src
-
-**** restart-emacs
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210801160655843639600
-
-#+name: 20210801160655843639600
-#+begin_src emacs-lisp
-(meq/up restart-emacs)
-#+end_src
-
-**** ryo modal
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225309546041800
-
-#+name: 20210601225309546041800
-#+begin_src emacs-lisp
-(meq/up ryo-modal
-    :straight (ryo-modal :type git :host github :repo "kungsgeten/ryo-modal" :branch "master")
-    :config ;; From: https://github.com/Kungsgeten/ryo-modal#which-key-integration
-        (push '((nil . "ryo:.*:") . (nil . "")) which-key-replacement-alist))
-#+end_src
-
-**** vterm
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225339037191900
-
-#+name: 20210601225339037191900
-#+begin_src emacs-lisp
-(meq/up vterm :use-package-postconfig (multi-vterm)
-    :gsetq
-        (vterm-shell (meq/ued1 "vterm-start.sh"))
-        (vterm-always-compile-module t)
-        (vterm-kill-buffer-on-exit t))
-#+end_src
-
-**** windmove
-
-Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-window-moving
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210716142114947169200
-
-#+name: 20210716142114947169200
-#+begin_src emacs-lisp
-(meq/up windmove
-    :config (winner-mode)
-    :deino (deino-wb nil nil ("b" deino-buffer/body "buffer") ("w" deino-window/body "window"))
-    :sorrow ("w" :deino '(deino-window (:columns 5) "w"
-        ("b" balance-windows "balance-windows")
-        ("t" toggle-window-spilt "toggle-window-spilt")
-        ("H" shrink-window-horizontally "shrink-window-horizontally")
-        ("K" shrink-window "shrink-window")
-        ("J" enlarge-window "enlarge-window")
-        ("L" enlarge-window-horizontally "enlarge-window-horizontally")
-        ("R" reverse-windows "reverse-windows")
-        ("h" windmove-left "←")
-        ("j" windmove-down "↓")
-        ("k" windmove-up "↑")
-        ("l" windmove-right "→")
-        ("q" deino-move-splitter-left "X←")
-        ("w" deino-move-splitter-down "X↓")
-        ("e" deino-move-splitter-up "X↑")
-        ("r" deino-move-splitter-right "X→")
-        ("F" follow-mode "Follow")
-        ("v" (lambda nil (interactive) (split-window-right) (windmove-right)) "vertical")
-        ("x" (lambda nil (interactive) (split-window-below) (windmove-down)) "horizontal")
-        ("S" save-buffer "save-buffer")
-        ("d" delete-window "delete")
-        ("o" delete-other-windows "only this")
-        ("z" (progn (winner-undo) (setq this-command 'winner-undo)) "undo")
-        ("Z" winner-redo "reset")
-        ("`" nil "cancel"))))
-#+end_src
-
-**** xah-fly-keys
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225314671168300
-
-#+name: 20210601225314671168300
-#+begin_src emacs-lisp
-(meq/up xah-fly-keys
-    :commands xah-fly-keys
-    :sorrow ("m" :deino
-                '(modal-modes (:color blue) "m"
-                    "A modal deino!"
-                    ("`" nil "cancel")
-                    ("x" meq/toggle-xah "xah-fly-keys")) :name "modal modes"))
-#+end_src
-
-**** yankpad
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210709012558336017000
-
-#+name: 20210709012558336017000
-#+begin_src emacs-lisp
-(setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
-(meq/up yankpad
-    :if (not (member "--disable-yankpad" command-line-args))
-    :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
-        (meq/remove-default-yankpad-buffer nil
-            (let* ((yankpad-file meq/var/yankpad-file)
-                    (yankpad-buffer (get-file-buffer yankpad-file)))
-                (when (and
-                        (when yankpad-buffer (get-buffer yankpad-buffer))
-                        (not (string= (expand-file-name (car (last command-line-args))) yankpad-file)))
-                    (kill-buffer yankpad-buffer))))
-    :gsetq (yankpad-file meq/var/yankpad-file)
-    :config (yankpad-map) (meq/remove-default-yankpad-buffer)
-    :cosmoem
-        (:show-funs #'meq/yankpad-cosmoem-show
-            :hide-funs #'meq/yankpad-cosmoem-hide
-            :toggle-funs #'meq/yankpad-cosmoem-toggle
-            :keymap 'yankpad-keymap
-            ;; :transient t
-        ))
-(delete "--disable-yankpad" command-line-args)
-#+end_src

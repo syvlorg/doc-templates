@@ -27,6 +27,7 @@
 
 (require 'naked)
 (require 'thingatpt)
+(require 'f)
 
 (defvar meq/var/modal-modes nil)
 (defvar meq/var/ignored-modal-modes nil)
@@ -45,7 +46,7 @@
 (defvar meq/var/which-key-first-show t)
 
 ;;;###autoload
-(defun meq/ued (&rest args) (apply #'concat user-emacs-directory args))
+(defun meq/ued (&rest args) (apply #'f-join user-emacs-directory args))
 
 ;;;###autoload
 (defun meq/timestamp nil (interactive) (format-time-string "%Y%m%d%H%M%S%N"))
@@ -300,8 +301,10 @@ session as the current block. ARG has same meaning as in
         (when file-buffer (kill-buffer file-buffer))))
 
 ;;;###autoload
-(add-hook 'after-init-hook #'(lambda nil (interactive) (advice-add #'customize-save-variable :after #'(lambda (&rest args) (interactive)
-    (meq/org-babel-detangle-kill-and-return (meq/ued "init.el") (meq/ued "README.org"))))))
+(advice-add #'customize-save-variable :after #'(lambda (&rest args) (interactive)
+                                                (meq/org-babel-detangle-kill-and-return
+                                                    (meq/ued "init.el")
+                                                    (meq/ued "README.org"))))
 
 ;;;###autoload
 (defun meq/generate-obdar (file &optional origin)
@@ -422,12 +425,12 @@ session as the current block. ARG has same meaning as in
 ;;;###autoload
 (defun meq/window-divider nil
   (let ((display-table (or buffer-display-table standard-display-table)))
-    (set-display-table-slot display-table 0 ? )
+    (when display-table (set-display-table-slot display-table 0 ? )
     (set-display-table-slot display-table 1 ? )
     (set-display-table-slot display-table 5 ? )
-    (set-window-display-table (selected-window) display-table)))
+    (set-window-display-table (selected-window) display-table))))
 
-;;;###autoload
+;; ;;;###autoload
 (add-hook 'window-configuration-change-hook #'meq/window-divider)
 
 ;;;###autoload
@@ -692,8 +695,8 @@ be ignored by `god-execute-with-current-bindings'."
 ;; User: user4104817
 ;;;###autoload
 (defun meq/reload-emacs nil (interactive)
-    (load (concat user-emacs-directory "early-init.el"))
-    (load (concat user-emacs-directory "init.el"))
+    (load (f-join user-emacs-directory "early-init.el"))
+    (load (f-join user-emacs-directory "init.el"))
     (with-eval-after-load 'exwm (when (meq/exwm-p) (exwm-reset))))
 
 ;; Adapted From: http://whattheemacsd.com/file-defuns.el-01.html

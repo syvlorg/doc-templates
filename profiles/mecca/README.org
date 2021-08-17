@@ -283,9 +283,34 @@ And in my experience... Not a good idea; much too confusing. Use
 : 20210811234927547343000
 
 #+name: 20210811234927547343000
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
 ;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
+(when (version< emacs-version "27") (load (meq/ued "early-init.el")))
 
+(custom-set-variables
+ ;; custom-set-variables was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ '(meq/var/current-theme 'dracula-purple-dark)
+ '(meq/var/current-theme-mode "dark")
+ '(safe-local-variable-values '((eval message "eval 1"))))
+(custom-set-faces
+ ;; custom-set-faces was added by Custom.
+ ;; If you edit it by hand, you could mess it up, so be careful.
+ ;; Your init file should contain only one such instance.
+ ;; If there is more than one, they won't work right.
+ )
+
+(load (meq/ued "late-init.el"))
+#+end_src
+
+* late-init.el
+
+#+call: hash() :exports none
+
+#+name: 
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
 ;; with use-package keywords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -604,7 +629,7 @@ And in my experience... Not a good idea; much too confusing. Use
 
 #+name: 20210721205302528744400
 #+begin_src emacs-lisp
-(use-package counsel :use-package-preconfig (smex) 
+(meq/up counsel :use-package-preconfig (smex)
         (ivy :sorrow ("x" :deino '(deino-execute (:color blue) "x" "A deino for launching stuff!"
                 ("`" nil "cancel")
                 ("e" execute-extended-command "M-x")) :name "execute order 65")
@@ -651,7 +676,6 @@ And in my experience... Not a good idea; much too confusing. Use
         "å" 'ignore "ā" 'ignore "ß" 'ignore "ç" 'ignore "ñ" 'ignore "¿" 'ignore)
     :load-emacs-file-preconfig ("damascus")
     :load-emacs-file-postconfig ("help+20") ("help-fns+")
-    ;; :hook
         ;; (find-file . meq/set-buffer-save-without-query)
     :gsetq
         (indent-tabs-mode nil
@@ -1312,7 +1336,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/ouzud7/error_usepackage_yankpadcatch_invalid_version/h76b6vo?utm_source=share&utm_medium=web2x&context=3
 (meq/up org
     :mode ("\\.org\\'" . org-mode)
-    :straight (org :type git :repo "https://code.orgmode.org/bzg/org-mode.git")
+    :straight (org :type git :host github :repo "bzg/org-mode" :branch "master")
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)
@@ -1465,7 +1489,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
         (doom-themes-enable-bold t)
         (doom-themes-enable-italic t)
         (meq/var/default-theme-override nil)
-        (meq/var/default-default-theme 'dracula-orange-dark)
+        (meq/var/default-default-theme 'dracula-purple-dark)
     :config
         (doom-themes-neotree-config)
         (doom-themes-org-config)
@@ -1675,11 +1699,12 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 (when (member "--update" command-line-args) (delete "--update" command-line-args) (meq/straight-upgrade))
 
-(let* ((ext ".aiern.org")
-        (testing (meq/ued1 "testing" ext))
-        (resting (meq/ued1 "resting" ext))
+(let* ((testing (meq/ued1 "testing.aiern.org"))
+        (resting (meq/ued1 "resting.aiern.org"))
         (init (meq/ued1 "init.el"))
-        (README (meq/ued1 "README.org")))
+        (README (meq/ued1 "README.org"))
+        (dInit (meq/ued2 "init.el"))
+        (dREADME (meq/ued2 "README.org")))
     (if (= (length command-line-args) 1)
         (setq initial-buffer-choice testing)
         (cond ((member "--fTest" command-line-args)
@@ -1691,12 +1716,18 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
             ((member "--fEarly" command-line-args)
                     (setq initial-buffer-choice (meq/ued1 "early-init.el"))
                     (delete "--fEarly" command-line-args))
-            ((member "--fLate" command-line-args)
-                    (setq initial-buffer-choice (meq/ued1 "init.el"))
-                    (delete "--fLate" command-line-args))
             ((member "--fREADME" command-line-args)
                     (setq initial-buffer-choice README)
                     (delete "--fREADME" command-line-args))
+            ((member "--fdInit" command-line-args)
+                    (setq initial-buffer-choice dInit)
+                    (delete "--fdInit" command-line-args))
+            ((member "--fdEarly" command-line-args)
+                    (setq initial-buffer-choice (meq/ued@ "early-init.el"))
+                    (delete "--fdEarly" command-line-args))
+            ((member "--fdREADME" command-line-args)
+                    (setq initial-buffer-choice dREADME)
+                    (delete "--fdREADME" command-line-args))
             (t (setq initial-buffer-choice (expand-file-name (car (last command-line-args))))))
     (add-hook 'kill-emacs-hook #'(lambda nil (interactive)
         ;; Adapted From: http://ergoemacs.org/emacs/elisp_file_name_dir_name.html
@@ -2112,7 +2143,6 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
 (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
 (meq/up yankpad
     :if (not (member "--disable-yankpad" command-line-args))
-    :after org
     :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
         (meq/remove-default-yankpad-buffer nil
             (let* ((yankpad-file meq/var/yankpad-file)
