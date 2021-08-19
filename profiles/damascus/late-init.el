@@ -718,30 +718,43 @@
     :use-package-postconfig (ox-gfm)
         (ox-pandoc :upnsd-postconfig (riot :if (not (member "--anti-riot" command-line-args)) :load-path "../../lib/riot")
             :deino (deino-ob-export-as (:color blue) "o e a"
-                ("`" nil "cancel")
-                ("a" org-pandoc-export-as-asciidoc "asciidoc")
-                ("g" org-pandoc-export-as-gfm "gfm")
-                ("h" org-pandoc-export-as-html5 "html5")
-                ("l" org-pandoc-export-as-latex "latex"))
-            (deino-ob-export-to (:color blue) "o e t"
-                ("`" nil "cancel")
-                ("a" org-pandoc-export-to-asciidoc "asciidoc")
-                ("d" org-pandoc-export-to-docx "docx")
-                ("o" org-pandoc-export-to-odt "odt")
-                ("g" org-pandoc-export-to-gfm "gfm")
-                ("h" org-pandoc-export-to-html5 "html5")
-                ("l" org-pandoc-export-to-latex "latex"))
-            (deino-ob-export-and-open (:color blue) "o e o"
-                ("`" nil "cancel")
-                ("a" org-pandoc-export-to-asciidoc-and-open "asciidoc")
-                ("g" org-pandoc-export-to-gfm-and-open "gfm")
-                ("h" org-pandoc-export-to-html5-and-open "html5")
-                ("l" org-pandoc-export-to-latex-and-open "latex"))
-            (deino-ob-export (:color blue) "o e e"
-                ("`" nil "cancel")
-                ("a" deino-ob-export-as/body "export as")
-                ("t" deino-ob-export-to/body "export to")
-                ("o" deino-ob-export-and-open/body "export and open")))
+                    ("`" nil "cancel")
+                    ("a" org-pandoc-export-as-asciidoc "asciidoc")
+                    ("g" org-pandoc-export-as-gfm "gfm")
+                    ("h" org-pandoc-export-as-html5 "html5")
+                    ("l" org-pandoc-export-as-latex "latex"))
+                (deino-ob-export-to (:color blue) "o e t"
+                    ("`" nil "cancel")
+                    ("a" org-pandoc-export-to-asciidoc "asciidoc")
+                    ("d" org-pandoc-export-to-docx "docx")
+                    ("o" org-pandoc-export-to-odt "odt")
+                    ("g" org-pandoc-export-to-gfm "gfm")
+                    ("h" org-pandoc-export-to-html5 "html5")
+                    ("l" org-pandoc-export-to-latex "latex"))
+                (deino-ob-export-and-open (:color blue) "o e o"
+                    ("`" nil "cancel")
+                    ("a" org-pandoc-export-to-asciidoc-and-open "asciidoc")
+                    ("g" org-pandoc-export-to-gfm-and-open "gfm")
+                    ("h" org-pandoc-export-to-html5-and-open "html5")
+                    ("l" org-pandoc-export-to-latex-and-open "latex"))
+                (deino-ob-export (:color blue) "o e e"
+                    ("`" nil "cancel")
+                    ("a" deino-ob-export-as/body "export as")
+                    ("t" deino-ob-export-to/body "export to")
+                    ("o" deino-ob-export-and-open/body "export and open"))
+            :config/defun* (meq/org-pandoc-export-advice (format a s v b e &optional buf-or-open)
+                "General interface for Pandoc Export.
+                If BUF-OR-OPEN is nil, output to file.  0, then open the file.
+                t means output to buffer."
+                (unless (derived-mode-p 'org-mode)
+                    (error "You must run this command in org-mode or its derived major modes."))
+                (unless (executable-find org-pandoc-command)
+                    (error "Pandoc (version 1.12.4 or later) can not be found."))
+                (setq org-pandoc-format format)
+                (org-export-to-file 'pandoc (org-export-output-file-name
+                                            (concat (make-temp-name ".tmp") ".org") s)
+                    a s v b e (lambda (f) (org-pandoc-run-to-buffer-or-file f format s buf-or-open))))
+            :leaf (ox-pandoc :advice (:override org-pandoc-export meq/org-pandoc-export-advice)))
 
         ;; From: https://www.reddit.com/r/orgmode/comments/n56fcv/important_the_contrib_directory_now_lives_outside/gwzz7v5?utm_source=share&utm_medium=web2x&context=3
         (org-contrib :straight (org-contrib
@@ -1223,7 +1236,7 @@
     ;; yankpad
     (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
     (meq/up yankpad
-        :if meq/var/disable-yankpad
+        :if meq/var/yankpad
         :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
             (meq/remove-default-yankpad-buffer nil
                 (let* ((yankpad-file meq/var/yankpad-file)
@@ -1272,7 +1285,8 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    (setq meq/var/everything-else-initialized t))
+    (setq meq/var/everything-else-initialized t)
+    (message nil))
 
 (with-eval-after-load 'alloy (mapc #'(lambda (kons) (interactive)
     (let* ((func (meq/inconcat "mec/" (symbol-name (cdr kons)))))

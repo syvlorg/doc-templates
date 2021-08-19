@@ -3,7 +3,7 @@
 (defvar meq/var/phone (member "-p" command-line-args))
 (delete "-p" command-line-args)
 
-(defvar meq/var/disable-yankpad (member "--disable-yankpad" command-line-args))
+(defvar meq/var/yankpad (not (member "--disable-yankpad" command-line-args)))
 (delete "--disable-yankpad" command-line-args)
 
 ;; Emacs 27.1 introduced early-init.el, which is run before init.el, before

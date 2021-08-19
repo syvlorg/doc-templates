@@ -8,4 +8,5 @@ eln-cache
 var
 .cosmog.
 elpa
-quelpa
+quelpatest.md
+test.md
