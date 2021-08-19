@@ -211,7 +211,7 @@ This is used to hold themes for =emacs=.
 ** dracula-purple-light-theme.el
 
 #+caption: [[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ab5dee&colors.light.shade0=%23ab5dee&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
-[[./screenshots/dracula-purple-light-theme.el]]
+[[./screenshots/dracula-purple-light-theme.png]]
 
 #+call: hash() :exports none
 
