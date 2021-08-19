@@ -1129,13 +1129,13 @@
     (meq/up projectile
         :use-package-preconfig (counsel-projectile :config (counsel-projectile-mode 1)) (helm-projectile)
         ;; Adapted From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-16
-        :deino (deino-projectile-other-window (:color teal)
+        :deino (deino-projectile-other-window (:color teal) "p o"
             "projectile-other-window"
-                ("f"  projectile-find-file-other-window        "file")
-                ("g"  projectile-find-file-dwim-other-window   "file dwim")
-                ("d"  projectile-find-dir-other-window         "dir")
-                ("b"  projectile-switch-to-buffer-other-window "buffer")
-                ("`"  nil                                      "cancel" :color blue))
+            ("f"  projectile-find-file-other-window        "file")
+            ("g"  projectile-find-file-dwim-other-window   "file dwim")
+            ("d"  projectile-find-dir-other-window         "dir")
+            ("b"  projectile-switch-to-buffer-other-window "buffer")
+            ("`"  nil                                      "cancel" :color blue))
         :sorrow ("p" :deino '(deino-projectile
                     (:color teal :columns 4) "p p"
                     ("a"   counsel-projectile-ag "counsel-projectile-ag")
@@ -1230,7 +1230,7 @@
                 ;; :transient t
             )
         ;; From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-15
-        :deino (deino-yankpad (:color blue :hint nil)
+        :deino (deino-yankpad (:color blue :hint nil) "y"
                 "
                 --------------------------------------------------------------------------------
                 -                                  Yankpad                                     -
