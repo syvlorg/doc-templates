@@ -165,6 +165,16 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; all-the-icons
+(meq/up all-the-icons :config
+    ;; From: https://github.com/leanprover/lean/issues/873#issuecomment-159325156
+    (when (member "Cartograph CF Medium" (font-family-list))
+        (set-face-attribute 'default nil :font "Cartograph CF Medium-10")
+        (set-face-attribute 'mode-line nil :font "Cartograph CF Medium-10")
+        (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Medium-10")))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; counsel
 (meq/up counsel :use-package-preconfig (smex)
         (ivy :sorrow ("x" :deino '(deino-execute (:color blue) "x" "A deino for launching stuff!"
@@ -331,7 +341,7 @@
     :straight nil
     :hook (after-init . doom-aiern-modeline-mode)
     :load-path "../../lib/doom-aiern-modeline"
-    :use-package-preconfig (all-the-icons) (shrink-path)
+    :use-package-preconfig (shrink-path)
             (god-mode :upnsd-postconfig (aiern-god-state :load-path "../../lib/aiern-god-state")
                 :use-package-postconfig
                     (evil-god-state :straight (evil-god-state
@@ -457,6 +467,7 @@
 
         ;; Whether display the modal state icon.
         ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys', etc.
+        ;; From: https://www.reddit.com/r/emacs/comments/gqc9fm/visual_indication_of_the_mode_of_editing_with_evil/frt8trg?utm_source=share&utm_medium=web2x&context=3
         (doom-aiern-modeline-modal-icon nil)
 
         ;; Whether display the mu4e notifications. It requires `mu4e-alert' package.
