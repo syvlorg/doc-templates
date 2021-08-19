@@ -1,10 +1,5 @@
 [remote "origin"]
-	url = https://github.com/shadowrylander/.emacs.d
-	fetch = +refs/heads/*:refs/remotes/origin/*
 	pushurl = git@github.com:shadowrylander/.emacs.d
-[branch "main"]
-	remote = origin
-	merge = refs/heads/main
 [remote "aiern"]
     url = git@github.com:shadowrylander/aiern
     fetch = +refs/heads/*:refs/remotes/aiern/*
