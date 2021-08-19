@@ -310,7 +310,7 @@
         ;; Show only one active window when opening multiple files at the same time.
         (add-hook 'window-setup-hook 'delete-other-windows)
 
-        (fset 'yes-or-no-p 'y-or-n-p)
+        ;; (fset 'yes-or-no-p 'y-or-n-p)
 
         ;; From: https://kundeveloper.com/blog/autorevert/
         ;; Auto revert files when they change
@@ -1201,6 +1201,7 @@
 
     ;; vterm
     (meq/up vterm :use-package-postconfig (multi-vterm)
+        :if (not (member system-type '(windows-nt ms-dos)))
         :gsetq
             (vterm-shell (meq/ued1 "vterm-start.sh"))
             (vterm-always-compile-module t)
@@ -1222,8 +1223,7 @@
     ;; yankpad
     (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
     (meq/up yankpad
-        :disabled t
-        :if (not (member "--disable-yankpad" command-line-args))
+        :if meq/var/disable-yankpad
         :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
             (meq/remove-default-yankpad-buffer nil
                 (let* ((yankpad-file meq/var/yankpad-file)
@@ -1268,7 +1268,6 @@
                 ("x" yankpad-expand)
                 ("." yankpad-repeat)
             ))
-    (delete "--disable-yankpad" command-line-args)
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

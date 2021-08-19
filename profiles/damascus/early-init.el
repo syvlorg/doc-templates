@@ -1,7 +1,10 @@
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
-(setq meq/var/phone (member "-p" command-line-args))
+(defvar meq/var/phone (member "-p" command-line-args))
 (delete "-p" command-line-args)
+
+(defvar meq/var/disable-yankpad (member "--disable-yankpad" command-line-args))
+(delete "--disable-yankpad" command-line-args)
 
 ;; Emacs 27.1 introduced early-init.el, which is run before init.el, before
 ;; package and UI initialization happens, and before site files are loaded.
@@ -129,9 +132,7 @@
     :load-path "../../lib/meq"
     :load-emacs-file-preconfig ("naked"))
 
-(unless (or
-            (eq system-type 'windows-nt)
-            (eq system-type 'ms-dos))
+(unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell
         :straight (exec-path-from-shell
             :type git

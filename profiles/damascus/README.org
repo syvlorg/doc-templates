@@ -15,8 +15,11 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
-(setq meq/var/phone (member "-p" command-line-args))
+(defvar meq/var/phone (member "-p" command-line-args))
 (delete "-p" command-line-args)
+
+(defvar meq/var/disable-yankpad (member "--disable-yankpad" command-line-args))
+(delete "--disable-yankpad" command-line-args)
 
 ;; Emacs 27.1 introduced early-init.el, which is run before init.el, before
 ;; package and UI initialization happens, and before site files are loaded.
@@ -139,9 +142,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
     :load-path "../../lib/meq"
     :load-emacs-file-preconfig ("naked"))
 
-(unless (or
-            (eq system-type 'windows-nt)
-            (eq system-type 'ms-dos))
+(unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell
         :straight (exec-path-from-shell
             :type git
@@ -785,7 +786,7 @@ And in my experience... Not a good idea; much too confusing. Use
         ;; Show only one active window when opening multiple files at the same time.
         (add-hook 'window-setup-hook 'delete-other-windows)
 
-        (fset 'yes-or-no-p 'y-or-n-p)
+        ;; (fset 'yes-or-no-p 'y-or-n-p)
 
         ;; From: https://kundeveloper.com/blog/autorevert/
         ;; Auto revert files when they change
@@ -2091,6 +2092,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 #+name: 20210601225339037191900
 #+begin_src emacs-lisp
 (meq/up vterm :use-package-postconfig (multi-vterm)
+    :if (not (member system-type '(windows-nt ms-dos)))
     :gsetq
         (vterm-shell (meq/ued1 "vterm-start.sh"))
         (vterm-always-compile-module t)
@@ -2167,8 +2169,7 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
 #+begin_src emacs-lisp
 (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
 (meq/up yankpad
-    :disabled t
-    :if (not (member "--disable-yankpad" command-line-args))
+    :if meq/var/disable-yankpad
     :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
         (meq/remove-default-yankpad-buffer nil
             (let* ((yankpad-file meq/var/yankpad-file)
@@ -2213,5 +2214,4 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
             ("x" yankpad-expand)
             ("." yankpad-repeat)
         ))
-(delete "--disable-yankpad" command-line-args)
 #+end_src
