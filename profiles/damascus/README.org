@@ -929,7 +929,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
         ;; Whether display the modal state icon.
         ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys', etc.
-        (doom-aiern-modeline-modal-icon t)
+        (doom-aiern-modeline-modal-icon nil)
 
         ;; Whether display the mu4e notifications. It requires `mu4e-alert' package.
         (doom-aiern-modeline-mu4e nil)
@@ -2144,6 +2144,7 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
 #+begin_src emacs-lisp
 (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
 (meq/up yankpad
+    :disabled t
     :if (not (member "--disable-yankpad" command-line-args))
     :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
         (meq/remove-default-yankpad-buffer nil
