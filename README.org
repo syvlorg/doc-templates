@@ -1120,8 +1120,6 @@ cmd_push-all()
 * .gitconfig
 
 #+begin_src conf :tangle (meq/tangle-path)
-[remote "origin"]
-	pushurl = git@github.com:shadowrylander/.emacs.d
 [remote "aiern"]
     url = git@github.com:shadowrylander/aiern
     fetch = +refs/heads/*:refs/remotes/aiern/*
