@@ -1,0 +1,26 @@
+#!/usr/bin/env mdsh
+#+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
+#+startup: show3levels
+
+* early-init.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210818001722939592900
+
+#+name: 20210818001722939592900
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
+(require 'scroll-bar)
+#+end_src
+
+* init.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210818014251218505700
+
+#+name: 20210818014251218505700
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
+#+end_src

@@ -46,7 +46,7 @@
 (defvar meq/var/which-key-first-show t)
 
 ;;;###autoload
-(defun meq/ued (&rest args) (apply #'f-join user-emacs-directory args))
+(defun meq/ued (&rest args) (f-full (apply #'f-join user-emacs-directory args)))
 
 ;;;###autoload
 (defun meq/timestamp nil (interactive) (format-time-string "%Y%m%d%H%M%S%N"))
@@ -273,7 +273,7 @@ session as the current block. ARG has same meaning as in
         (let* ((line (thing-at-point 'line))
 
                 (split-line (split-string line ":")))
-            (expand-file-name (cadr split-line)))))
+            (f-full (cadr split-line)))))
 
 ;;;###autoload
 (defun meq/org-babel-detangle-and-return (&optional file* origin*) (interactive)
@@ -695,8 +695,8 @@ be ignored by `god-execute-with-current-bindings'."
 ;; User: user4104817
 ;;;###autoload
 (defun meq/reload-emacs nil (interactive)
-    (load (f-join user-emacs-directory "early-init.el"))
-    (load (f-join user-emacs-directory "init.el"))
+    (load (meq/ued "early-init.el"))
+    (load (meq/ued "init.el"))
     (with-eval-after-load 'exwm (when (meq/exwm-p) (exwm-reset))))
 
 ;; Adapted From: http://whattheemacsd.com/file-defuns.el-01.html

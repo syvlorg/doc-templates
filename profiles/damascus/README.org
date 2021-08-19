@@ -42,10 +42,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 (setq initial-directory default-directory)
 
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body
-(eval-and-compile
-  (defun meq/emacs-path (path)
-    (expand-file-name path user-emacs-directory)))
-
 (defvar default-file-name-handler-alist file-name-handler-alist)
 
 (setq-default auto-window-vscroll nil
@@ -92,6 +88,10 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
         (pinned . "pinned.el")))
 
 (with-no-warnings
+    (setq straight-vc-git-default-clone-depth 1)
+    (setq straight-base-dir (meq/ued2 ".local/"))
+    (setq straight-repository-branch "develop")
+    (setq straight-build-dir (format "build-%s" emacs-version))
     (setq straight-cache-autoloads t)
     (setq straight-check-for-modifications '(check-on-save))
     (setq straight-repository-branch "develop")
@@ -99,19 +99,16 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
     ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
     (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
-(unless straight-disable-byte-compilation
-    (byte-recompile-directory (meq/ued1 "lib") nil t)
-    (byte-recompile-directory (meq/ued1 "themes") nil t))
 
 (with-no-warnings
   (setq use-package-verbose t)
   (setq use-package-enable-imenu-support t))
 
 (eval-and-compile
-  (defvar straight-recipes-gnu-elpa-use-mirror t)
-  (defvar straight-recipes-emacsmirror-use-mirror t)
-  (defvar bootstrap-version 5)
-  (defvar bootstrap-file (meq/emacs-path "straight/repos/straight.el/bootstrap.el")))
+  (setq straight-recipes-gnu-elpa-use-mirror t)
+  (setq straight-recipes-emacsmirror-use-mirror t)
+  (setq bootstrap-version 5)
+  (setq bootstrap-file (concat straight-base-dir "straight/repos/straight.el/bootstrap.el")))
 
 (unless (file-exists-p bootstrap-file)
   (with-current-buffer
@@ -158,16 +155,12 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
         :config
             (exec-path-from-shell-initialize)))
 
-(add-to-list 'load-path (meq/ued1 "lib"))
-(add-to-list 'custom-theme-load-path (meq/ued1 "themes"))
-(setq custom-safe-themes t)
-
 ;; Adapted From: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation
 (ignore-errors
     ;; Silence compiler warnings as they can be pretty disruptive
     (setq native-comp-async-report-warnings-errors nil)
     ;; Set the right directory to store the native comp cache
-    (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
+    (add-to-list 'native-comp-eln-load-path (meq/ued "eln-cache/")))
 #+end_src
 
 ** use-package
@@ -1728,13 +1721,13 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
             ((member "--fdREADME" command-line-args)
                     (setq initial-buffer-choice dREADME)
                     (delete "--fdREADME" command-line-args))
-            (t (setq initial-buffer-choice (expand-file-name (car (last command-line-args))))))
-    (add-hook 'kill-emacs-hook #'(lambda nil (interactive)
+            (t (setq initial-buffer-choice (f-full (car (last command-line-args)))))))
+    (eval `(add-hook 'kill-emacs-hook #'(lambda nil (interactive)
         ;; Adapted From: http://ergoemacs.org/emacs/elisp_file_name_dir_name.html
-        (when (get-file-buffer testing)
-            (delete-file testing)
-            (copy-file resting testing))))
-    (add-hook 'after-init-hook #'(lambda nil (interactive) (meq/generate-obdar init README)))))
+        (when (get-file-buffer ,testing)
+            (delete-file ,testing)
+            (copy-file ,resting ,testing)))))
+    (eval `(add-hook 'after-init-hook #'(lambda nil (interactive) (meq/generate-obdar ,init ,README)))))
 #+end_src
 
 *** packages
@@ -1992,6 +1985,14 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 #+begin_src emacs-lisp
 (meq/up projectile
     :use-package-preconfig (counsel-projectile :config (counsel-projectile-mode 1)) (helm-projectile)
+    ;; Adapted From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-16
+    :deino (deino-projectile-other-window (:color teal)
+        "projectile-other-window"
+            ("f"  projectile-find-file-other-window        "file")
+            ("g"  projectile-find-file-dwim-other-window   "file dwim")
+            ("d"  projectile-find-dir-other-window         "dir")
+            ("b"  projectile-switch-to-buffer-other-window "buffer")
+            ("`"  nil                                      "cancel" :color blue))
     :sorrow ("p" :deino '(deino-projectile
                 (:color teal :columns 4) "p p"
                 ("a"   counsel-projectile-ag "counsel-projectile-ag")
@@ -2013,6 +2014,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
                 ("X"   projectile-cleanup-known-projects "cleanup non-existing projects")
                 ("z"   projectile-cache-current-file "cache current file")
                 ("h"   deino-helm-projectile/body "deino-helm-projectile")
+                ("O"   deino-projectile-other-window/body "deino-projectile-other-window")
                 ("`"   nil "cancel")))
             ("P" :deino '(deino-helm-projectile
                 (:color teal :columns 4) "p h"
@@ -2149,7 +2151,7 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
                     (yankpad-buffer (get-file-buffer yankpad-file)))
                 (when (and
                         (when yankpad-buffer (get-buffer yankpad-buffer))
-                        (not (string= (expand-file-name (car (last command-line-args))) yankpad-file)))
+                        (not (string= (f-full (car (last command-line-args))) yankpad-file)))
                     (kill-buffer yankpad-buffer))))
     :gsetq (yankpad-file meq/var/yankpad-file)
     :config (yankpad-map) (meq/remove-default-yankpad-buffer)
@@ -2159,6 +2161,33 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
             :toggle-funs #'meq/yankpad-cosmoem-toggle
             :keymap 'yankpad-keymap
             ;; :transient t
+        )
+    ;; From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-15
+    :deino (deino-yankpad (:color blue :hint nil)
+            "
+            --------------------------------------------------------------------------------
+            -                                  Yankpad                                     -
+            --------------------------------------------------------------------------------
+            _i_nsert snippet                         _r_eload                                
+            e_x_pand snippet                         ^ ^                                     
+            _e_dit   snippets                        ^ ^                                     
+            _._ repeat                               ^ ^                                     
+            ^ ^                                      ^ ^                                     
+            _s_et category                           ^ ^                                     
+            _a_dd category                           ^ ^                                     
+            ^ ^                                      ^ ^                                     
+            _c_apture snippet                        ^ ^                                     
+            --------------------------------------------------------------------------------
+            "
+            ("e" yankpad-edit)
+            ("i" yankpad-insert)
+            ("y" yankpad-insert)
+            ("c" yankpad-capture-snippet)
+            ("a" yankpad-append-category)
+            ("s" yankpad-set-category)
+            ("r" yankpad-reload)
+            ("x" yankpad-expand)
+            ("." yankpad-repeat)
         ))
 (delete "--disable-yankpad" command-line-args)
 #+end_src

@@ -27,10 +27,6 @@
 (setq initial-directory default-directory)
 
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body
-(eval-and-compile
-  (defun meq/emacs-path (path)
-    (expand-file-name path user-emacs-directory)))
-
 (defvar default-file-name-handler-alist file-name-handler-alist)
 
 (setq-default auto-window-vscroll nil
@@ -77,6 +73,10 @@
         (pinned . "pinned.el")))
 
 (with-no-warnings
+    (setq straight-vc-git-default-clone-depth 1)
+    (setq straight-base-dir (meq/ued2 ".local/"))
+    (setq straight-repository-branch "develop")
+    (setq straight-build-dir (format "build-%s" emacs-version))
     (setq straight-cache-autoloads t)
     (setq straight-check-for-modifications '(check-on-save))
     (setq straight-repository-branch "develop")
@@ -84,19 +84,16 @@
     ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
     (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
-(unless straight-disable-byte-compilation
-    (byte-recompile-directory (meq/ued1 "lib") nil t)
-    (byte-recompile-directory (meq/ued1 "themes") nil t))
 
 (with-no-warnings
   (setq use-package-verbose t)
   (setq use-package-enable-imenu-support t))
 
 (eval-and-compile
-  (defvar straight-recipes-gnu-elpa-use-mirror t)
-  (defvar straight-recipes-emacsmirror-use-mirror t)
-  (defvar bootstrap-version 5)
-  (defvar bootstrap-file (meq/emacs-path "straight/repos/straight.el/bootstrap.el")))
+  (setq straight-recipes-gnu-elpa-use-mirror t)
+  (setq straight-recipes-emacsmirror-use-mirror t)
+  (setq bootstrap-version 5)
+  (setq bootstrap-file (concat straight-base-dir "straight/repos/straight.el/bootstrap.el")))
 
 (unless (file-exists-p bootstrap-file)
   (with-current-buffer
@@ -148,13 +145,9 @@
         :config
             (exec-path-from-shell-initialize)))
 
-(add-to-list 'load-path (meq/ued1 "lib"))
-(add-to-list 'custom-theme-load-path (meq/ued1 "themes"))
-(setq custom-safe-themes t)
-
 ;; Adapted From: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation
 (ignore-errors
     ;; Silence compiler warnings as they can be pretty disruptive
     (setq native-comp-async-report-warnings-errors nil)
     ;; Set the right directory to store the native comp cache
-    (add-to-list 'native-comp-eln-load-path (expand-file-name "eln-cache/" user-emacs-directory)))
+    (add-to-list 'native-comp-eln-load-path (meq/ued "eln-cache/")))

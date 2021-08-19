@@ -56,9 +56,14 @@
 (require 'f)
 (require 'use-package-core)
 
+(defvar meq/var/profiled nil)
+
 ;;;###autoload
 (defun meq/load-emacs-file (path) (interactive)
-    (load (f-join user-emacs-directory ".." ".." "lib" path)))
+    (load (f-full (f-join
+            user-emacs-directory
+            (if meq/var/profiled (concat ".." (f-path-separator) "..") "")
+            "lib" path))))
 
 ;;;###autoload
 (defmacro meq/up (&rest args) (interactive)

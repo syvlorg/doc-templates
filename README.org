@@ -29,6 +29,8 @@ shadowrylander
 The tangle functions are adapted from [[https://emacs.stackexchange.com/a/29884/31428][this answer on the emacs Stack Exchange]],
 which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][Andrew Swann]].
 
+* As John Oliver Would Say: "Like Chemacs[2], but worse."
+
 * wtt.sh
 
 #+call: hash() :exports none
@@ -1115,15 +1117,9 @@ cmd_push-all()
 "cmd_$command" "$@"
 #+end_src
 
-* .git
-** config
+* .gitconfig
 
-#+begin_src conf :tangle (meq/tangle-path) :comments link
-[core]
-	repositoryformatversion = 0
-	filemode = true
-	bare = false
-	logallrefupdates = true
+#+begin_src conf :tangle (meq/tangle-path)
 [remote "origin"]
 	url = https://github.com/shadowrylander/.emacs.d
 	fetch = +refs/heads/*:refs/remotes/origin/*
@@ -1200,6 +1196,21 @@ cmd_push-all()
 [submodule "profiles/doom"]
 	url = https://github.com/hlissner/.emacs.d
 	active = true
+[submodule "profiles/spacemacs"]
+	url = https://github.com/spacemacs/spacemacs
+	active = true
+[submodule "profiles/nano/lisp"]
+	url = https://github.com/rougier/nano
+	active = true
+[submodule "profiles/graphene/lisp"]
+    url = https://github.com/rdallasgray/graphene
+    active = true
+[submodule "profiles/centaur"]
+    url = https://github.com/seagle0128/.emacs.d
+    active = true
+[submodule "profiles/prelude"]
+    url = https://github.com/bbatsov/prelude
+    active = true
 [submodule "lib/dash.el"]
 	url = https://github.com/magnars/dash.el
 	active = true
@@ -1265,7 +1276,7 @@ tangle: tangle-setup
     -E yankpad.org \
     -E testing.aiern.org \
     -E resting.aiern.org \
-        -E profiles \
+    -E profiles \
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
@@ -1273,6 +1284,14 @@ tangle: tangle-setup
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/mecca \
+    -HIe org \
+    -E straight \
+    -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/profiles/graphene \
+    -HIe org \
+    -E straight \
+    -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/profiles/nano \
     -HIe org \
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
@@ -1285,6 +1304,15 @@ subtree-prep: tangle push-only
 
 test:
 |emacs -nw
+
+test-doom:
+|emacs -nw --doom
+
+test-graphene:
+|emacs -nw --graphene
+
+test-nano:
+|emacs -nw --nano
 
 pest:
 |emacs -nw -p
@@ -1304,18 +1332,29 @@ test-update-and-kill: test-and-kill-pre
 |$(test) --update
 |$(killTest)
 
+test-update-doom-and-kill: test-and-kill-pre
+|$(test) --udoom
+|$(killTest)
+
+test-update-graphene-and-kill: test-and-kill-pre
+|$(test) --graphene --update
+|$(killTest)
+
+test-update-nano-and-kill: test-and-kill-pre
+|$(test) --nano --update
+|$(killTest)
+
+delete-doom:
+|rm -rf $(mkfileDir)/profiles/doom/.local
+
 delete:
-|for dir in "damascus mecca doom spacemacs nano" ; do \
-	rm -rf "$(mkfileDir)/profiles/$${dir}/straight" \
-			"$(mkfileDir)/profiles/$${dir}/auto-save-list" \
-			"$(mkfileDir)/profiles/$${dir}/eln-cache" \
-			"$(mkfileDir)/profiles/$${dir}/etc" \
-			"$(mkfileDir)/profiles/$${dir}/transient" \
-			"$(mkfileDir)/profiles/$${dir}/var" \
-			"$(mkfileDir)/profiles/$${dir}/.org-id-locations" \
-			"$(mkfileDir)/profiles/$${dir}/elpa" \
-			"$(mkfileDir)/profiles/$${dir}/quelpa" ; \
-done
+|rm -rf $(mkfileDir)/profiles/damascus/.local
+
+delete-graphene:
+|rm -rf $(mkfileDir)/profiles/graphene/.local
+
+delete-nano:
+|rm -rf $(mkfileDir)/profiles/nano/.local
 
 update-test:
 |emacs -nw --update
@@ -1324,7 +1363,10 @@ no-config-test:
 |emacs -nw -Q
 
 emacs: tangle test
-remacs: delete test-update-and-kill test
+remacs: delete tangle test-update-and-kill test
+doom-remacs: delete-doom tangle test-update-doom-and-kill test-doom
+graphene-remacs: delete-graphene tangle test-update-graphene-and-kill test-graphene
+nano-remacs: delete-nano tangle test-update-nano-and-kill test-nano
 super-push: tangle push
 super-push-only: tangle push-only
 #+end_src
@@ -1385,50 +1427,61 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
-(setq pre-user-emacs-directory (file-name-directory load-file-name))
+(defvar meq/var/profiled t)
+(defvar pre-user-emacs-directory (file-name-directory load-file-name))
 
 (mapc #'(lambda (lib) (interactive)
             (load (format "%slib/%s/%s" pre-user-emacs-directory (symbol-name lib) (symbol-name lib))))
     '(a.el dash.el s.el f.el))
 
-(defun meq/ued1 (&rest args) (apply #'f-join pre-user-emacs-directory args))
-(defun meq/ued2 (&rest args) (apply #'f-join user-emacs-directory args))
+(defun meq/ued1 (&rest args) (f-full (apply #'f-join pre-user-emacs-directory args)))
+
+(byte-recompile-directory (meq/ued1 "lib") nil t)
+(byte-recompile-directory (meq/ued1 "themes") nil t)
+(add-to-list 'load-path (meq/ued1 "lib"))
+(add-to-list 'custom-theme-load-path (meq/ued1 "themes"))
+(setq custom-safe-themes t)
+
+(defvar meq/var/udei-profiles '(nano graphene))
+(defvar meq/var/profile-name (if (member "--profile" command-line-args)
+    (nth (1+ (seq-position command-line-args "--profile")) command-line-args) "damascus"))
+(defvar meq/var/udei (or (member "--udei" command-line-args)
+                            (member (intern meq/var/profile-name) meq/var/udei-profiles)))
+
+(when (or (string= meq/var/profile-name "damascus") meq/var/udei)
+    (byte-recompile-directory (meq/ued1 "profiles" "damascus") nil t))
+
+(delete "--profile" command-line-args)
+(delete meq/var/profile-name command-line-args)
+(delete "--udei" command-line-args)
+
+(setq user-emacs-directory (f-full (funcall #'meq/ued1 "profiles" meq/var/profile-name)))
+
+(byte-recompile-directory user-emacs-directory nil t)
+
+(defun meq/ued2 (&rest args) (f-full (apply #'f-join user-emacs-directory args)))
+
+(setq custom-file (funcall #'meq/ued2 "init.el"))
+
+;; Adapted From:
+;; Answer: https://emacs.stackexchange.com/a/18682/31428
+;; User: https://emacs.stackexchange.com/users/2731/ebpa
+(setq auto-save-list-file-prefix user-emacs-directory)
 
 (defun meq/cl (&rest args) (let* ((path (apply #'meq/ued2 args))) (when (f-exists? path) (load path))))
-(defun meq/cle nil (meq/cl "early-init.el"))
-(defun meq/cli nil (meq/cl "init.el"))
 
-(defun meq/ps (&rest args)
-	(setq user-emacs-directory (apply #'meq/ued1 "profiles" args))
-	(setq custom-file (apply #'meq/ued1 "profiles" (-snoc args "init.el")))
-	(meq/cle) (meq/cli))
+(defun meq/use-damascus-early-init nil (interactive) (load (meq/ued1 "profiles" "damascus" "early-init.el")))
 
-(cond ((member "--damascus" command-line-args)
-            (delete "--damascus" command-line-args)
-            (meq/ps "damascus"))
-                ((member "--mecca" command-line-args)
-            (delete "--mecca" command-line-args)
-            (meq/ps "mecca"))
-                ((member "--spacemacs" command-line-args)
-            (delete "--spacemacs" command-line-args)
-            (meq/ps "spacemacs"))
-                ((member "--nano" command-line-args)
-            (delete "--nano" command-line-args)
-            (meq/ps "nano"))
-        ((or
-                (member "--doom" command-line-args)
-                (member "--udoom" command-line-args))
-            (delete "--doom" command-line-args)
-            (when (or
-                    (member "--update" command-line-args)
-                    (member "--udoom" command-line-args))
-                (delete "--udoom" command-line-args)
-                (delete "--update" command-line-args)
-                (call-process (meq/ued1 "doom" "bin" "doom") nil nil nil "update")
-                (call-process (meq/ued1 "doom" "bin" "doom") nil nil nil "sync")
-                (call-process (meq/ued1 "doom" "bin" "doom") nil nil nil "doctor"))
-            (meq/ps "doom"))
-        (t (meq/ps "damascus")))
+(when (and
+        (string= meq/var/profile-name "doom")
+        (member "--update" command-line-args))
+    (delete "--update" command-line-args)
+    (call-process (meq/ued1 "profiles" "doom" "bin" "doom") nil nil nil "update")
+    (call-process (meq/ued1 "profiles" "doom" "bin" "doom") nil nil nil "sync")
+    (call-process (meq/ued1 "profiles" "doom" "bin" "doom") nil nil nil "doctor"))
+
+(when meq/var/udei (meq/use-damascus-early-init) (add-to-list 'load-path (meq/ued2 "lisp")))
+(meq/cl "early-init.el")
 #+end_src
 
 * init.el
@@ -1442,4 +1495,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
 ;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
 (when (version< emacs-version "27") (load (meq/ued1 "early-init.el")))
+(when meq/var/udei (meq/cl "lisp" (concat meq/var/profile-name ".el")))
+(meq/cl "init.el")
 #+end_src

@@ -40,7 +40,7 @@ tangle: tangle-setup
     -E yankpad.org \
     -E testing.aiern.org \
     -E resting.aiern.org \
-        -E profiles \
+    -E profiles \
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
@@ -48,6 +48,14 @@ tangle: tangle-setup
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/mecca \
+    -HIe org \
+    -E straight \
+    -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/profiles/graphene \
+    -HIe org \
+    -E straight \
+    -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/profiles/nano \
     -HIe org \
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
@@ -60,6 +68,15 @@ subtree-prep: tangle push-only
 
 test:
 |emacs -nw
+
+test-doom:
+|emacs -nw --doom
+
+test-graphene:
+|emacs -nw --graphene
+
+test-nano:
+|emacs -nw --nano
 
 pest:
 |emacs -nw -p
@@ -79,18 +96,29 @@ test-update-and-kill: test-and-kill-pre
 |$(test) --update
 |$(killTest)
 
+test-update-doom-and-kill: test-and-kill-pre
+|$(test) --udoom
+|$(killTest)
+
+test-update-graphene-and-kill: test-and-kill-pre
+|$(test) --graphene --update
+|$(killTest)
+
+test-update-nano-and-kill: test-and-kill-pre
+|$(test) --nano --update
+|$(killTest)
+
+delete-doom:
+|rm -rf $(mkfileDir)/profiles/doom/.local
+
 delete:
-|for dir in "damascus mecca doom spacemacs nano" ; do \
-	rm -rf "$(mkfileDir)/profiles/$${dir}/straight" \
-			"$(mkfileDir)/profiles/$${dir}/auto-save-list" \
-			"$(mkfileDir)/profiles/$${dir}/eln-cache" \
-			"$(mkfileDir)/profiles/$${dir}/etc" \
-			"$(mkfileDir)/profiles/$${dir}/transient" \
-			"$(mkfileDir)/profiles/$${dir}/var" \
-			"$(mkfileDir)/profiles/$${dir}/.org-id-locations" \
-			"$(mkfileDir)/profiles/$${dir}/elpa" \
-			"$(mkfileDir)/profiles/$${dir}/quelpa" ; \
-done
+|rm -rf $(mkfileDir)/profiles/damascus/.local
+
+delete-graphene:
+|rm -rf $(mkfileDir)/profiles/graphene/.local
+
+delete-nano:
+|rm -rf $(mkfileDir)/profiles/nano/.local
 
 update-test:
 |emacs -nw --update
@@ -99,6 +127,9 @@ no-config-test:
 |emacs -nw -Q
 
 emacs: tangle test
-remacs: delete test-update-and-kill test
+remacs: delete tangle test-update-and-kill test
+doom-remacs: delete-doom tangle test-update-doom-and-kill test-doom
+graphene-remacs: delete-graphene tangle test-update-graphene-and-kill test-graphene
+nano-remacs: delete-nano tangle test-update-nano-and-kill test-nano
 super-push: tangle push
 super-push-only: tangle push-only

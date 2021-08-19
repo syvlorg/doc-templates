@@ -1128,6 +1128,14 @@
     ;; projectile
     (meq/up projectile
         :use-package-preconfig (counsel-projectile :config (counsel-projectile-mode 1)) (helm-projectile)
+        ;; Adapted From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-16
+        :deino (deino-projectile-other-window (:color teal)
+            "projectile-other-window"
+                ("f"  projectile-find-file-other-window        "file")
+                ("g"  projectile-find-file-dwim-other-window   "file dwim")
+                ("d"  projectile-find-dir-other-window         "dir")
+                ("b"  projectile-switch-to-buffer-other-window "buffer")
+                ("`"  nil                                      "cancel" :color blue))
         :sorrow ("p" :deino '(deino-projectile
                     (:color teal :columns 4) "p p"
                     ("a"   counsel-projectile-ag "counsel-projectile-ag")
@@ -1149,6 +1157,7 @@
                     ("X"   projectile-cleanup-known-projects "cleanup non-existing projects")
                     ("z"   projectile-cache-current-file "cache current file")
                     ("h"   deino-helm-projectile/body "deino-helm-projectile")
+                    ("O"   deino-projectile-other-window/body "deino-projectile-other-window")
                     ("`"   nil "cancel")))
                 ("P" :deino '(deino-helm-projectile
                     (:color teal :columns 4) "p h"
@@ -1209,7 +1218,7 @@
                         (yankpad-buffer (get-file-buffer yankpad-file)))
                     (when (and
                             (when yankpad-buffer (get-buffer yankpad-buffer))
-                            (not (string= (expand-file-name (car (last command-line-args))) yankpad-file)))
+                            (not (string= (f-full (car (last command-line-args))) yankpad-file)))
                         (kill-buffer yankpad-buffer))))
         :gsetq (yankpad-file meq/var/yankpad-file)
         :config (yankpad-map) (meq/remove-default-yankpad-buffer)
@@ -1219,6 +1228,33 @@
                 :toggle-funs #'meq/yankpad-cosmoem-toggle
                 :keymap 'yankpad-keymap
                 ;; :transient t
+            )
+        ;; From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-15
+        :deino (deino-yankpad (:color blue :hint nil)
+                "
+                --------------------------------------------------------------------------------
+                -                                  Yankpad                                     -
+                --------------------------------------------------------------------------------
+                _i_nsert snippet                         _r_eload                                
+                e_x_pand snippet                         ^ ^                                     
+                _e_dit   snippets                        ^ ^                                     
+                _._ repeat                               ^ ^                                     
+                ^ ^                                      ^ ^                                     
+                _s_et category                           ^ ^                                     
+                _a_dd category                           ^ ^                                     
+                ^ ^                                      ^ ^                                     
+                _c_apture snippet                        ^ ^                                     
+                --------------------------------------------------------------------------------
+                "
+                ("e" yankpad-edit)
+                ("i" yankpad-insert)
+                ("y" yankpad-insert)
+                ("c" yankpad-capture-snippet)
+                ("a" yankpad-append-category)
+                ("s" yankpad-set-category)
+                ("r" yankpad-reload)
+                ("x" yankpad-expand)
+                ("." yankpad-repeat)
             ))
     (delete "--disable-yankpad" command-line-args)
 
@@ -1289,10 +1325,10 @@
             ((member "--fdREADME" command-line-args)
                     (setq initial-buffer-choice dREADME)
                     (delete "--fdREADME" command-line-args))
-            (t (setq initial-buffer-choice (expand-file-name (car (last command-line-args))))))
-    (add-hook 'kill-emacs-hook #'(lambda nil (interactive)
+            (t (setq initial-buffer-choice (f-full (car (last command-line-args)))))))
+    (eval `(add-hook 'kill-emacs-hook #'(lambda nil (interactive)
         ;; Adapted From: http://ergoemacs.org/emacs/elisp_file_name_dir_name.html
-        (when (get-file-buffer testing)
-            (delete-file testing)
-            (copy-file resting testing))))
-    (add-hook 'after-init-hook #'(lambda nil (interactive) (meq/generate-obdar init README)))))
+        (when (get-file-buffer ,testing)
+            (delete-file ,testing)
+            (copy-file ,resting ,testing)))))
+    (eval `(add-hook 'after-init-hook #'(lambda nil (interactive) (meq/generate-obdar ,init ,README)))))

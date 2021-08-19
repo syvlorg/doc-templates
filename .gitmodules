@@ -13,3 +13,18 @@
 [submodule "profiles/doom"]
 	path = profiles/doom
 	url = https://github.com/hlissner/.emacs.d
+[submodule "profiles/spacemacs"]
+	path = profiles/spacemacs
+	url = https://github.com/syl20bnr/spacemacs.git
+[submodule "profiles/nano/lisp"]
+	path = profiles/nano/lisp
+	url = https://github.com/rougier/nano-emacs
+[submodule "profiles/prelude"]
+	path = profiles/prelude
+	url = https://github.com/bbatsov/prelude.git
+[submodule "profiles/centaur"]
+	path = profiles/centaur
+	url = https://github.com/seagle0128/.emacs.d.git
+[submodule "profiles/graphene/lisp"]
+	path = profiles/graphene/lisp
+	url = https://github.com/rdallasgray/graphene.git

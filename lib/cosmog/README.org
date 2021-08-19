@@ -39,10 +39,10 @@
 (require 'deino)
 (require 'alloy)
 
-(let* ((dir (concat user-emacs-directory "/.cosmog.")))
+(let* ((dir (meq/ued ".cosmog.")))
     (unless (file-directory-p dir) (mkdir dir)))
 
-(defvar meq/var/cosmog-nibs-dir (concat user-emacs-directory "/.cosmog."))
+(defvar meq/var/cosmog-nibs-dir (meq/ued ".cosmog."))
 (defvar meq/var/cosmog-nibs (meq/remove-dot-dirs (directory-files meq/var/cosmog-nibs-dir)))
 (defvar meq/var/cosmog-update-timer nil)
 (defvar meq/var/cosmog-update-time "0 min 5 sec")
