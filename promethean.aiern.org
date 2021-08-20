@@ -261,8 +261,6 @@ This is used to hold themes for =emacs=.
 
 ** dracula-purple-dark-theme.el
 
-[[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ab5dee&colors.light.shade0=%23ab5dee&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
-
 #+call: hash() :exports none
 
 #+RESULTS:
@@ -314,8 +312,6 @@ This is used to hold themes for =emacs=.
 
 ** dracula-orange-light-theme.el
 
-[[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ffb86c&colors.light.shade0=%23ffb86c&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
-
 #+call: hash() :exports none
 
 #+RESULTS:
@@ -366,8 +362,6 @@ This is used to hold themes for =emacs=.
 #+end_src
 
 ** dracula-orange-dark-theme.el
-
-[[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ffb86c&colors.light.shade0=%23ffb86c&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
 
 #+call: hash() :exports none
 

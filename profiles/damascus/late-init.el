@@ -168,10 +168,10 @@
 ;; all-the-icons
 (meq/up all-the-icons :config
     ;; From: https://github.com/leanprover/lean/issues/873#issuecomment-159325156
-    (when (member "Cartograph CF Medium" (font-family-list))
-        (set-face-attribute 'default nil :font "Cartograph CF Medium-10")
-        (set-face-attribute 'mode-line nil :font "Cartograph CF Medium-10")
-        (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Medium-10")))
+    (when (member "Cartograph CF Extra Bold" (font-family-list))
+        (set-face-attribute 'default nil :font "Cartograph CF Extra Bold-10")
+        (set-face-attribute 'mode-line nil :font "Cartograph CF Extra Bold-10")
+        (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Extra Bold-10")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

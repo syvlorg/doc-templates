@@ -1,5 +1,20 @@
 * Screenshots
 ** dracula-purple-light-theme.el
 
+[[https://github.com/shadowrylander/.emacs.d/blob/main/themes/screenshots/dracula-purple-light.png]]
+[[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ab5dee&colors.light.shade0=%23ab5dee&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
+
+** dracula-purple-dark-theme.el
+
 [[https://github.com/shadowrylander/.emacs.d/blob/main/themes/screenshots/dracula-purple-dark.png]]
 [[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ab5dee&colors.light.shade0=%23ab5dee&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
+
+** dracula-orange-light-theme.el
+
+[[https://github.com/shadowrylander/.emacs.d/blob/main/themes/screenshots/dracula-orange-light.png]]
+[[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ffb86c&colors.light.shade0=%23ffb86c&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
+
+** dracula-orange-dark-theme.el
+
+[[https://github.com/shadowrylander/.emacs.d/blob/main/themes/screenshots/dracula-orange-dark.png]]
+[[https://themer.dev/?colors.dark.shade0=%23222222&colors.dark.shade7=%23ffb86c&colors.light.shade0=%23ffb86c&colors.light.shade7=%23222222&activeColorSet=dark][Get the theme here!]]
