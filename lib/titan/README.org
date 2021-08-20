@@ -87,11 +87,20 @@
 # binding: m
 # --
 # `(meq/basename)`
+
+***
+
 ## Links
+
+***
 
 ## Tags
 
+***
+
 ## Notes
+
+***
 
 ## Contents
 
@@ -111,7 +120,11 @@ $0
 
 ,** Links
 
+--------------
+
 ,** Tags
+
+--------------
 
 ,** Notes
 
