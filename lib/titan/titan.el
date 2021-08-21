@@ -27,27 +27,31 @@
 
 (require 'meq)
 (require 'yasnippet)
+(require 'f)
 
 (defvar meq/var/ext-def '(org md adoc))
 (defvar meq/var/mode-def '(org markdown adoc))
 
 (defun meq/ddm (name ext)
-    (eval `(setq-local
-            ,(meq/inconcat name "-snippets")
-            (expand-file-name
-                "snippets"
-                (file-name-directory
-                    ;; Copied from ‘f-this-file’ from f.el.
-                    (cond
-                    (load-in-progress load-file-name)
-                    ((and (boundp 'byte-compile-current-file) byte-compile-current-file)
-                    byte-compile-current-file)
-                    ;; Adapted From:
-                    ;; Answer: https://stackoverflow.com/a/1344894/10827766
-                    ;; User: https://stackoverflow.com/users/8355/cjm
-                    (:else (symbol-file ',(intern (concat name "-" ext "-mode")))))))))
-    (add-to-list 'yas-snippet-dirs (meq/inconcat name "-snippets") t)
-    (eval `(yas-load-directory ,(meq/inconcat name "-snippets") t)))
+    (let* ((snippets (meq/inconcat name "-snippets")))
+        (eval `(setq-local
+                ,snippets
+                ;; "/home/shadowrylander/.emacs.d/lib/titan/snippets/"
+                (expand-file-name
+                    "snippets"
+                    (file-name-directory
+                        ;; Copied from ‘f-this-file’ from f.el.
+                        (cond
+                        (load-in-progress load-file-name)
+                        ((and (boundp 'byte-compile-current-file) byte-compile-current-file)
+                        byte-compile-current-file)
+                        ;; Adapted From:
+                        ;; Answer: https://stackoverflow.com/a/1344894/10827766
+                        ;; User: https://stackoverflow.com/users/8355/cjm
+                        (:else (symbol-file 'meq/mapc-ddm)))))))
+        (when (eval `(f-exists? ,snippets))
+            (add-to-list 'yas-snippet-dirs (symbol-value snippets) t)
+            (eval `(yas-load-directory ,snippets t)))))
 
 (defun meq/mapc-ddm (name &optional ext-list &rest args) (mapc #'(lambda (ext*) (interactive)
     (let* ((ext (symbol-name ext*)))

@@ -1,5 +1,7 @@
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
+(when (string= (car (last command-line-args)) "--") (delete "--" command-line-args))
+
 (defvar meq/var/profiled t)
 (defvar pre-user-emacs-directory (file-name-directory load-file-name))
 
