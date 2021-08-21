@@ -31,6 +31,34 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 
 * As John Oliver Would Say: "Like Chemacs[2], but worse."
 
+* wtt-pre
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821132334835661400
+
+#+name: 20210821132334835661400
+#+begin_src emacs-lisp
+(load (concat (getenv "HOME") "/.emacs.d/early-init.el"))
+(meq/up markdown-mode :mode ("\\.md\\'")
+    :use-package-postconfig (yasnippet)
+    :upnsd-postconfig (titan :load-path "../../lib/titan"))
+#+end_src
+
+* wtt-post
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821140509092087900
+
+#+name: 20210821140509092087900
+#+begin_src emacs-lisp
+(meq/insert-snippet "markdown titan template")
+(save-buffer)
+#+end_src
+
 * wtt.sh
 
 #+call: hash() :exports none
@@ -54,12 +82,10 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 #+name: 20210820041859058805800
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :shebang "#!/usr/bin/env sh"
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
-(load (concat (getenv "HOME") "/.emacs.d/early-init.el"))
-(load (concat (getenv "HOME") "/.emacs.d/init.el"))
-(meq/initialize-everything-else)
+<<20210821132334835661400>>
+(meq/upnsd fell :load-path "../../lib/fell" :mode ("\\.fell\\.md\\'" . fell-md-mode))
 (find-file (concat (meq/timestamp) ".fell.md"))
-(meq/insert-snippet "org titan template")
-(save-buffer)
+<<20210821140509092087900>>
 #+end_src
 
 * wtt.doc.sh
@@ -72,12 +98,10 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 #+name: 20210820041900953120200
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :shebang "#!/usr/bin/env sh"
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
-(load (concat (getenv "HOME") "/.emacs.d/early-init.el"))
-(load (concat (getenv "HOME") "/.emacs.d/init.el"))
-(meq/initialize-everything-else)
+<<20210821132334835661400>>
+(meq/upnsd doc :load-path "../../lib/doc" :mode ("\\.doc\\.md\\'" . doc-md-mode))
 (find-file (concat (meq/timestamp) ".doc.md"))
-(meq/insert-snippet "org titan template")
-(save-buffer)
+<<20210821140509092087900>>
 #+end_src
 
 * vterm-start.sh

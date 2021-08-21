@@ -85,26 +85,26 @@
 * snippets
 ** markdown-mode
 
-#+begin_src markdown :tangle snippets/titan-markdown-mode/titan
+#+begin_src markdown :tangle snippets/titan-md-mode/titan
 # key: template
 # name: markdown titan template
 # binding: m
 # --
 # `(meq/basename)`
 
-***
+------------------------------------------------------------------------
 
 ## Links
 
-***
+------------------------------------------------------------------------
 
 ## Tags
 
-***
+------------------------------------------------------------------------
 
 ## Notes
 
-***
+------------------------------------------------------------------------
 
 ## Contents
 
