@@ -61,9 +61,6 @@
 [remote "riot"]
     url = git@github.com:shadowrylander/riot
     fetch = +refs/heads/*:refs/remotes/riot/*
-[remote "damascus"]
-    url = git@github.com:shadowrylander/damascus
-    fetch = +refs/heads/*:refs/remotes/damascus/*
 [submodule "profiles/doom"]
 	url = https://github.com/hlissner/.emacs.d
 	active = true

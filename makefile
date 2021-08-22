@@ -7,7 +7,6 @@ mkfileDir := $(dir $(mkfilePath))
 test := emacs -nw --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 
-
 init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
@@ -37,7 +36,6 @@ tangle-setup:
 tangle: tangle-setup
 |yes yes | fd . $(mkfileDir) \
     -HIe org \
-    -E yankpad.org \
     -E testing.aiern.org \
     -E resting.aiern.org \
     -E profiles \

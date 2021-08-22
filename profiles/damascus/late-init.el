@@ -646,9 +646,35 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; yasnippet
+(meq/up yasnippet
+    :config (add-to-list 'yas-snippet-dirs (meq/ued* "snippets") t)
+    :deino (deino-yasnippet (:color blue :hint nil) "y"
+        "
+                    ^YASnippets^
+        --------------------------------------------
+        Modes:    Load/Visit:    Actions:
+
+        _g_lobal  _d_irectory    _i_nsert
+        _m_inor   _f_ile         _t_ryout
+        _e_xtra   _l_ist         _n_ew
+                _a_ll
+        "
+        ("d" yas-load-directory)
+        ("e" yas-activate-extra-mode)
+        ("i" yas-insert-snippet)
+        ("f" yas-visit-snippet-file :color blue)
+        ("n" yas-new-snippet)
+        ("t" yas-tryout-snippet)
+        ("l" yas-describe-tables)
+        ("g" yas/global-mode)
+        ("m" yas/minor-mode)
+        ("a" yas-reload-all)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; doc
 (use-package doc :straight nil
-    :use-package-preconfig (yasnippet)
     :upnsd-preconfig (titan)
     :mode (("\\.doc\\.md\\'" . doc-md-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
@@ -659,7 +685,6 @@
 
 ;; fell
 (use-package fell :straight nil
-    :use-package-preconfig (yasnippet)
     :upnsd-preconfig (titan)
     :mode (("\\.fell\\.md\\'" . fell-md-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
@@ -1017,57 +1042,6 @@
                         ("x" meq/toggle-xah "xah-fly-keys")) :name "modal modes"))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-    ;; yankpad
-    (setq meq/var/yankpad-file (meq/ued* "yankpad.org"))
-    (meq/up yankpad
-        :if meq/var/yankpad
-        :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
-            (meq/remove-default-yankpad-buffer nil
-                (let* ((yankpad-file meq/var/yankpad-file)
-                        (yankpad-buffer (get-file-buffer yankpad-file)))
-                    (when (and
-                            (when yankpad-buffer (get-buffer yankpad-buffer))
-                            (not (string= (f-full (car (last command-line-args))) yankpad-file)))
-                        (kill-buffer yankpad-buffer))))
-        :gsetq (yankpad-file meq/var/yankpad-file)
-        :config (yankpad-map) (meq/remove-default-yankpad-buffer)
-        :cosmoem
-            (:show-funs #'meq/yankpad-cosmoem-show
-                :hide-funs #'meq/yankpad-cosmoem-hide
-                :toggle-funs #'meq/yankpad-cosmoem-toggle
-                :keymap 'yankpad-keymap
-                ;; :transient t
-            )
-        ;; From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-15
-        :deino (deino-yankpad (:color blue :hint nil) "y"
-                "
-                --------------------------------------------------------------------------------
-                -                                  Yankpad                                     -
-                --------------------------------------------------------------------------------
-                _i_nsert snippet                         _r_eload                                
-                e_x_pand snippet                         ^ ^                                     
-                _e_dit   snippets                        ^ ^                                     
-                _._ repeat                               ^ ^                                     
-                ^ ^                                      ^ ^                                     
-                _s_et category                           ^ ^                                     
-                _a_dd category                           ^ ^                                     
-                ^ ^                                      ^ ^                                     
-                _c_apture snippet                        ^ ^                                     
-                --------------------------------------------------------------------------------
-                "
-                ("e" yankpad-edit)
-                ("i" yankpad-insert)
-                ("y" yankpad-insert)
-                ("c" yankpad-capture-snippet)
-                ("a" yankpad-append-category)
-                ("s" yankpad-set-category)
-                ("r" yankpad-reload)
-                ("x" yankpad-expand)
-                ("." yankpad-repeat)
-            ))
-
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     (setq meq/var/everything-else-initialized t)
@@ -1083,8 +1057,8 @@
                     (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
                     (,(cdr kons)))))) '(("  " . universal-argument)
                                         ("''" . aiern-ex)
-                                        ("[[" . meq/yankpad-cosmoem-toggle)
-                                        ("]]" . yankpad-expand)
+                                        ;; ("[[" . meq/yankpad-cosmoem-toggle)
+                                        ;; ("]]" . yankpad-expand)
                                         ("\"\"" . evil-ex)
                                         ("\\\\" . meq/toggle-which-key)
                                         ("aa" . deino-restart/body)
