@@ -28,3 +28,6 @@
 [submodule "profiles/graphene/lisp"]
 	path = profiles/graphene/lisp
 	url = https://github.com/rdallasgray/graphene.git
+[submodule "lib/use-package"]
+	path = lib/use-package
+	url = https://github.com/jwiegley/use-package.git

@@ -85,8 +85,8 @@
     (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
 (unless straight-disable-byte-compilation
-    (byte-recompile-directory (meq/ued1 "lib") nil t)
-    (byte-recompile-directory (meq/ued1 "themes") nil t))
+    (byte-recompile-directory (meq/ued* "lib") nil t)
+    (byte-recompile-directory (meq/ued* "themes") nil t))
 
 (with-no-warnings
   (setq use-package-verbose t)
@@ -113,10 +113,10 @@
 
 (straight-use-package '(use-package :type git :host github :repo "jwiegley/use-package" :branch "master"))
 
-(defmacro meq/up* (&rest args) (interactive) `(use-package ,@args :demand ,(cl-getf args :demand t)))
+(defmacro meq/up (&rest args) (interactive) `(use-package ,@args :demand ,(cl-getf args :demand t)))
 
-(meq/up* no-littering)
-(meq/up* gcmh
+(meq/up no-littering)
+(meq/up gcmh
     :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
     :config (gcmh-mode 1))
 
@@ -125,7 +125,7 @@
 (delete "--always-defer" command-line-args)
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up* use-package-extras :straight nil :load-path "../../lib/use-package-extras")
+(meq/up use-package-extras :straight nil :load-path "../../lib/use-package-extras")
 (meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
 
 (meq/upnsd meq
@@ -148,8 +148,8 @@
         :config
             (exec-path-from-shell-initialize)))
 
-(add-to-list 'load-path (meq/ued1 "lib"))
-(add-to-list 'custom-theme-load-path (meq/ued1 "themes"))
+(add-to-list 'load-path (meq/ued* "lib"))
+(add-to-list 'custom-theme-load-path (meq/ued* "themes"))
 (setq custom-safe-themes t)
 
 ;; Adapted From: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation

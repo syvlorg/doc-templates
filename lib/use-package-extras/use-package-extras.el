@@ -38,8 +38,7 @@
 ;;;###autoload
 (defun meq/load-emacs-file (path) (interactive)
     (load (f-full (f-join
-            user-emacs-directory
-            (if meq/var/profiled (concat ".." (f-path-separator) "..") "")
+            (if meq/var/profiled pre-user-emacs-directory user-emacs-directory)
             "lib" path))))
 
 ;;;###autoload

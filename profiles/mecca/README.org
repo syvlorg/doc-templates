@@ -100,8 +100,8 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
     (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
 (unless straight-disable-byte-compilation
-    (byte-recompile-directory (meq/ued1 "lib") nil t)
-    (byte-recompile-directory (meq/ued1 "themes") nil t))
+    (byte-recompile-directory (meq/ued* "lib") nil t)
+    (byte-recompile-directory (meq/ued* "themes") nil t))
 
 (with-no-warnings
   (setq use-package-verbose t)
@@ -128,10 +128,10 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 
 (straight-use-package '(use-package :type git :host github :repo "jwiegley/use-package" :branch "master"))
 
-(defmacro meq/up* (&rest args) (interactive) `(use-package ,@args :demand ,(cl-getf args :demand t)))
+(defmacro meq/up (&rest args) (interactive) `(use-package ,@args :demand ,(cl-getf args :demand t)))
 
-(meq/up* no-littering)
-(meq/up* gcmh
+(meq/up no-littering)
+(meq/up gcmh
     :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
     :config (gcmh-mode 1))
 
@@ -158,8 +158,8 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
         :config
             (exec-path-from-shell-initialize)))
 
-(add-to-list 'load-path (meq/ued1 "lib"))
-(add-to-list 'custom-theme-load-path (meq/ued1 "themes"))
+(add-to-list 'load-path (meq/ued* "lib"))
+(add-to-list 'custom-theme-load-path (meq/ued* "themes"))
 (setq custom-safe-themes t)
 
 ;; Adapted From: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation
@@ -182,7 +182,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 <<20210601225231422834500>>
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up* use-package-extras :straight nil :load-path "../../lib/use-package-extras")
+(meq/up use-package-extras :straight nil :load-path "../../lib/use-package-extras")
 (meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
 #+end_src
 
@@ -1699,12 +1699,12 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 (when (member "--update" command-line-args) (delete "--update" command-line-args) (meq/straight-upgrade))
 
-(let* ((testing (meq/ued1 "testing.aiern.org"))
-        (resting (meq/ued1 "resting.aiern.org"))
-        (init (meq/ued1 "init.el"))
-        (README (meq/ued1 "README.org"))
-        (dInit (meq/ued2 "init.el"))
-        (dREADME (meq/ued2 "README.org")))
+(let* ((testing (meq/ued* "testing.aiern.org"))
+        (resting (meq/ued* "resting.aiern.org"))
+        (init (meq/ued* "init.el"))
+        (README (meq/ued* "README.org"))
+        (dInit (meq/ued "init.el"))
+        (dREADME (meq/ued "README.org")))
     (if (= (length command-line-args) 1)
         (setq initial-buffer-choice testing)
         (cond ((member "--fTest" command-line-args)
@@ -1714,7 +1714,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
                     (setq initial-buffer-choice init)
                     (delete "--fInit" command-line-args))
             ((member "--fEarly" command-line-args)
-                    (setq initial-buffer-choice (meq/ued1 "early-init.el"))
+                    (setq initial-buffer-choice (meq/ued* "early-init.el"))
                     (delete "--fEarly" command-line-args))
             ((member "--fREADME" command-line-args)
                     (setq initial-buffer-choice README)
@@ -2067,7 +2067,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 #+begin_src emacs-lisp
 (meq/up vterm :use-package-postconfig (multi-vterm)
     :gsetq
-        (vterm-shell (meq/ued1 "vterm-start.sh"))
+        (vterm-shell (meq/ued* "vterm-start.sh"))
         (vterm-always-compile-module t)
         (vterm-kill-buffer-on-exit t))
 #+end_src
@@ -2140,7 +2140,7 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
 
 #+name: 20210709012558336017000
 #+begin_src emacs-lisp
-(setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
+(setq meq/var/yankpad-file (meq/ued* "yankpad.org"))
 (meq/up yankpad
     :if (not (member "--disable-yankpad" command-line-args))
     :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))

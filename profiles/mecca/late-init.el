@@ -1182,7 +1182,7 @@
     ;; vterm
     (meq/up vterm :use-package-postconfig (multi-vterm)
         :gsetq
-            (vterm-shell (meq/ued1 "vterm-start.sh"))
+            (vterm-shell (meq/ued* "vterm-start.sh"))
             (vterm-always-compile-module t)
             (vterm-kill-buffer-on-exit t))
 
@@ -1200,7 +1200,7 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; yankpad
-    (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
+    (setq meq/var/yankpad-file (meq/ued* "yankpad.org"))
     (meq/up yankpad
         :if (not (member "--disable-yankpad" command-line-args))
         :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
@@ -1260,12 +1260,12 @@
 
 (when (member "--update" command-line-args) (delete "--update" command-line-args) (meq/straight-upgrade))
 
-(let* ((testing (meq/ued1 "testing.aiern.org"))
-        (resting (meq/ued1 "resting.aiern.org"))
-        (init (meq/ued1 "init.el"))
-        (README (meq/ued1 "README.org"))
-        (dInit (meq/ued2 "init.el"))
-        (dREADME (meq/ued2 "README.org")))
+(let* ((testing (meq/ued* "testing.aiern.org"))
+        (resting (meq/ued* "resting.aiern.org"))
+        (init (meq/ued* "init.el"))
+        (README (meq/ued* "README.org"))
+        (dInit (meq/ued "init.el"))
+        (dREADME (meq/ued "README.org")))
     (if (= (length command-line-args) 1)
         (setq initial-buffer-choice testing)
         (cond ((member "--fTest" command-line-args)
@@ -1275,7 +1275,7 @@
                     (setq initial-buffer-choice init)
                     (delete "--fInit" command-line-args))
             ((member "--fEarly" command-line-args)
-                    (setq initial-buffer-choice (meq/ued1 "early-init.el"))
+                    (setq initial-buffer-choice (meq/ued* "early-init.el"))
                     (delete "--fEarly" command-line-args))
             ((member "--fREADME" command-line-args)
                     (setq initial-buffer-choice README)

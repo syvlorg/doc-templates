@@ -44,9 +44,24 @@
 (defvar meq/var/all-modal-modes-off nil)
 (defvar meq/var/last-buffer nil)
 (defvar meq/var/which-key-first-show t)
+(defvar meq/var/profile-name "damascus")
+(defvar pre-user-emacs-directory (concat (getenv "HOME") "/.emacs.d"))
+(defvar user-emacs-directory pre-user-emacs-directory)
 
 ;;;###autoload
+(with-eval-after-load 'use-package-extras
+    (unless (string= meq/var/profile-name "doom") (defalias 'use-package! 'meq/up)))
+
+;;;###autoload
+(defun meq/ued* (&rest args) (f-full (apply #'f-join pre-user-emacs-directory args)))
+;;;###autoload
+(defun meq/ued-lib (&rest args) (f-full (apply #'meq/ued* "lib" args)))
+;;;###autoload
 (defun meq/ued (&rest args) (f-full (apply #'f-join user-emacs-directory args)))
+;;;###autoload
+(defun meq/cl (&rest args) (let* ((path (apply #'meq/ued args))) (when (f-exists? path) (load path))))
+;;;###autoload
+(defun meq/use-damascus-early-init nil (interactive) (load (meq/ued* "profiles" "damascus" "early-init.el")))
 
 ;;;###autoload
 (defun meq/timestamp nil (interactive) (format-time-string "%Y%m%d%H%M%S%N"))

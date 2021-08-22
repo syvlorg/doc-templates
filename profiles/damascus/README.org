@@ -2,6 +2,253 @@
 #+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
 #+startup: show3levels
 
+* ../../lib
+** exwm-config.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821192734044989400
+
+#+name: 20210821192734044989400
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
+(load (meq/ued-lib "hydra-config"))
+(load (meq/ued-lib "alloy-config"))
+(load (meq/ued-lib "which-key-config"))
+(load (meq/ued-lib "cosmoem-config"))
+(load (meq/ued-lib "sorrow-config"))
+(use-package! exwm
+    :init/defun* (post-exwm nil (interactive)
+                    (unless (get-buffer "Alacritty") (meq/run "alacritty"))
+                    (meq/run "obsidian")
+                    (exwm-workspace-switch 0))
+    :hook (exwm-init . post-exwm)
+    :upnsd-preconfig (fringe
+                        :disabled t
+                        :load-emacs-file-preconfig ("fringe")
+                        :config
+                            ;; (fringe-mode (quote (1 . 1)) nil (fringe))
+                            (fringe-mode '(3 . 0))
+                            (fringe-mode 'none)
+                            (fringe-mode 1))
+    :config
+        (require 'scroll-bar)
+        ;; Adapted From: https://github.com/ch11ng/exwm/blob/master/exwm-config.el#L34
+        (require 'exwm-config)
+        ;; Set the initial workspace number.
+        (unless (get 'exwm-workspace-number 'saved-value)
+            (setq exwm-workspace-number 4))
+        ;; Make class name the buffer name
+        (add-hook 'exwm-update-class-hook
+                    (lambda ()
+                    (exwm-workspace-rename-buffer exwm-class-name)))
+        ;; Global keybindings.
+        (unless (get 'exwm-input-global-keys 'saved-value)
+            (setq exwm-input-global-keys
+                `(
+                    ;; 's-{p|`|z}': Enter the exwm-global deino
+                    ([?\s-p] . uru)
+                    ([?\s-`] . uru)
+                    ([?\s-z] . uru)
+
+                    ([?\s-q] . (lambda nil (interactive)
+                        (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
+                        (deino-buffer/body)))
+
+                    ;; 's-N': Switch to certain workspace.
+                    ,@(mapcar (lambda (i)
+                                `(,(kbd (format "s-%d" i)) .
+                                (lambda ()
+                                    (interactive)
+                                    (exwm-workspace-switch-create ,i))))
+                            (number-sequence 0 9)))))
+        ;; Line-editing shortcuts
+        (unless (get 'exwm-input-simulation-keys 'saved-value)
+            (setq exwm-input-simulation-keys
+                '(([?\C-b] . [left])
+                    ([?\C-f] . [right])
+                    ([?\C-p] . [up])
+                    ([?\C-n] . [down])
+                    ([?\C-a] . [home])
+                    ([?\C-e] . [end])
+                    ([?\M-v] . [prior])
+                    ([?\C-v] . [next])
+                    ([?\C-d] . [delete])
+                    ([?\C-k] . [S-end delete]))))
+        ;; Enable EXWM
+        (exwm-enable)
+        ;; Configure Ido
+        (exwm-config-ido)
+        ;; Other configurations
+        (exwm-config-misc)
+
+        ;; (exwm-config-default)
+        ;; (exwm-enable)
+
+    ;; Adapted From: https://www.reddit.com/r/emacs/comments/8yf6dx/key_chords_in_exwm/
+    :gsetq (exwm-input-line-mode-passthrough t)
+        (exwm-manage-force-tiling t)
+
+    :demon ((naked "XF86PowerOff") 'deino-exwm/body)
+    :deino (deino-exwm nil "e e"
+                ("`" nil "cancel")
+                ("XF86PowerOff" deino-exwm/power/body "power")
+                ("s" deino-exwm/shells/body "shells"))
+            (deino-exwm/power (:color blue) "e p"
+                ("r" (meq/run "reboot") "reboot")
+                ("q" (meq/run "poweroff") "poweroff")
+                ("XF86PowerOff" (meq/run "systemctl suspend" "suspend") "suspend"))
+            (deino-exwm/shells (:color blue) "e s"
+                ("a" (meq/run "alacritty") "alacritty"))
+    :uru (exwm-mode deino-exwm-global (:color blue) "e g"
+        ("`" nil "cancel")
+        ("c" exwm-input-release-keyboard "char mode")
+        ("l" exwm-input-grab-keyboard "line mode")
+        ("r" exwm-reset "reset")
+        ("w" exwm-workspace-switch "workspace switch")
+        ("i" meq/run-interactive "run")
+        ("b" deino-buffer/body "buffers")))
+(use-package! dmenu)
+#+end_src
+
+** hydra-config.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821211206922820400
+
+#+name: 20210821211206922820400
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
+(use-package! hydra
+    :custom (hydra-hint-display-type 'lv)
+    :bind (:map hydra-base-map ("~" . hydra--universal-argument))
+    :use-package-postconfig (use-package-hydra)
+    :upnsd-preconfig (janus)
+    :upnsd-postconfig (use-package-deino) (deino :custom (deino-hint-display-type 'lv)))
+#+end_src
+
+** alloy-config.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821211654763595900
+
+#+name: 20210821211654763595900
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
+(meq/upnsd alloy
+    :upnsd-postconfig (lode) (prime)
+        (uru :config (prime "u u" uru "uru")
+                    (prime "u m" minoru "minoru"))
+    :use-package-preconfig (command-log-mode)
+        ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
+        (use-package-chords)
+    :config
+        (alloy-auto-unbind-keys)
+        (alloy-def :keymaps demon-run
+            ;; Adapted From:
+            ;; Answer: https://stackoverflow.com/a/4557027/10827766
+            ;; User: https://stackoverflow.com/users/387076/gilles-so-stop-being-evil
+            "\eOA" [up]
+            "\e[A" [up]
+            "\eOB" [down]
+            "\e[B" [down]
+            "\eOD" [left]
+            "\e[D" [left]
+            "\eOC" [right]
+            "\e[C" [right]
+            "M-x" 'meq/M-x)
+    :deino (deino-restart (:color blue) "r"
+            ("`" nil "cancel")
+            ("l" meq/reload-emacs "reload")
+            ("s" restart-emacs "restart"))
+    :custom (alloy-implicit-naked t))
+#+end_src
+
+** which-key-config.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821212520193609500
+
+#+name: 20210821212520193609500
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
+(use-package! which-key :deino (deino/which-key (:color blue :columns 4) "w"
+        ("`" nil "cancel")
+        ("a" cosmoem-any-popup-showing-p "any popup showing")
+        ("h" meq/which-key--hide-popup "hide-popup")
+        ("s" meq/which-key--show-popup "show-popup")
+        ("r" meq/which-key--refresh-popup "refresh-popup")
+        ("t" meq/toggle-which-key "toggle")
+        ("l" meq/which-key-show-top-level "meq/toplevel")
+        ("L" which-key-show-top-level "toplevel"))
+    :gsetq
+        (which-key-enable-extended-define-key t)
+        (which-key-idle-delay 0.1)
+        (which-key-idle-secondary-delay nil)
+        (which-key-allow-evil-operators t)
+
+        ;; NOTE: This will cause the which-key maps for the operator states to show up,
+        ;; breaking functionality such as `d 13 <arrow-down>', etc.
+        ;; (which-key-show-operator-state-maps t)
+
+        ;; TODO: Choose a fun one!
+        (which-key-separator " × ")
+        ;; (which-key-separator " |-> ")
+
+        (which-key-popup-type 'side-window)
+        (which-key-side-window-location '(right bottom left top))
+
+        ;; If this percentage is too small, the keybindings frame will appear at the bottom
+        (which-key-side-window-max-width 0.5)
+
+        (which-key-side-window-max-height 0.25))
+#+end_src
+
+** cosmoem-config.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821211909575354500
+
+#+name: 20210821211909575354500
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
+(meq/upnsd cosmoem
+    :upnsd-postconfig (meta)
+    :config (prime ", m" map-of-infinity/body "map-of-infinity")
+    :which-key-change-ryo ("," "damascus")
+    :deino (map-of-infinity nil ", m"
+            ("`" nil "cancel")
+            ("w" deino/which-key/body "which-key")
+            ("h" deino/cosmoem/body "cosmoem")
+            ("d" meq/disable-all-modal-modes "disable all modal modes" :color blue)
+            ("t" toggles/body "toggles")
+            ("k" all-keymaps/body "all keymaps"))
+        (deino/cosmoem (:color blue) ", c"
+            ("`" nil "cancel")
+            ("h" cosmoem-hide-all-modal-modes "hide all modal modes"))
+        (toggles (:color blue) ", t" ("`" nil "cancel"))
+        (all-keymaps (:color blue) ", k" ("`" nil "cancel")))
+#+end_src
+
+** sorrow-config.el
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821211910346059700
+
+#+name: 20210821211910346059700
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
+(meq/upnsd sorrow
+    :primer+ ("t" "toggles")
+    :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
+        (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
+#+end_src
+
 * early-init.el
 
 Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
@@ -92,7 +339,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 
 (with-no-warnings
     (setq straight-vc-git-default-clone-depth 1)
-    (setq straight-base-dir (meq/ued2 ".local/"))
+    (setq straight-base-dir (meq/ued ".local/"))
     (setq straight-repository-branch "develop")
     (setq straight-build-dir (format "build-%s" emacs-version))
     (setq straight-cache-autoloads t)
@@ -102,10 +349,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
     ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
     (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
-
-(with-no-warnings
-  (setq use-package-verbose t)
-  (setq use-package-enable-imenu-support t))
 
 (eval-and-compile
   (setq straight-recipes-gnu-elpa-use-mirror t)
@@ -126,21 +369,13 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 (autoload #'straight-x-pull-all "straight-x")
 (autoload #'straight-x-freeze-versions "straight-x")
 
-(straight-use-package '(use-package :type git :host github :repo "jwiegley/use-package" :branch "master"))
-
-(defmacro meq/up* (&rest args) (interactive) `(use-package ,@args :demand ,(cl-getf args :demand t)))
-
-(meq/up* no-littering)
-(meq/up* gcmh
-    :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
-    :config (gcmh-mode 1))
-
 ;; use-package
 <<20210601225235077502200>>
 
-(meq/upnsd meq
-    :load-path "../../lib/meq"
-    :load-emacs-file-preconfig ("naked"))
+(meq/up no-littering)
+(meq/up gcmh
+    :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
+    :config (gcmh-mode 1))
 
 (unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell
@@ -176,7 +411,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 <<20210601225231422834500>>
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up* use-package-extras :straight nil :load-path "../../lib/use-package-extras")
 (meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
 #+end_src
 
@@ -359,6 +593,11 @@ And in my experience... Not a good idea; much too confusing. Use
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; which-key
+<<20210821212428087933900>>
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; cosmoem
 <<20210601225307809867100>>
 
@@ -377,14 +616,7 @@ And in my experience... Not a good idea; much too confusing. Use
 
 #+name: 20210802040601573536600
 #+begin_src emacs-lisp
-(meq/up hydra
-    :custom (hydra-hint-display-type 'lv)
-    :bind (:map hydra-base-map ("~" . hydra--universal-argument))
-    :use-package-postconfig (use-package-hydra)
-    :upnsd-preconfig (janus :load-path "../../lib/janus")
-    :upnsd-postconfig
-        (use-package-deino :load-path "../../lib/use-package-deino")
-        (deino :load-path "../../lib/deino" :custom (deino-hint-display-type 'lv)))
+<<20210821211206922820400>>
 #+end_src
 
 *** alloy
@@ -396,37 +628,19 @@ And in my experience... Not a good idea; much too confusing. Use
 
 #+name: 20210603105149525867500
 #+begin_src emacs-lisp
-(meq/upnsd alloy
-    :load-path "../../lib/alloy"
-    :upnsd-postconfig
-        (lode :load-path "../../lib/lode")
-        (prime :load-path "../../lib/prime")
-        (uru :load-path "../../lib/uru"
-            :config (prime "u u" uru "uru")
-                    (prime "u m" minoru "minoru"))
-    :use-package-preconfig (command-log-mode)
-        ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
-        (use-package-chords)
-    :config
-        (alloy-auto-unbind-keys)
-        (alloy-def :keymaps demon-run
-            ;; Adapted From:
-            ;; Answer: https://stackoverflow.com/a/4557027/10827766
-            ;; User: https://stackoverflow.com/users/387076/gilles-so-stop-being-evil
-            "\eOA" [up]
-            "\e[A" [up]
-            "\eOB" [down]
-            "\e[B" [down]
-            "\eOD" [left]
-            "\e[D" [left]
-            "\eOC" [right]
-            "\e[C" [right]
-            "M-x" 'meq/M-x)
-    :deino (deino-restart (:color blue) "r"
-            ("`" nil "cancel")
-            ("l" meq/reload-emacs "reload")
-            ("s" restart-emacs "restart"))
-    :custom (alloy-implicit-naked t))
+<<20210821211654763595900>>
+#+end_src
+
+*** which-key
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210821212428087933900
+
+#+name: 20210821212428087933900
+#+begin_src emacs-lisp
+<<20210821212520193609500>>
 #+end_src
 
 *** cosmoem
@@ -438,54 +652,7 @@ And in my experience... Not a good idea; much too confusing. Use
 
 #+name: 20210601225307809867100
 #+begin_src emacs-lisp
-(meq/upnsd cosmoem
-    :upnsd-postconfig (meta :load-path "../../lib/meta")
-    :use-package-preconfig
-        (which-key :deino (deino/which-key (:color blue :columns 4) "w"
-                    ("`" nil "cancel")
-                    ("a" cosmoem-any-popup-showing-p "any popup showing")
-                    ("h" meq/which-key--hide-popup "hide-popup")
-                    ("s" meq/which-key--show-popup "show-popup")
-                    ("r" meq/which-key--refresh-popup "refresh-popup")
-                    ("t" meq/toggle-which-key "toggle")
-                    ("l" meq/which-key-show-top-level "meq/toplevel")
-                    ("L" which-key-show-top-level "toplevel"))
-            :gsetq
-                (which-key-enable-extended-define-key t)
-                (which-key-idle-delay 0.1)
-                (which-key-idle-secondary-delay nil)
-                (which-key-allow-evil-operators t)
-
-                ;; NOTE: This will cause the which-key maps for the operator states to show up,
-                ;; breaking functionality such as `d 13 <arrow-down>', etc.
-                ;; (which-key-show-operator-state-maps t)
-
-                ;; TODO: Choose a fun one!
-                (which-key-separator " × ")
-                ;; (which-key-separator " |-> ")
-
-                (which-key-popup-type 'side-window)
-                (which-key-side-window-location '(right bottom left top))
-
-                ;; If this percentage is too small, the keybindings frame will appear at the bottom
-                (which-key-side-window-max-width 0.5)
-
-                (which-key-side-window-max-height 0.25))
-    :load-path "../../lib/cosmoem"
-    :config (prime ", m" map-of-infinity/body "map-of-infinity")
-    :which-key-change-ryo ("," "damascus")
-    :deino (map-of-infinity nil ", m"
-            ("`" nil "cancel")
-            ("w" deino/which-key/body "which-key")
-            ("h" deino/cosmoem/body "cosmoem")
-            ("d" meq/disable-all-modal-modes "disable all modal modes" :color blue)
-            ("t" toggles/body "toggles")
-            ("k" all-keymaps/body "all keymaps"))
-        (deino/cosmoem (:color blue) ", c"
-            ("`" nil "cancel")
-            ("h" cosmoem-hide-all-modal-modes "hide all modal modes"))
-        (toggles (:color blue) ", t" ("`" nil "cancel"))
-        (all-keymaps (:color blue) ", k" ("`" nil "cancel")))
+<<20210821211909575354500>>
 #+end_src
 
 *** sorrow
@@ -497,11 +664,7 @@ And in my experience... Not a good idea; much too confusing. Use
 
 #+name: 20210624151540904695400
 #+begin_src emacs-lisp
-(meq/upnsd sorrow
-    :load-path "../../lib/sorrow"
-    :primer+ ("t" "toggles")
-    :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
-        (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
+<<20210821211910346059700>>
 #+end_src
 
 ** startup
@@ -578,7 +741,6 @@ And in my experience... Not a good idea; much too confusing. Use
         (push "aiern" meq/var/ignored-modal-prefixes)))
     :use-package-preconfig (bind-map)
     :straight nil
-    :load-path "../../lib/aiern"
     ;; :demon
         ;; TODO
         ;; ((alloy-chord "") 'meq/toggle-aiern-ex-cosmoem)
@@ -825,9 +987,8 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 (use-package doom-aiern-modeline
     :straight nil
     :hook (after-init . doom-aiern-modeline-mode)
-    :load-path "../../lib/doom-aiern-modeline"
     :use-package-preconfig (shrink-path)
-            (god-mode :upnsd-postconfig (aiern-god-state :load-path "../../lib/aiern-god-state")
+            (god-mode :upnsd-postconfig (aiern-god-state)
                 :use-package-postconfig
                     (evil-god-state :straight (evil-god-state
                         :type git
@@ -1008,97 +1169,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 #+name: 20210601225348036290600
 #+begin_src emacs-lisp
-(meq/up exwm
-    :init/defun* (post-exwm nil (interactive)
-                    (unless (get-buffer "Alacritty") (meq/run "alacritty"))
-                    (meq/run "obsidian")
-                    (exwm-workspace-switch 0))
-    :hook (exwm-init . post-exwm)
-    :use-package-postconfig (dmenu)
-    :upnsd-preconfig (fringe
-                        :load-emacs-file-preconfig ("fringe")
-                        :config
-                            ;; (fringe-mode (quote (1 . 1)) nil (fringe))
-                            (fringe-mode '(3 . 0))
-                            (fringe-mode 'none)
-                            (fringe-mode 1))
-    :config
-        (require 'scroll-bar)
-        ;; Adapted From: https://github.com/ch11ng/exwm/blob/master/exwm-config.el#L34
-        (require 'exwm-config)
-        ;; Set the initial workspace number.
-        (unless (get 'exwm-workspace-number 'saved-value)
-            (setq exwm-workspace-number 4))
-        ;; Make class name the buffer name
-        (add-hook 'exwm-update-class-hook
-                    (lambda ()
-                    (exwm-workspace-rename-buffer exwm-class-name)))
-        ;; Global keybindings.
-        (unless (get 'exwm-input-global-keys 'saved-value)
-            (setq exwm-input-global-keys
-                `(
-                    ;; 's-{p|`|z}': Enter the exwm-global deino
-                    ([?\s-p] . uru)
-                    ([?\s-`] . uru)
-                    ([?\s-z] . uru)
-
-                    ([?\s-q] . (lambda nil (interactive)
-                        (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
-                        (deino-buffer/body)))
-
-                    ;; 's-N': Switch to certain workspace.
-                    ,@(mapcar (lambda (i)
-                                `(,(kbd (format "s-%d" i)) .
-                                (lambda ()
-                                    (interactive)
-                                    (exwm-workspace-switch-create ,i))))
-                            (number-sequence 0 9)))))
-        ;; Line-editing shortcuts
-        (unless (get 'exwm-input-simulation-keys 'saved-value)
-            (setq exwm-input-simulation-keys
-                '(([?\C-b] . [left])
-                    ([?\C-f] . [right])
-                    ([?\C-p] . [up])
-                    ([?\C-n] . [down])
-                    ([?\C-a] . [home])
-                    ([?\C-e] . [end])
-                    ([?\M-v] . [prior])
-                    ([?\C-v] . [next])
-                    ([?\C-d] . [delete])
-                    ([?\C-k] . [S-end delete]))))
-        ;; Enable EXWM
-        (exwm-enable)
-        ;; Configure Ido
-        (exwm-config-ido)
-        ;; Other configurations
-        (exwm-config-misc)
-
-        ;; (exwm-config-default)
-        ;; (exwm-enable)
-
-    ;; Adapted From: https://www.reddit.com/r/emacs/comments/8yf6dx/key_chords_in_exwm/
-    :gsetq (exwm-input-line-mode-passthrough t)
-        (exwm-manage-force-tiling t)
-
-    :demon ((naked "XF86PowerOff") 'deino-exwm/body)
-    :deino (deino-exwm nil "e e"
-                ("`" nil "cancel")
-                ("XF86PowerOff" deino-exwm/power/body "power")
-                ("s" deino-exwm/shells/body "shells"))
-            (deino-exwm/power (:color blue) "e p"
-                ("r" (meq/run "reboot") "reboot")
-                ("q" (meq/run "poweroff") "poweroff")
-                ("XF86PowerOff" (meq/run "systemctl suspend" "suspend") "suspend"))
-            (deino-exwm/shells (:color blue) "e s"
-                ("a" (meq/run "alacritty") "alacritty"))
-    :uru (exwm-mode deino-exwm-global (:color blue) "e g"
-        ("`" nil "cancel")
-        ("c" exwm-input-release-keyboard "char mode")
-        ("l" exwm-input-grab-keyboard "line mode")
-        ("r" exwm-reset "reset")
-        ("w" exwm-workspace-switch "workspace switch")
-        ("i" meq/run-interactive "run")
-        ("b" deino-buffer/body "buffers")))
+<<20210821192734044989400>>
 #+end_src
 
 *** olivetti
@@ -1128,7 +1199,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
     ;; User: https://stackoverflow.com/users/2698552/chillaranand
     ;; :hook ((buffer-list-update window-configuration-change) . (lambda nil (interactive)
     ;;                                                             (rainbow-identifiers-mode 1)))
-    ;; :upnsd-preconfig (xxh :load-path "emacs-xxhash")
+    ;; :upnsd-preconfig (xxh)
     )
 #+end_src
 
@@ -1238,8 +1309,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+begin_src emacs-lisp
 (use-package doc :straight nil
     :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "../../lib/titan")
-    :load-path "../../lib/doc"
+    :upnsd-preconfig (titan)
     :mode (("\\.doc\\.md\\'" . doc-md-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
     :uru (doc-org-mode deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
@@ -1269,8 +1339,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+begin_src emacs-lisp
 (use-package fell :straight nil
     :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "../../lib/titan")
-    :load-path "../../lib/fell"
+    :upnsd-preconfig (titan)
     :mode (("\\.fell\\.md\\'" . fell-md-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
     :uru (fell-org-mode deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
@@ -1357,7 +1426,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)
-        (ox-pandoc :upnsd-postconfig (riot :if (not (member "--anti-riot" command-line-args)) :load-path "../../lib/riot")
+        (ox-pandoc :upnsd-postconfig (riot :if (not (member "--anti-riot" command-line-args)))
             :deino (deino-ob-export-as (:color blue) "o e a"
                     ("`" nil "cancel")
                     ("a" org-pandoc-export-as-asciidoc "asciidoc")
@@ -1730,12 +1799,12 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 (when (member "--update" command-line-args) (delete "--update" command-line-args) (meq/straight-upgrade))
 
-(let* ((testing (meq/ued1 "testing.aiern.org"))
-        (resting (meq/ued1 "resting.aiern.org"))
-        (init (meq/ued1 "init.el"))
-        (README (meq/ued1 "README.org"))
-        (dInit (meq/ued2 "init.el"))
-        (dREADME (meq/ued2 "README.org")))
+(let* ((testing (meq/ued* "testing.aiern.org"))
+        (resting (meq/ued* "resting.aiern.org"))
+        (init (meq/ued* "init.el"))
+        (README (meq/ued* "README.org"))
+        (dInit (meq/ued "init.el"))
+        (dREADME (meq/ued "README.org")))
     (if (= (length command-line-args) 1)
         (setq initial-buffer-choice testing)
         (cond ((member "--fTest" command-line-args)
@@ -1745,7 +1814,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
                     (setq initial-buffer-choice init)
                     (delete "--fInit" command-line-args))
             ((member "--fEarly" command-line-args)
-                    (setq initial-buffer-choice (meq/ued1 "early-init.el"))
+                    (setq initial-buffer-choice (meq/ued* "early-init.el"))
                     (delete "--fEarly" command-line-args))
             ((member "--fREADME" command-line-args)
                     (setq initial-buffer-choice README)
@@ -1799,7 +1868,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 #+name: 20210622004411529714900
 #+begin_src emacs-lisp
-(meq/upnsd alamode :load-path "../../lib/alamode")
+(meq/upnsd alamode)
 #+end_src
 
 **** buffer
@@ -1839,10 +1908,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 
 #+name: 20210720041944274541900
 #+begin_src emacs-lisp
-(meq/up cosmog
-    :straight nil
-    :load-path "../../lib/cosmog"
-    :prime ("c" deino-cosmog/body "cosmog"))
+(meq/up cosmog :straight nil :prime ("c" deino-cosmog/body "cosmog"))
 #+end_src
 
 **** evil
@@ -2108,7 +2174,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 (meq/up vterm :use-package-postconfig (multi-vterm)
     :if (not (member system-type '(windows-nt ms-dos)))
     :gsetq
-        (vterm-shell (meq/ued1 "vterm-start.sh"))
+        (vterm-shell (meq/ued* "vterm-start.sh"))
         (vterm-always-compile-module t)
         (vterm-kill-buffer-on-exit t))
 #+end_src
@@ -2181,7 +2247,7 @@ Adapted From: https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-win
 
 #+name: 20210709012558336017000
 #+begin_src emacs-lisp
-(setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
+(setq meq/var/yankpad-file (meq/ued* "yankpad.org"))
 (meq/up yankpad
     :if meq/var/yankpad
     :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))

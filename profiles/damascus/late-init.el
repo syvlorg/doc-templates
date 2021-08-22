@@ -3,25 +3,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; hydra
-(meq/up hydra
+(use-package! hydra
     :custom (hydra-hint-display-type 'lv)
     :bind (:map hydra-base-map ("~" . hydra--universal-argument))
     :use-package-postconfig (use-package-hydra)
-    :upnsd-preconfig (janus :load-path "../../lib/janus")
-    :upnsd-postconfig
-        (use-package-deino :load-path "../../lib/use-package-deino")
-        (deino :load-path "../../lib/deino" :custom (deino-hint-display-type 'lv)))
+    :upnsd-preconfig (janus)
+    :upnsd-postconfig (use-package-deino) (deino :custom (deino-hint-display-type 'lv)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; alloy
 (meq/upnsd alloy
-    :load-path "../../lib/alloy"
-    :upnsd-postconfig
-        (lode :load-path "../../lib/lode")
-        (prime :load-path "../../lib/prime")
-        (uru :load-path "../../lib/uru"
-            :config (prime "u u" uru "uru")
+    :upnsd-postconfig (lode) (prime)
+        (uru :config (prime "u u" uru "uru")
                     (prime "u m" minoru "minoru"))
     :use-package-preconfig (command-log-mode)
         ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
@@ -49,41 +43,43 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; which-key
+(use-package! which-key :deino (deino/which-key (:color blue :columns 4) "w"
+        ("`" nil "cancel")
+        ("a" cosmoem-any-popup-showing-p "any popup showing")
+        ("h" meq/which-key--hide-popup "hide-popup")
+        ("s" meq/which-key--show-popup "show-popup")
+        ("r" meq/which-key--refresh-popup "refresh-popup")
+        ("t" meq/toggle-which-key "toggle")
+        ("l" meq/which-key-show-top-level "meq/toplevel")
+        ("L" which-key-show-top-level "toplevel"))
+    :gsetq
+        (which-key-enable-extended-define-key t)
+        (which-key-idle-delay 0.1)
+        (which-key-idle-secondary-delay nil)
+        (which-key-allow-evil-operators t)
+
+        ;; NOTE: This will cause the which-key maps for the operator states to show up,
+        ;; breaking functionality such as `d 13 <arrow-down>', etc.
+        ;; (which-key-show-operator-state-maps t)
+
+        ;; TODO: Choose a fun one!
+        (which-key-separator " × ")
+        ;; (which-key-separator " |-> ")
+
+        (which-key-popup-type 'side-window)
+        (which-key-side-window-location '(right bottom left top))
+
+        ;; If this percentage is too small, the keybindings frame will appear at the bottom
+        (which-key-side-window-max-width 0.5)
+
+        (which-key-side-window-max-height 0.25))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; cosmoem
 (meq/upnsd cosmoem
-    :upnsd-postconfig (meta :load-path "../../lib/meta")
-    :use-package-preconfig
-        (which-key :deino (deino/which-key (:color blue :columns 4) "w"
-                    ("`" nil "cancel")
-                    ("a" cosmoem-any-popup-showing-p "any popup showing")
-                    ("h" meq/which-key--hide-popup "hide-popup")
-                    ("s" meq/which-key--show-popup "show-popup")
-                    ("r" meq/which-key--refresh-popup "refresh-popup")
-                    ("t" meq/toggle-which-key "toggle")
-                    ("l" meq/which-key-show-top-level "meq/toplevel")
-                    ("L" which-key-show-top-level "toplevel"))
-            :gsetq
-                (which-key-enable-extended-define-key t)
-                (which-key-idle-delay 0.1)
-                (which-key-idle-secondary-delay nil)
-                (which-key-allow-evil-operators t)
-
-                ;; NOTE: This will cause the which-key maps for the operator states to show up,
-                ;; breaking functionality such as `d 13 <arrow-down>', etc.
-                ;; (which-key-show-operator-state-maps t)
-
-                ;; TODO: Choose a fun one!
-                (which-key-separator " × ")
-                ;; (which-key-separator " |-> ")
-
-                (which-key-popup-type 'side-window)
-                (which-key-side-window-location '(right bottom left top))
-
-                ;; If this percentage is too small, the keybindings frame will appear at the bottom
-                (which-key-side-window-max-width 0.5)
-
-                (which-key-side-window-max-height 0.25))
-    :load-path "../../lib/cosmoem"
+    :upnsd-postconfig (meta)
     :config (prime ", m" map-of-infinity/body "map-of-infinity")
     :which-key-change-ryo ("," "damascus")
     :deino (map-of-infinity nil ", m"
@@ -103,7 +99,6 @@
 
 ;; sorrow
 (meq/upnsd sorrow
-    :load-path "../../lib/sorrow"
     :primer+ ("t" "toggles")
     :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
         (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
@@ -123,7 +118,6 @@
         (push "aiern" meq/var/ignored-modal-prefixes)))
     :use-package-preconfig (bind-map)
     :straight nil
-    :load-path "../../lib/aiern"
     ;; :demon
         ;; TODO
         ;; ((alloy-chord "") 'meq/toggle-aiern-ex-cosmoem)
@@ -340,9 +334,8 @@
 (use-package doom-aiern-modeline
     :straight nil
     :hook (after-init . doom-aiern-modeline-mode)
-    :load-path "../../lib/doom-aiern-modeline"
     :use-package-preconfig (shrink-path)
-            (god-mode :upnsd-postconfig (aiern-god-state :load-path "../../lib/aiern-god-state")
+            (god-mode :upnsd-postconfig (aiern-god-state)
                 :use-package-postconfig
                     (evil-god-state :straight (evil-god-state
                         :type git
@@ -516,14 +509,19 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; exwm
-(meq/up exwm
+(load (meq/ued-lib "hydra-config"))
+(load (meq/ued-lib "alloy-config"))
+(load (meq/ued-lib "which-key-config"))
+(load (meq/ued-lib "cosmoem-config"))
+(load (meq/ued-lib "sorrow-config"))
+(use-package! exwm
     :init/defun* (post-exwm nil (interactive)
                     (unless (get-buffer "Alacritty") (meq/run "alacritty"))
                     (meq/run "obsidian")
                     (exwm-workspace-switch 0))
     :hook (exwm-init . post-exwm)
-    :use-package-postconfig (dmenu)
     :upnsd-preconfig (fringe
+                        :disabled t
                         :load-emacs-file-preconfig ("fringe")
                         :config
                             ;; (fringe-mode (quote (1 . 1)) nil (fringe))
@@ -607,6 +605,7 @@
         ("w" exwm-workspace-switch "workspace switch")
         ("i" meq/run-interactive "run")
         ("b" deino-buffer/body "buffers")))
+(use-package! dmenu)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -622,7 +621,7 @@
     ;; User: https://stackoverflow.com/users/2698552/chillaranand
     ;; :hook ((buffer-list-update window-configuration-change) . (lambda nil (interactive)
     ;;                                                             (rainbow-identifiers-mode 1)))
-    ;; :upnsd-preconfig (xxh :load-path "emacs-xxhash")
+    ;; :upnsd-preconfig (xxh)
     )
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -716,7 +715,7 @@
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)
-        (ox-pandoc :upnsd-postconfig (riot :if (not (member "--anti-riot" command-line-args)) :load-path "../../lib/riot")
+        (ox-pandoc :upnsd-postconfig (riot :if (not (member "--anti-riot" command-line-args)))
             :deino (deino-ob-export-as (:color blue) "o e a"
                     ("`" nil "cancel")
                     ("a" org-pandoc-export-as-asciidoc "asciidoc")
@@ -859,8 +858,7 @@
 ;; doc
 (use-package doc :straight nil
     :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "../../lib/titan")
-    :load-path "../../lib/doc"
+    :upnsd-preconfig (titan)
     :mode (("\\.doc\\.md\\'" . doc-md-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
     :uru (doc-org-mode deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
@@ -871,8 +869,7 @@
 ;; fell
 (use-package fell :straight nil
     :use-package-preconfig (yasnippet)
-    :upnsd-preconfig (titan :load-path "../../lib/titan")
-    :load-path "../../lib/fell"
+    :upnsd-preconfig (titan)
     :mode (("\\.fell\\.md\\'" . fell-md-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
     :uru (fell-org-mode deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
@@ -997,7 +994,7 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; alamode
-    (meq/upnsd alamode :load-path "../../lib/alamode")
+    (meq/upnsd alamode)
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1021,10 +1018,7 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; cosmog
-    (meq/up cosmog
-        :straight nil
-        :load-path "../../lib/cosmog"
-        :prime ("c" deino-cosmog/body "cosmog"))
+    (meq/up cosmog :straight nil :prime ("c" deino-cosmog/body "cosmog"))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1216,7 +1210,7 @@
     (meq/up vterm :use-package-postconfig (multi-vterm)
         :if (not (member system-type '(windows-nt ms-dos)))
         :gsetq
-            (vterm-shell (meq/ued1 "vterm-start.sh"))
+            (vterm-shell (meq/ued* "vterm-start.sh"))
             (vterm-always-compile-module t)
             (vterm-kill-buffer-on-exit t))
 
@@ -1234,7 +1228,7 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; yankpad
-    (setq meq/var/yankpad-file (meq/ued1 "yankpad.org"))
+    (setq meq/var/yankpad-file (meq/ued* "yankpad.org"))
     (meq/up yankpad
         :if meq/var/yankpad
         :init/defun* (meq/yankpad-cosmoem-toggle nil (interactive))
@@ -1321,12 +1315,12 @@
 
 (when (member "--update" command-line-args) (delete "--update" command-line-args) (meq/straight-upgrade))
 
-(let* ((testing (meq/ued1 "testing.aiern.org"))
-        (resting (meq/ued1 "resting.aiern.org"))
-        (init (meq/ued1 "init.el"))
-        (README (meq/ued1 "README.org"))
-        (dInit (meq/ued2 "init.el"))
-        (dREADME (meq/ued2 "README.org")))
+(let* ((testing (meq/ued* "testing.aiern.org"))
+        (resting (meq/ued* "resting.aiern.org"))
+        (init (meq/ued* "init.el"))
+        (README (meq/ued* "README.org"))
+        (dInit (meq/ued "init.el"))
+        (dREADME (meq/ued "README.org")))
     (if (= (length command-line-args) 1)
         (setq initial-buffer-choice testing)
         (cond ((member "--fTest" command-line-args)
@@ -1336,7 +1330,7 @@
                     (setq initial-buffer-choice init)
                     (delete "--fInit" command-line-args))
             ((member "--fEarly" command-line-args)
-                    (setq initial-buffer-choice (meq/ued1 "early-init.el"))
+                    (setq initial-buffer-choice (meq/ued* "early-init.el"))
                     (delete "--fEarly" command-line-args))
             ((member "--fREADME" command-line-args)
                     (setq initial-buffer-choice README)

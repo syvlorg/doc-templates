@@ -77,7 +77,7 @@
 
 (with-no-warnings
     (setq straight-vc-git-default-clone-depth 1)
-    (setq straight-base-dir (meq/ued2 ".local/"))
+    (setq straight-base-dir (meq/ued ".local/"))
     (setq straight-repository-branch "develop")
     (setq straight-build-dir (format "build-%s" emacs-version))
     (setq straight-cache-autoloads t)
@@ -87,10 +87,6 @@
     ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
     (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
-
-(with-no-warnings
-  (setq use-package-verbose t)
-  (setq use-package-enable-imenu-support t))
 
 (eval-and-compile
   (setq straight-recipes-gnu-elpa-use-mirror t)
@@ -111,26 +107,17 @@
 (autoload #'straight-x-pull-all "straight-x")
 (autoload #'straight-x-freeze-versions "straight-x")
 
-(straight-use-package '(use-package :type git :host github :repo "jwiegley/use-package" :branch "master"))
-
-(defmacro meq/up* (&rest args) (interactive) `(use-package ,@args :demand ,(cl-getf args :demand t)))
-
-(meq/up* no-littering)
-(meq/up* gcmh
-    :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
-    :config (gcmh-mode 1))
-
 ;; use-package
 (setq use-package-always-defer (member "--always-defer" command-line-args))
 (delete "--always-defer" command-line-args)
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up* use-package-extras :straight nil :load-path "../../lib/use-package-extras")
 (meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
 
-(meq/upnsd meq
-    :load-path "../../lib/meq"
-    :load-emacs-file-preconfig ("naked"))
+(meq/up no-littering)
+(meq/up gcmh
+    :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
+    :config (gcmh-mode 1))
 
 (unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell
