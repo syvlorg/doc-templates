@@ -31,3 +31,24 @@
 [submodule "lib/use-package"]
 	path = lib/use-package
 	url = https://github.com/jwiegley/use-package.git
+[submodule "lib/use-package-hydra"]
+	path = lib/use-package-hydra
+	url = https://gitlab.com/to1ne/use-package-hydra.git
+[submodule "lib/command-log-mode"]
+	path = lib/command-log-mode
+	url = https://github.com/lewang/command-log-mode.git
+[submodule "lib/which-key"]
+	path = lib/which-key
+	url = https://github.com/justbur/emacs-which-key.git
+[submodule "lib/hydra"]
+	path = lib/hydra
+	url = https://github.com/abo-abo/hydra.git
+[submodule "lib/exwm"]
+	path = lib/exwm
+	url = https://github.com/ch11ng/exwm.git
+[submodule "lib/dmenu"]
+	path = lib/dmenu
+	url = https://github.com/lujun9972/el-dmenu.git
+[submodule "lib/xelb"]
+	path = lib/xelb
+	url = https://github.com/ch11ng/xelb.git

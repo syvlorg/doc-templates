@@ -1,15 +1,10 @@
-(load (meq/ued-lib "hydra-config"))
-(load (meq/ued-lib "alloy-config"))
-(load (meq/ued-lib "which-key-config"))
-(load (meq/ued-lib "cosmoem-config"))
-(load (meq/ued-lib "sorrow-config"))
-(use-package! exwm
+(meq/up exwm
     :init/defun* (post-exwm nil (interactive)
                     (unless (get-buffer "Alacritty") (meq/run "alacritty"))
                     (meq/run "obsidian")
                     (exwm-workspace-switch 0))
     :hook (exwm-init . post-exwm)
-    :upnsd-preconfig (fringe
+    :use-package-preconfig (fringe
                         :disabled t
                         :load-emacs-file-preconfig ("fringe")
                         :config
@@ -17,6 +12,7 @@
                             (fringe-mode '(3 . 0))
                             (fringe-mode 'none)
                             (fringe-mode 1))
+    :use-package-postconfig (dmenu)
     :config
         (require 'scroll-bar)
         ;; Adapted From: https://github.com/ch11ng/exwm/blob/master/exwm-config.el#L34
@@ -94,4 +90,3 @@
         ("w" exwm-workspace-switch "workspace switch")
         ("i" meq/run-interactive "run")
         ("b" deino-buffer/body "buffers")))
-(use-package! dmenu)

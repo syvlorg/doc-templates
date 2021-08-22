@@ -3,7 +3,7 @@
 #+startup: show3levels
 
 * ../../lib
-** exwm-config.el
+** meq-exwm-config.el
 
 #+call: hash() :exports none
 
@@ -12,18 +12,13 @@
 
 #+name: 20210821192734044989400
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(load (meq/ued-lib "hydra-config"))
-(load (meq/ued-lib "alloy-config"))
-(load (meq/ued-lib "which-key-config"))
-(load (meq/ued-lib "cosmoem-config"))
-(load (meq/ued-lib "sorrow-config"))
-(use-package! exwm
+(meq/up exwm
     :init/defun* (post-exwm nil (interactive)
                     (unless (get-buffer "Alacritty") (meq/run "alacritty"))
                     (meq/run "obsidian")
                     (exwm-workspace-switch 0))
     :hook (exwm-init . post-exwm)
-    :upnsd-preconfig (fringe
+    :use-package-preconfig (fringe
                         :disabled t
                         :load-emacs-file-preconfig ("fringe")
                         :config
@@ -31,6 +26,7 @@
                             (fringe-mode '(3 . 0))
                             (fringe-mode 'none)
                             (fringe-mode 1))
+    :use-package-postconfig (dmenu)
     :config
         (require 'scroll-bar)
         ;; Adapted From: https://github.com/ch11ng/exwm/blob/master/exwm-config.el#L34
@@ -108,10 +104,9 @@
         ("w" exwm-workspace-switch "workspace switch")
         ("i" meq/run-interactive "run")
         ("b" deino-buffer/body "buffers")))
-(use-package! dmenu)
 #+end_src
 
-** hydra-config.el
+** meq-hydra-config.el
 
 #+call: hash() :exports none
 
@@ -120,15 +115,14 @@
 
 #+name: 20210821211206922820400
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(use-package! hydra
+(meq/up hydra
     :custom (hydra-hint-display-type 'lv)
     :bind (:map hydra-base-map ("~" . hydra--universal-argument))
-    :use-package-postconfig (use-package-hydra)
-    :upnsd-preconfig (janus)
-    :upnsd-postconfig (use-package-deino) (deino :custom (deino-hint-display-type 'lv)))
+    :use-package-preconfig (use-package-hydra) (janus)
+    :use-package-postconfig (use-package-deino) (deino :custom (deino-hint-display-type 'lv)))
 #+end_src
 
-** alloy-config.el
+** meq-alloy-config.el
 
 #+call: hash() :exports none
 
@@ -137,8 +131,8 @@
 
 #+name: 20210821211654763595900
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(meq/upnsd alloy
-    :upnsd-postconfig (lode) (prime)
+(meq/up alloy
+    :use-package-postconfig (lode) (prime)
         (uru :config (prime "u u" uru "uru")
                     (prime "u m" minoru "minoru"))
     :use-package-preconfig (command-log-mode)
@@ -166,7 +160,7 @@
     :custom (alloy-implicit-naked t))
 #+end_src
 
-** which-key-config.el
+** meq-which-key-config.el
 
 #+call: hash() :exports none
 
@@ -175,7 +169,7 @@
 
 #+name: 20210821212520193609500
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(use-package! which-key :deino (deino/which-key (:color blue :columns 4) "w"
+(meq/up which-key :deino (deino/which-key (:color blue :columns 4) "w"
         ("`" nil "cancel")
         ("a" cosmoem-any-popup-showing-p "any popup showing")
         ("h" meq/which-key--hide-popup "hide-popup")
@@ -207,7 +201,7 @@
         (which-key-side-window-max-height 0.25))
 #+end_src
 
-** cosmoem-config.el
+** meq-cosmoem-config.el
 
 #+call: hash() :exports none
 
@@ -216,8 +210,8 @@
 
 #+name: 20210821211909575354500
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(meq/upnsd cosmoem
-    :upnsd-postconfig (meta)
+(meq/up cosmoem
+    :use-package-postconfig (meta)
     :config (prime ", m" map-of-infinity/body "map-of-infinity")
     :which-key-change-ryo ("," "damascus")
     :deino (map-of-infinity nil ", m"
@@ -234,7 +228,7 @@
         (all-keymaps (:color blue) ", k" ("`" nil "cancel")))
 #+end_src
 
-** sorrow-config.el
+** meq-sorrow-config.el
 
 #+call: hash() :exports none
 
@@ -243,7 +237,7 @@
 
 #+name: 20210821211910346059700
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(meq/upnsd sorrow
+(meq/up sorrow
     :primer+ ("t" "toggles")
     :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
         (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
@@ -539,15 +533,6 @@ And in my experience... Not a good idea; much too confusing. Use
 
 #+name: 
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-;; with use-package keywords ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-<<20210810202254862110100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; startup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -575,38 +560,6 @@ And in my experience... Not a good idea; much too confusing. Use
 #+end_src
 
 ** with use-package keywords
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210810202254862110100
-
-#+name: 20210810202254862110100
-#+begin_src emacs-lisp :exports none
-;; hydra
-<<20210802040601573536600>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; alloy
-<<20210603105149525867500>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; which-key
-<<20210821212428087933900>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; cosmoem
-<<20210601225307809867100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; sorrow
-<<20210624151540904695400>>
-#+end_src
-
 *** hydra
 
 #+call: hash() :exports none
@@ -698,11 +651,6 @@ And in my experience... Not a good idea; much too confusing. Use
 
 ;; doom-aiern-modeline
 <<20210708192934464242100>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; exwm
-<<20210601225348036290600>>
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -1,4 +1,4 @@
-(use-package! which-key :deino (deino/which-key (:color blue :columns 4) "w"
+(meq/up which-key :deino (deino/which-key (:color blue :columns 4) "w"
         ("`" nil "cancel")
         ("a" cosmoem-any-popup-showing-p "any popup showing")
         ("h" meq/which-key--hide-popup "hide-popup")

@@ -51,13 +51,8 @@
 (defvar meq/var/all-modal-modes-off nil)
 (defvar meq/var/last-buffer nil)
 (defvar meq/var/which-key-first-show t)
-(defvar meq/var/profile-name "damascus")
 (defvar pre-user-emacs-directory (concat (getenv "HOME") "/.emacs.d"))
 (defvar user-emacs-directory pre-user-emacs-directory)
-
-;;;###autoload
-(with-eval-after-load 'use-package-extras
-    (unless (string= meq/var/profile-name "doom") (defalias 'use-package! 'meq/up)))
 
 ;;;###autoload
 (defun meq/ued* (&rest args) (f-full (apply #'f-join pre-user-emacs-directory args)))
@@ -588,9 +583,10 @@ extract active aiern bidings."
                 alloy-override-mode-map
                 (naked "RET")) (alloy-def :keymaps 'override "RET" nil))))
     (if (or (meq/xwinp) (derived-mode-p 'vterm-mode))
-        (unless meq/var/all-modal-modes-off (setq meq/var/backup-modal-modes (meq/current-modal-modes t)
-                meq/var/backup-terminal-local-map overriding-terminal-local-map
-                overriding-terminal-local-map vterm-mode-map)
+        (unless meq/var/all-modal-modes-off
+            (setq meq/var/backup-modal-modes (meq/current-modal-modes t)
+                meq/var/backup-terminal-local-map overriding-terminal-local-map)
+            (with-eval-after-load 'vterm (setq overriding-terminal-local-map vterm-mode-map))
             (meq/disable-all-modal-modes nil t))
         (when meq/var/all-modal-modes-off (mapc #'(lambda (mode) (interactive)
             (when (meq/fbatp mode) (ignore-errors (funcall mode 1)))) meq/var/backup-modal-modes)

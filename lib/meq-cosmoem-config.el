@@ -1,5 +1,5 @@
-(meq/upnsd cosmoem
-    :upnsd-postconfig (meta)
+(meq/up cosmoem
+    :use-package-postconfig (meta)
     :config (prime ", m" map-of-infinity/body "map-of-infinity")
     :which-key-change-ryo ("," "damascus")
     :deino (map-of-infinity nil ", m"
