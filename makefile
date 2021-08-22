@@ -45,10 +45,6 @@ tangle: tangle-setup
     -HIe org \
     -E straight \
     -x $(mkfileDir)/backup-tangle.sh
-|yes yes | fd . $(mkfileDir)/profiles/mecca \
-    -HIe org \
-    -E straight \
-    -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/graphene \
     -HIe org \
     -E straight \
