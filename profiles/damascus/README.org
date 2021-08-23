@@ -96,7 +96,8 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
     (setq straight-repository-branch "develop")
     (setq straight-use-package-by-default t)
     ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
-    (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
+    ;; (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
+    (setq straight-disable-byte-compilation t))
 (delete "--no-byte-compilation" command-line-args)
 
 (eval-and-compile
