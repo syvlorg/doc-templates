@@ -10,6 +10,11 @@ killTest := emacsclient -s test -e "(kill-emacs)"
 init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
+subinit:
+|git -C $(mkfileDir) submodule update --init --depth 1 --force
+|git -C $(mkfileDir) submodule sync
+|git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
+
 pull: init
 |git -C $(mkfileDir) pull
 |git -C $(mkfileDir) subtree pull-all

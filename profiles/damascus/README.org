@@ -1697,12 +1697,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
         (helm-smex)
         (helm-flx)
         (helm-swoop)
-        (helm-ido-like
-            :straight (helm-ido-like
-                :type git
-                :host github
-                :repo "<<username>>/helm-ido-like-guide"
-                :branch "master")))
+        (helm-ido-like))
 #+end_src
 
 **** magit
@@ -1858,7 +1853,6 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 #+name: 20210601225309546041800
 #+begin_src emacs-lisp
 (meq/up ryo-modal
-    :straight (ryo-modal :type git :host github :repo "kungsgeten/ryo-modal" :branch "master")
     :config ;; From: https://github.com/Kungsgeten/ryo-modal#which-key-integration
         (push '((nil . "ryo:.*:") . (nil . "")) which-key-replacement-alist))
 #+end_src

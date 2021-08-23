@@ -890,12 +890,7 @@
             (helm-smex)
             (helm-flx)
             (helm-swoop)
-            (helm-ido-like
-                :straight (helm-ido-like
-                    :type git
-                    :host github
-                    :repo "shadowrylander/helm-ido-like-guide"
-                    :branch "master")))
+            (helm-ido-like))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -998,7 +993,6 @@
 
     ;; ryo modal
     (meq/up ryo-modal
-        :straight (ryo-modal :type git :host github :repo "kungsgeten/ryo-modal" :branch "master")
         :config ;; From: https://github.com/Kungsgeten/ryo-modal#which-key-integration
             (push '((nil . "ryo:.*:") . (nil . "")) which-key-replacement-alist))
 

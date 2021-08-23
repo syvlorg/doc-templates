@@ -38,10 +38,9 @@
 ;; User: https://emacs.stackexchange.com/users/14825/nickd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    ;; (add-to-list 'load-path (concat default-directory "/org/lisp"))
-    ;; (require 'org-loaddefs)
     (byte-recompile-directory default-directory nil)
-    (normal-top-level-add-to-load-path '("."))
+    (normal-top-level-add-to-load-path '("." "borg" "/org/lisp"))
+    (require 'org-loaddefs)
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -54,8 +53,6 @@
 (setq borg-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
                                 ("git@gitlab.com:" . "https://gitlab.com/")))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-(require 'org-loaddefs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up `use-package' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
