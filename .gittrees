@@ -82,3 +82,7 @@
 	url = riot
 	path = lib/riot
 	branch = main
+[subtree "lib/evil-evilified-state"]
+	url = evil-evilified-state
+	path = lib/evil-evilified-state
+	branch = master

@@ -1245,6 +1245,9 @@ cmd_push-all()
 [remote "evil-evilified-state"]
     url = git@github.com:shadowrylander/evil-evilified-state
     fetch = +refs/heads/*:refs/remotes/evil-evilified-state/*
+[remote "helm-ido-like-guide"]
+    url = git@github.com:shadowrylander/helm-ido-like-guide
+    fetch = +refs/heads/*:refs/remotes/helm-ido-like-guide/*
 [submodule "profiles/doom"]
 	url = https://github.com/hlissner/.emacs.d.git
 	active = false
