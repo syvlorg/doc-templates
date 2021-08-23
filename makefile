@@ -40,6 +40,7 @@ tangle: tangle-setup
     -E resting.aiern.org \
     -E profiles \
     -E straight \
+    -E lib/org \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
     -HIe org \
@@ -57,6 +58,7 @@ tangle: tangle-setup
     -HIe sh \
     -E straight \
     -x chmod +x
+|cd $(mkfileDir)/lib/org; make autoloads
 
 subtree-prep: tangle push-only
 

@@ -121,11 +121,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; use-package
 <<20210601225235077502200>>
 
-(meq/up no-littering)
-(meq/up gcmh
-    :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
-    :config (gcmh-mode 1))
-
 (unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell
         :straight (exec-path-from-shell
@@ -160,7 +155,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 <<20210601225231422834500>>
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
 #+end_src
 
 *** always defer package loading
@@ -1127,9 +1121,9 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+name: 20210601225236550932600
 #+begin_src emacs-lisp
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/ouzud7/error_usepackage_yankpadcatch_invalid_version/h76b6vo?utm_source=share&utm_medium=web2x&context=3
-(meq/up org
+(meq/upnsd org
     :mode ("\\.org\\'" . org-mode)
-    :straight (org :type git :host github :repo "bzg/org-mode" :branch "master")
+    ;; :straight (org :type git :host github :repo "bzg/org-mode" :branch "master")
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)

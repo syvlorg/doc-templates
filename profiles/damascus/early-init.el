@@ -109,12 +109,6 @@
 (delete "--always-defer" command-line-args)
 (setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
 (delete "--always-demand" command-line-args)
-(meq/up leaf :use-package-preconfig (use-package-ensure-system-package) (leaf-keywords))
-
-(meq/up no-littering)
-(meq/up gcmh
-    :straight (gcmh :type git :host gitlab :repo "koral/gcmh" :branch "master")
-    :config (gcmh-mode 1))
 
 (unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell

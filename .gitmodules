@@ -52,3 +52,18 @@
 [submodule "lib/xelb"]
 	path = lib/xelb
 	url = https://github.com/ch11ng/xelb.git
+[submodule "lib/org"]
+	path = lib/org
+	url = https://code.orgmode.org/bzg/org-mode.git
+[submodule "lib/gcmh"]
+	path = lib/gcmh
+	url = https://gitlab.com/koral/gcmh.git
+[submodule "lib/no-littering"]
+	path = lib/no-littering
+	url = https://github.com/emacscollective/no-littering.git
+[submodule "lib/leaf"]
+	path = lib/leaf
+	url = https://github.com/conao3/leaf.el.git
+[submodule "lib/leaf-keywords"]
+	path = lib/leaf-keywords
+	url = https://github.com/conao3/leaf-keywords.el.git

@@ -501,9 +501,9 @@
 
 ;; org-mode
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/ouzud7/error_usepackage_yankpadcatch_invalid_version/h76b6vo?utm_source=share&utm_medium=web2x&context=3
-(meq/up org
+(meq/upnsd org
     :mode ("\\.org\\'" . org-mode)
-    :straight (org :type git :host github :repo "bzg/org-mode" :branch "master")
+    ;; :straight (org :type git :host github :repo "bzg/org-mode" :branch "master")
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)
