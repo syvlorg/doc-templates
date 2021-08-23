@@ -1572,8 +1572,9 @@ super-push-only: tangle push-only
 (meq/up hydra
     :custom (hydra-hint-display-type 'lv)
     :bind (:map hydra-base-map ("~" . hydra--universal-argument))
-    :use-package-preconfig (use-package-hydra) (janus)
-    :use-package-postconfig (use-package-deino) (deino :custom (deino-hint-display-type 'lv)))
+    :upnsd-preconfig (janus)
+    :use-package-preconfig (use-package-hydra)
+    :upnsd-postconfig (use-package-deino) (deino :custom (deino-hint-display-type 'lv)))
 #+end_src
 
 ** meq-alloy-config.el
@@ -1585,8 +1586,8 @@ super-push-only: tangle push-only
 
 #+name: 20210821211654763595900
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(meq/up alloy
-    :use-package-postconfig (lode) (prime)
+(meq/upnsd alloy
+    :upnsd-postconfig (lode) (prime)
         (uru :config (prime "u u" uru "uru")
                     (prime "u m" minoru "minoru"))
     :use-package-preconfig (command-log-mode)
@@ -1664,8 +1665,8 @@ super-push-only: tangle push-only
 
 #+name: 20210821211909575354500
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(meq/up cosmoem
-    :use-package-postconfig (meta)
+(meq/upnsd cosmoem
+    :upnsd-postconfig (meta)
     :config (prime ", m" map-of-infinity/body "map-of-infinity")
     :which-key-change-ryo ("," "damascus")
     :deino (map-of-infinity nil ", m"
@@ -1691,7 +1692,7 @@ super-push-only: tangle push-only
 
 #+name: 20210821211910346059700
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-(meq/up sorrow
+(meq/upnsd sorrow
     :primer+ ("t" "toggles")
     :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
         (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
@@ -1823,15 +1824,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up the `use-package' keywords for `exwm' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(mapc #'(lambda (config) (interactive)
-            (load (meq/ued-lib (concat "meq-" (symbol-name config) "-config"))))
-    '(hydra alloy which-key cosmoem sorrow))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load the profile's `early-init' if it exists ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (meq/cl "early-init.el")
@@ -1849,6 +1841,15 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
 ;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
 (when (version< emacs-version "27") (load (concat (file-name-directory load-file-name) "early-init.el")))
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Set up the `use-package' keywords for `exwm' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(mapc #'(lambda (config) (interactive)
+            (load (meq/ued-lib (concat "meq-" (symbol-name config) "-config"))))
+    '(hydra alloy which-key cosmoem sorrow))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

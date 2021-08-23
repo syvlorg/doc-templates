@@ -1,5 +1,5 @@
-(meq/up alloy
-    :use-package-postconfig (lode) (prime)
+(meq/upnsd alloy
+    :upnsd-postconfig (lode) (prime)
         (uru :config (prime "u u" uru "uru")
                     (prime "u m" minoru "minoru"))
     :use-package-preconfig (command-log-mode)

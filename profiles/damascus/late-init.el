@@ -91,7 +91,8 @@
 ;; damascus
 (meq/upnsd damascus
     :use-package-postconfig (rainbow-mode :config (rainbow-mode 1))
-    :alloy (:keymaps demon-run
+    :alloy (:keymaps 'override
+        (alloy-chord "kk") 'meq/test
         "¡" 'ignore "¹" 'ignore "½" 'ignore "⅓" 'ignore "¼" 'ignore "⅛" 'ignore "²" 'ignore "⅜" 'ignore
         "¾" 'ignore "³" 'ignore "⁴" 'ignore "⅚" 'ignore "⁵" 'ignore "⅝" 'ignore "⁶" 'ignore "⅞" 'ignore
         "⁷" 'ignore "⁸" 'ignore "⁹" 'ignore "∅" 'ignore "ⁿ" 'ignore "⁰" 'ignore "·" 'ignore "—" 'ignore

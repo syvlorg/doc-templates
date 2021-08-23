@@ -46,19 +46,15 @@
     `(use-package ,@args :demand ,(cl-getf args :demand t)))
 
 ;;;###autoload
-(defmacro meq/upd (&rest args) (interactive)
-    `(use-package ,@args :defer ,(cl-getf args :defer 30)))
-
-;;;###autoload
 (defmacro meq/upns (&rest args) (interactive)
-    `(use-package ,@args :straight ,(cl-getf args :straight nil)))
+    `(use-package ,@args ,@(with-eval-after-load 'straight `(:straight ,(cl-getf args :straight nil)))))
 
 ;;;###autoload
 (defmacro meq/upnsd (&rest args) (interactive)
     `(use-package
         ,@args
         :demand ,(cl-getf args :demand t)
-        :straight ,(cl-getf args :straight nil)))
+        ,@(with-eval-after-load 'straight `(:straight ,(cl-getf args :straight nil)))))
 
 ;; Adapted From: https://github.com/jwiegley/use-package/blob/master/use-package-core.el#L1153
 ;;;###autoload
