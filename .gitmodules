@@ -1,6 +1,6 @@
 [submodule "a.el"]
         path = lib/a.el
-        url = https://github.com/plexus/a.el.git
+        url = https://github.com/plexus/a.el
 [submodule "ace-window"]
         path = lib/ace-window
         url = https://github.com/abo-abo/ace-window.git
@@ -28,8 +28,8 @@
 [submodule "counsel-projectile"]
         path = lib/counsel-projectile
         url = https://github.com/ericdanan/counsel-projectile.git
-[submodule "dash.el"]
-        path = lib/dash.el
+[submodule "dash"]
+        path = lib/dash
         url = https://github.com/magnars/dash.el.git
 [submodule "dmenu"]
         path = lib/dmenu
@@ -58,7 +58,7 @@
         url = https://github.com/ch11ng/exwm.git
 [submodule "f.el"]
         path = lib/f.el
-        url = https://github.com/rejeep/f.el.git
+        url = https://github.com/rejeep/f.el
 [submodule "gcmh"]
         path = lib/gcmh
         url = https://gitlab.com/koral/gcmh.git
@@ -68,12 +68,18 @@
 [submodule "helm"]
         path = lib/helm
         url = https://github.com/emacs-helm/helm.git
+[submodule "helm-flx"]
+        path = lib/helm-flx
+        url = https://github.com/PythonNut/helm-flx.git
 [submodule "helm-projectile"]
         path = lib/helm-projectile
         url = https://github.com/bbatsov/helm-projectile.git
 [submodule "helm-smex"]
         path = lib/helm-smex
         url = https://github.com/ptrv/helm-smex.git
+[submodule "helm-swoop"]
+        path = lib/helm-swoop
+        url = https://github.com/emacsorphanage/helm-swoop.git
 [submodule "ht"]
         path = lib/ht
         url = https://github.com/Wilfred/ht.el.git
@@ -86,6 +92,9 @@
 [submodule "ivy"]
         path = lib/ivy
         url = https://github.com/abo-abo/swiper.git
+[submodule "key-chord"]
+        path = lib/key-chord
+        url = https://github.com/emacsorphanage/key-chord.git
 [submodule "leaf"]
         path = lib/leaf
         url = https://github.com/conao3/leaf.el.git
@@ -166,7 +175,7 @@
         url = https://github.com/kungsgeten/ryo-modal.git
 [submodule "s.el"]
         path = lib/s.el
-        url = https://github.com/magnars/s.el.git
+        url = https://github.com/magnars/s.el
 [submodule "shrink-path"]
         path = lib/shrink-path
         url = https://gitlab.com/bennya/shrink-path.el.git

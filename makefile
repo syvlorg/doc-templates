@@ -14,6 +14,7 @@ subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --force
 |git -C $(mkfileDir) submodule sync
 |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
+|cd $(mkfileDir)/lib/org; make; make autoloads
 
 pull: init
 |git -C $(mkfileDir) pull
@@ -44,8 +45,7 @@ tangle: tangle-setup
     -E testing.aiern.org \
     -E resting.aiern.org \
     -E profiles \
-    -E .local \
-    -E lib/org \
+    -E lib \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
     -HIe org \
@@ -63,7 +63,6 @@ tangle: tangle-setup
     -HIe sh \
     -E .local \
     -x chmod +x
-|cd $(mkfileDir)/lib/org; make autoloads
 
 subtree-prep: tangle push-only
 

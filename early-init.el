@@ -1,7 +1,5 @@
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
-;; (add-to-list 'load-path (concat (file-name-directory load-file-name) "lib/org/lisp"))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Get rid of double dashes in scripts ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -30,7 +28,6 @@
 (delete "--udei" command-line-args)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adapted From: https://www.emacswiki.org/emacs/LoadPath#h5o-2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; And: ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -38,9 +35,18 @@
 ;; User: https://emacs.stackexchange.com/users/14825/nickd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    (byte-recompile-directory default-directory nil)
-    (normal-top-level-add-to-load-path '("." "borg" "/org/lisp"))
+    (add-to-list 'load-path (concat (file-name-directory load-file-name) "lib/org/lisp"))
     (require 'org-loaddefs)
+
+    ;; To get the latest version of `org-mode', require the load-file before
+    ;; byte-compilation of `lib'
+    (byte-recompile-directory default-directory nil)
+    
+    (normal-top-level-add-to-load-path '("."))
+    (normal-top-level-add-subdirs-to-load-path))
+(let ((default-directory (concat pre-user-emacs-directory "siluam")))
+    (byte-recompile-directory default-directory nil)
+    (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

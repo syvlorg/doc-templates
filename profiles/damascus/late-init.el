@@ -694,10 +694,10 @@
         (doom-themes-enable-italic t)
         (meq/var/default-theme-override nil)
         (meq/var/default-default-theme 'dracula-purple-dark)
+    :use-package-postconfig
+        (doom-themes-ext-neotree :config (doom-themes-neotree-config))
+        (doom-themes-ext-org :config (doom-themes-org-config))
     :config
-        (doom-themes-neotree-config)
-        (doom-themes-org-config)
-
         (unless (meq/which-theme) (cond
             ((member "--purple" command-line-args)
                 (delete "--purple" command-line-args)

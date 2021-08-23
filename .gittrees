@@ -1,88 +1,92 @@
-[subtree "lib/alamode"]
+[subtree "siluam/alamode"]
 	url = alamode
-	path = lib/alamode
+	path = siluam/alamode
 	branch = main
-[subtree "lib/use-package-extras"]
+[subtree "siluam/use-package-extras"]
 	url = use-package-extras
-	path = lib/use-package-extras
+	path = siluam/use-package-extras
 	branch = main
-[subtree "lib/use-package-deino"]
+[subtree "siluam/use-package-deino"]
 	url = use-package-deino
-	path = lib/use-package-deino
+	path = siluam/use-package-deino
 	branch = main
-[subtree "lib/lode"]
+[subtree "siluam/lode"]
 	url = lode
-	path = lib/lode
+	path = siluam/lode
 	branch = main
-[subtree "lib/meq"]
+[subtree "siluam/meq"]
 	url = meq
-	path = lib/meq
+	path = siluam/meq
 	branch = main
-[subtree "lib/janus"]
+[subtree "siluam/janus"]
 	url = janus
-	path = lib/janus
+	path = siluam/janus
 	branch = main
-[subtree "lib/aiern"]
+[subtree "siluam/aiern"]
 	url = aiern
-	path = lib/aiern
+	path = siluam/aiern
 	branch = master
-[subtree "lib/doom-aiern-modeline"]
+[subtree "siluam/doom-aiern-modeline"]
 	url = doom-aiern-modeline
-	path = lib/doom-aiern-modeline
+	path = siluam/doom-aiern-modeline
 	branch = master
-[subtree "lib/alloy"]
+[subtree "siluam/alloy"]
 	url = alloy
-	path = lib/alloy
+	path = siluam/alloy
 	branch = master
-[subtree "lib/deino"]
+[subtree "siluam/deino"]
 	url = deino
-	path = lib/deino
+	path = siluam/deino
 	branch = master
-[subtree "lib/sorrow"]
+[subtree "siluam/sorrow"]
 	url = sorrow
-	path = lib/sorrow
+	path = siluam/sorrow
 	branch = master
-[subtree "lib/aiern-god-state"]
+[subtree "siluam/aiern-god-state"]
 	url = aiern-god-state
-	path = lib/aiern-god-state
+	path = siluam/aiern-god-state
 	branch = master
-[subtree "lib/cosmoem"]
+[subtree "siluam/cosmoem"]
 	url = cosmoem
-	path = lib/cosmoem
+	path = siluam/cosmoem
 	branch = master
-[subtree "lib/titan"]
+[subtree "siluam/titan"]
 	url = titan
-	path = lib/titan
+	path = siluam/titan
 	branch = main
-[subtree "lib/fell"]
+[subtree "siluam/fell"]
 	url = fell
-	path = lib/fell
+	path = siluam/fell
 	branch = main
-[subtree "lib/doc"]
+[subtree "siluam/doc"]
 	url = doc
-	path = lib/doc
+	path = siluam/doc
 	branch = main
-[subtree "lib/cosmog"]
+[subtree "siluam/cosmog"]
 	url = cosmog
-	path = lib/cosmog
+	path = siluam/cosmog
 	branch = main
-[subtree "lib/uru"]
+[subtree "siluam/uru"]
 	url = uru
-	path = lib/uru
+	path = siluam/uru
 	branch = main
-[subtree "lib/prime"]
+[subtree "siluam/prime"]
 	url = prime
-	path = lib/prime
+	path = siluam/prime
 	branch = main
-[subtree "lib/meta"]
+[subtree "siluam/meta"]
 	url = meta
-	path = lib/meta
+	path = siluam/meta
 	branch = main
-[subtree "lib/riot"]
+[subtree "siluam/riot"]
 	url = riot
-	path = lib/riot
+	path = siluam/riot
 	branch = main
-[subtree "lib/evil-evilified-state"]
+[subtree "siluam/evil-evilified-state"]
 	url = evil-evilified-state
-	path = lib/evil-evilified-state
+	path = siluam/evil-evilified-state
+	branch = master
+[subtree "siluam/helm-ido-like"]
+	url = helm-ido-like-guide
+	path = siluam/helm-ido-like
 	branch = master

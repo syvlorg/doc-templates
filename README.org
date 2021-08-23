@@ -1275,6 +1275,7 @@ subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --force
 |git -C $(mkfileDir) submodule sync
 |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
+|cd $(mkfileDir)/lib/org; make; make autoloads
 
 pull: init
 |git -C $(mkfileDir) pull
@@ -1305,8 +1306,7 @@ tangle: tangle-setup
     -E testing.aiern.org \
     -E resting.aiern.org \
     -E profiles \
-    -E .local \
-    -E lib/org \
+    -E lib \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
     -HIe org \
@@ -1324,7 +1324,6 @@ tangle: tangle-setup
     -HIe sh \
     -E .local \
     -x chmod +x
-|cd $(mkfileDir)/lib/org; make autoloads
 
 subtree-prep: tangle push-only
 
@@ -1694,8 +1693,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
-;; (add-to-list 'load-path (concat (file-name-directory load-file-name) "lib/org/lisp"))
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Get rid of double dashes in scripts ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1724,7 +1721,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 (delete "--udei" command-line-args)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Adapted From: https://www.emacswiki.org/emacs/LoadPath#h5o-2 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; And: ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1732,9 +1728,18 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; User: https://emacs.stackexchange.com/users/14825/nickd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    (byte-recompile-directory default-directory nil)
-    (normal-top-level-add-to-load-path '("." "borg" "/org/lisp"))
+    (add-to-list 'load-path (concat (file-name-directory load-file-name) "lib/org/lisp"))
     (require 'org-loaddefs)
+
+    ;; To get the latest version of `org-mode', require the load-file before
+    ;; byte-compilation of `lib'
+    (byte-recompile-directory default-directory nil)
+    
+    (normal-top-level-add-to-load-path '("."))
+    (normal-top-level-add-subdirs-to-load-path))
+(let ((default-directory (concat pre-user-emacs-directory "siluam")))
+    (byte-recompile-directory default-directory nil)
+    (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
