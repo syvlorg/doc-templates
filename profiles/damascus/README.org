@@ -30,11 +30,6 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; to skip the mtime checks on every *.elc file.
 (setq load-prefer-newer noninteractive)
 
-;; In Emacs 27+, package initialization occurs before `user-init-file' is
-;; loaded, but after `early-init-file'. Doom handles package initialization, so
-;; we must prevent Emacs from doing it early!
-(setq package-enable-at-startup nil)
-
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/31662/31428
 ;; User: https://emacs.stackexchange.com/users/1979/stefan
@@ -96,8 +91,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
     (setq straight-repository-branch "develop")
     (setq straight-use-package-by-default t)
     ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
-    ;; (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
-    (setq straight-disable-byte-compilation t))
+    (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
 
 (eval-and-compile
@@ -106,29 +100,24 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
   (setq bootstrap-version 5)
   (setq bootstrap-file (concat straight-base-dir "straight/repos/straight.el/bootstrap.el")))
 
-(unless (file-exists-p bootstrap-file)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-       'silent 'inhibit-cookies)
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
+;; (unless (file-exists-p bootstrap-file)
+;;   (with-current-buffer
+;;       (url-retrieve-synchronously
+;;        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+;;        'silent 'inhibit-cookies)
+;;     (goto-char (point-max))
+;;     (eval-print-last-sexp)))
 
-(load bootstrap-file nil 'nomessage)
+;; (load bootstrap-file nil 'nomessage)
 
-(autoload #'straight-x-pull-all "straight-x")
-(autoload #'straight-x-freeze-versions "straight-x")
+;; (autoload #'straight-x-pull-all "straight-x")
+;; (autoload #'straight-x-freeze-versions "straight-x")
 
 ;; use-package
 <<20210601225235077502200>>
 
 (unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell
-        :straight (exec-path-from-shell
-            :type git
-            :host github
-            :repo "purcell/exec-path-from-shell"
-            :branch "master")
         :custom
             (exec-path-from-shell-check-startup-files nil)
             (exec-path-from-shell-variables '("PATH" "MANPATH" "CACHE_HOME" "FPATH" "PYENV_ROOT"))
@@ -438,7 +427,6 @@ And in my experience... Not a good idea; much too confusing. Use
         (push 'aiern-mode meq/var/ignored-modal-modes)
         (push "aiern" meq/var/ignored-modal-prefixes)))
     :use-package-preconfig (bind-map)
-    :straight nil
     ;; :demon
         ;; TODO
         ;; ((alloy-chord "") 'meq/toggle-aiern-ex-cosmoem)
@@ -684,16 +672,9 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+name: 20210708192934464242100
 #+begin_src emacs-lisp :comments link
 (use-package doom-aiern-modeline
-    :straight nil
     :hook (after-init . doom-aiern-modeline-mode)
     :use-package-preconfig (shrink-path)
             (god-mode :upnsd-postconfig (aiern-god-state)
-                :use-package-postconfig
-                    (evil-god-state :straight (evil-god-state
-                        :type git
-                        :host github
-                        :repo "gridaphobe/evil-god-state"
-                        :branch "master"))
                 :config (which-key-enable-god-mode-support))
     :gsetq
         ;; How tall the mode-line should be. It's only respected in GUI.
@@ -911,8 +892,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 #+name: 20210708190315949480300
 #+begin_src emacs-lisp
-(meq/up vlf :gsetq (vlf-application 'always)
-    :straight (vlf :type git :host github :repo "m00natic/vlfi" :branch "master"))
+(meq/up vlf :gsetq (vlf-application 'always))
 #+end_src
 
 *** writeroom-mode
@@ -1011,7 +991,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 #+name: 20210810191825486923500
 #+begin_src emacs-lisp
-(use-package doc :straight nil
+(use-package doc
     :upnsd-preconfig (titan)
     :mode (("\\.doc\\.md\\'" . doc-md-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
@@ -1040,7 +1020,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 #+name: 20210810191826364422800
 #+begin_src emacs-lisp
-(use-package fell :straight nil
+(use-package fell
     :upnsd-preconfig (titan)
     :mode (("\\.fell\\.md\\'" . fell-md-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
@@ -1124,7 +1104,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/ouzud7/error_usepackage_yankpadcatch_invalid_version/h76b6vo?utm_source=share&utm_medium=web2x&context=3
 (meq/upnsd org
     :mode ("\\.org\\'" . org-mode)
-    ;; :straight (org :type git :host github :repo "bzg/org-mode" :branch "master")
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)
@@ -1169,9 +1148,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
             :leaf (ox-pandoc :advice (:override org-pandoc-export meq/org-pandoc-export-advice)))
 
         ;; From: https://www.reddit.com/r/orgmode/comments/n56fcv/important_the_contrib_directory_now_lives_outside/gwzz7v5?utm_source=share&utm_medium=web2x&context=3
-        (org-contrib :straight (org-contrib
-            :type git
-            :repo "https://git.sr.ht/~bzg/org-contrib"))
+        (org-contrib)
     :config
         (org-babel-do-load-languages 'org-babel-load-languages
             (append org-babel-load-languages
@@ -1229,7 +1206,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+name: 20210810190142253819200
 #+begin_src emacs-lisp
 (use-package vimrc-mode
-    :straight (vimrc-mode :type git :host github :repo "mcandre/vimrc-mode" :branch "master")
     :commands
         (org-babel-execute:vimrc
         org-babel-expand-body:vimrc)
@@ -1246,7 +1222,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+name: 20210810190150971585600
 #+begin_src emacs-lisp
 (use-package xonsh-mode
-    :straight (xonsh-mode :type git :host github :repo "seanfarley/xonsh-mode" :branch "master")
     :commands (org-babel-execute:xonsh org-babel-expand-body:xonsh)
     :mode ("\\.xonshrc\\'" "\\.xsh\\'")
     :init/defun*
@@ -1639,7 +1614,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 
 #+name: 20210720041944274541900
 #+begin_src emacs-lisp
-(meq/up cosmog :straight nil :prime ("c" deino-cosmog/body "cosmog"))
+(meq/upnsd cosmog :prime ("c" deino-cosmog/body "cosmog"))
 #+end_src
 
 **** evil
@@ -1656,12 +1631,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
     :use-package-postconfig
         ;; Adapted From: https://github.com/mohsenil85/evil-evilified-state and
         ;; https://github.com/syl20bnr/spacemacs
-        (evil-evilified-state
-            :straight (evil-evilified-state
-                :type git
-                :host github
-                :repo "<<username>>/evil-evilified-state"
-                :branch "master"))
+        (evil-evilified-state)
     :gsetq (evil-escape-key-sequence nil)
     ;; :demon
         ;; TODO

@@ -1,4 +1,5 @@
 straight
+.local
 \#*\#
 auto-save-list
 backup-tangle
@@ -10,3 +11,4 @@ var
 elpa
 quelpatest.md
 test.md
+/epkgs/

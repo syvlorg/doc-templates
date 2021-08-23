@@ -61,33 +61,78 @@
 [remote "riot"]
     url = git@github.com:shadowrylander/riot
     fetch = +refs/heads/*:refs/remotes/riot/*
+[remote "evil-evilified-state"]
+    url = git@github.com:shadowrylander/evil-evilified-state
+    fetch = +refs/heads/*:refs/remotes/evil-evilified-state/*
 [submodule "profiles/doom"]
-	url = https://github.com/hlissner/.emacs.d
+	url = https://github.com/hlissner/.emacs.d.git
 	active = true
 [submodule "profiles/spacemacs"]
-	url = https://github.com/spacemacs/spacemacs
+	url = https://github.com/spacemacs/spacemacs.git
 	active = true
 [submodule "profiles/nano/lisp"]
-	url = https://github.com/rougier/nano
+	url = https://github.com/rougier/nano.git
 	active = true
 [submodule "profiles/graphene/lisp"]
-    url = https://github.com/rdallasgray/graphene
+    url = https://github.com/rdallasgray/graphene.git
     active = true
 [submodule "profiles/centaur"]
-    url = https://github.com/seagle0128/.emacs.d
+    url = https://github.com/seagle0128/.emacs.d.git
     active = true
 [submodule "profiles/prelude"]
-    url = https://github.com/bbatsov/prelude
+    url = https://github.com/bbatsov/prelude.git
     active = true
-[submodule "lib/dash.el"]
-	url = https://github.com/magnars/dash.el
+[submodule "dash.el"]
+	url = https://github.com/magnars/dash.el.git
 	active = true
-[submodule "lib/s.el"]
-	url = https://github.com/magnars/s.el
+[submodule "s.el"]
+	url = https://github.com/magnars/s.el.git
 	active = true
-[submodule "lib/a.el"]
-	url = https://github.com/plexus/a.el
+[submodule "a.el"]
+	url = https://github.com/plexus/a.el.git
 	active = true
-[submodule "lib/f.el"]
-	url = https://github.com/rejeep/f.el
+[submodule "f.el"]
+	url = https://github.com/rejeep/f.el.git
+	active = true
+[submodule "use-package"]
+	url = https://github.com/jwiegley/use-package.git
+	active = true
+[submodule "use-package-hydra"]
+	url = https://gitlab.com/to1ne/use-package-hydra.git
+	active = true
+[submodule "command-log-mode"]
+	url = https://github.com/lewang/command-log-mode.git
+	active = true
+[submodule "which-key"]
+	url = https://github.com/justbur/emacs-which-key.git
+	active = true
+[submodule "hydra"]
+	url = https://github.com/abo-abo/hydra.git
+	active = true
+[submodule "exwm"]
+	url = https://github.com/ch11ng/exwm.git
+	active = true
+[submodule "dmenu"]
+	url = https://github.com/lujun9972/el-dmenu.git
+	active = true
+[submodule "xelb"]
+	url = https://github.com/ch11ng/xelb.git
+	active = true
+[submodule "org"]
+	url = https://code.orgmode.org/bzg/org-mode.git
+	active = true
+[submodule "gcmh"]
+	url = https://gitlab.com/koral/gcmh.git
+	active = true
+[submodule "no-littering"]
+	url = https://github.com/emacscollective/no-littering.git
+	active = true
+[submodule "leaf"]
+	url = https://github.com/conao3/leaf.el.git
+	active = true
+[submodule "leaf-keywords"]
+	url = https://github.com/conao3/leaf-keywords.el.git
+	active = true
+[submodule "borg"]
+	url = https://github.com/emacscollective/borg.git
 	active = true

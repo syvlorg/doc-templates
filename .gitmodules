@@ -1,18 +1,18 @@
-[submodule "lib/dash.el"]
+[submodule "dash.el"]
 	path = lib/dash.el
-	url = https://github.com/magnars/dash.el
-[submodule "lib/s.el"]
+	url = https://github.com/magnars/dash.el.git
+[submodule "s.el"]
 	path = lib/s.el
-	url = https://github.com/magnars/s.el
-[submodule "lib/a.el"]
+	url = https://github.com/magnars/s.el.git
+[submodule "a.el"]
 	path = lib/a.el
-	url = https://github.com/plexus/a.el
-[submodule "lib/f.el"]
+	url = https://github.com/plexus/a.el.git
+[submodule "f.el"]
 	path = lib/f.el
-	url = https://github.com/rejeep/f.el
+	url = https://github.com/rejeep/f.el.git
 [submodule "profiles/doom"]
 	path = profiles/doom
-	url = https://github.com/hlissner/.emacs.d
+	url = https://github.com/hlissner/.emacs.d.git
 [submodule "profiles/spacemacs"]
 	path = profiles/spacemacs
 	url = https://github.com/syl20bnr/spacemacs.git
@@ -28,42 +28,58 @@
 [submodule "profiles/graphene/lisp"]
 	path = profiles/graphene/lisp
 	url = https://github.com/rdallasgray/graphene.git
-[submodule "lib/use-package"]
+[submodule "use-package"]
 	path = lib/use-package
 	url = https://github.com/jwiegley/use-package.git
-[submodule "lib/use-package-hydra"]
+[submodule "use-package-hydra"]
 	path = lib/use-package-hydra
 	url = https://gitlab.com/to1ne/use-package-hydra.git
-[submodule "lib/command-log-mode"]
+[submodule "command-log-mode"]
 	path = lib/command-log-mode
 	url = https://github.com/lewang/command-log-mode.git
-[submodule "lib/which-key"]
+[submodule "which-key"]
 	path = lib/which-key
 	url = https://github.com/justbur/emacs-which-key.git
-[submodule "lib/hydra"]
+[submodule "hydra"]
 	path = lib/hydra
 	url = https://github.com/abo-abo/hydra.git
-[submodule "lib/exwm"]
+[submodule "exwm"]
 	path = lib/exwm
 	url = https://github.com/ch11ng/exwm.git
-[submodule "lib/dmenu"]
+[submodule "dmenu"]
 	path = lib/dmenu
 	url = https://github.com/lujun9972/el-dmenu.git
-[submodule "lib/xelb"]
+[submodule "xelb"]
 	path = lib/xelb
 	url = https://github.com/ch11ng/xelb.git
-[submodule "lib/org"]
+[submodule "org"]
 	path = lib/org
 	url = https://code.orgmode.org/bzg/org-mode.git
-[submodule "lib/gcmh"]
+[submodule "gcmh"]
 	path = lib/gcmh
 	url = https://gitlab.com/koral/gcmh.git
-[submodule "lib/no-littering"]
+[submodule "no-littering"]
 	path = lib/no-littering
 	url = https://github.com/emacscollective/no-littering.git
-[submodule "lib/leaf"]
+[submodule "leaf"]
 	path = lib/leaf
 	url = https://github.com/conao3/leaf.el.git
-[submodule "lib/leaf-keywords"]
+[submodule "leaf-keywords"]
 	path = lib/leaf-keywords
 	url = https://github.com/conao3/leaf-keywords.el.git
+[submodule "borg"]
+	path = lib/borg
+	url = https://github.com/emacscollective/borg.git
+[submodule "closql"]
+	path = lib/closql
+	url = git@github.com:emacscollective/closql.git
+[submodule "emacsql"]
+	path = lib/emacsql
+	url = git@github.com:skeeto/emacsql.git
+	no-byte-compile = emacsql-pg.el
+[submodule "epkg"]
+	path = lib/epkg
+	url = git@github.com:emacscollective/epkg.git
+[submodule "exec-path-from-shell"]
+	path = lib/exec-path-from-shell
+	url = https://github.com/purcell/exec-path-from-shell.git

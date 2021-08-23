@@ -1242,35 +1242,80 @@ cmd_push-all()
 [remote "riot"]
     url = git@github.com:shadowrylander/riot
     fetch = +refs/heads/*:refs/remotes/riot/*
+[remote "evil-evilified-state"]
+    url = git@github.com:shadowrylander/evil-evilified-state
+    fetch = +refs/heads/*:refs/remotes/evil-evilified-state/*
 [submodule "profiles/doom"]
-	url = https://github.com/hlissner/.emacs.d
+	url = https://github.com/hlissner/.emacs.d.git
 	active = true
 [submodule "profiles/spacemacs"]
-	url = https://github.com/spacemacs/spacemacs
+	url = https://github.com/spacemacs/spacemacs.git
 	active = true
 [submodule "profiles/nano/lisp"]
-	url = https://github.com/rougier/nano
+	url = https://github.com/rougier/nano.git
 	active = true
 [submodule "profiles/graphene/lisp"]
-    url = https://github.com/rdallasgray/graphene
+    url = https://github.com/rdallasgray/graphene.git
     active = true
 [submodule "profiles/centaur"]
-    url = https://github.com/seagle0128/.emacs.d
+    url = https://github.com/seagle0128/.emacs.d.git
     active = true
 [submodule "profiles/prelude"]
-    url = https://github.com/bbatsov/prelude
+    url = https://github.com/bbatsov/prelude.git
     active = true
-[submodule "lib/dash.el"]
-	url = https://github.com/magnars/dash.el
+[submodule "dash.el"]
+	url = https://github.com/magnars/dash.el.git
 	active = true
-[submodule "lib/s.el"]
-	url = https://github.com/magnars/s.el
+[submodule "s.el"]
+	url = https://github.com/magnars/s.el.git
 	active = true
-[submodule "lib/a.el"]
-	url = https://github.com/plexus/a.el
+[submodule "a.el"]
+	url = https://github.com/plexus/a.el.git
 	active = true
-[submodule "lib/f.el"]
-	url = https://github.com/rejeep/f.el
+[submodule "f.el"]
+	url = https://github.com/rejeep/f.el.git
+	active = true
+[submodule "use-package"]
+	url = https://github.com/jwiegley/use-package.git
+	active = true
+[submodule "use-package-hydra"]
+	url = https://gitlab.com/to1ne/use-package-hydra.git
+	active = true
+[submodule "command-log-mode"]
+	url = https://github.com/lewang/command-log-mode.git
+	active = true
+[submodule "which-key"]
+	url = https://github.com/justbur/emacs-which-key.git
+	active = true
+[submodule "hydra"]
+	url = https://github.com/abo-abo/hydra.git
+	active = true
+[submodule "exwm"]
+	url = https://github.com/ch11ng/exwm.git
+	active = true
+[submodule "dmenu"]
+	url = https://github.com/lujun9972/el-dmenu.git
+	active = true
+[submodule "xelb"]
+	url = https://github.com/ch11ng/xelb.git
+	active = true
+[submodule "org"]
+	url = https://code.orgmode.org/bzg/org-mode.git
+	active = true
+[submodule "gcmh"]
+	url = https://gitlab.com/koral/gcmh.git
+	active = true
+[submodule "no-littering"]
+	url = https://github.com/emacscollective/no-littering.git
+	active = true
+[submodule "leaf"]
+	url = https://github.com/conao3/leaf.el.git
+	active = true
+[submodule "leaf-keywords"]
+	url = https://github.com/conao3/leaf-keywords.el.git
+	active = true
+[submodule "borg"]
+	url = https://github.com/emacscollective/borg.git
 	active = true
 #+end_src
 
@@ -1291,6 +1336,16 @@ mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
 test := emacs -nw --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
+
+DRONES_DIR = $(shell git config "borg.drones-directory" || echo "lib")
+
+-include $(DRONES_DIR)/borg/borg.mk
+
+bootstrap-borg:
+|@git submodule--helper clone --name borg --path $(DRONES_DIR)/borg \
+    --url git@github.com:emacscollective/borg.git
+|@cd $(DRONES_DIR)/borg; git symbolic-ref HEAD refs/heads/master
+|@cd $(DRONES_DIR)/borg; git reset --hard HEAD
 
 init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
@@ -1324,24 +1379,24 @@ tangle: tangle-setup
     -E testing.aiern.org \
     -E resting.aiern.org \
     -E profiles \
-    -E straight \
+    -E .local \
     -E lib/org \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
     -HIe org \
-    -E straight \
+    -E .local \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/graphene \
     -HIe org \
-    -E straight \
+    -E .local \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/nano \
     -HIe org \
-    -E straight \
+    -E .local \
     -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
     -HIe sh \
-    -E straight \
+    -E .local \
     -x chmod +x
 |cd $(mkfileDir)/lib/org; make autoloads
 
@@ -1751,13 +1806,24 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; User: https://emacs.stackexchange.com/users/14825/nickd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    (add-to-list 'load-path (concat default-directory "/org/lisp"))
-    (require 'org-loaddefs)
-    ;; (byte-recompile-directory default-directory nil)
+    ;; (add-to-list 'load-path (concat default-directory "/org/lisp"))
+    ;; (require 'org-loaddefs)
+    (byte-recompile-directory default-directory nil)
     (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; We are `borg' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq package-enable-at-startup nil)
+(require 'borg)
+(borg-initialize)
+(setq borg-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
+                                ("git@gitlab.com:" . "https://gitlab.com/")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'org-loaddefs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up `use-package' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1798,8 +1864,8 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; Byte-compile the `damascus' profile if the `profile-name' is `damascus' or we need to
 ;;     use its `early-init'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (when (or (string= meq/var/profile-name "damascus") meq/var/udei)
-;;     (byte-recompile-directory (meq/ued* "profiles" "damascus") nil))
+(when (or (string= meq/var/profile-name "damascus") meq/var/udei)
+    (byte-recompile-directory (meq/ued* "profiles" "damascus") nil))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -1807,7 +1873,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; Set up the `user-emacs-directory' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq user-emacs-directory (f-full (funcall #'meq/ued* "profiles" meq/var/profile-name)))
-;; (unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
+(unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
 (setq custom-file (funcall #'meq/ued "init.el"))
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/18682/31428
@@ -1839,7 +1905,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up theming ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (byte-recompile-directory (meq/ued* "themes") nil)
+(byte-recompile-directory (meq/ued* "themes") nil)
 (add-to-list 'custom-theme-load-path (meq/ued* "themes"))
 (setq custom-safe-themes t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

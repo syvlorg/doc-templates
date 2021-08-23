@@ -9,7 +9,6 @@
         (push 'aiern-mode meq/var/ignored-modal-modes)
         (push "aiern" meq/var/ignored-modal-prefixes)))
     :use-package-preconfig (bind-map)
-    :straight nil
     ;; :demon
         ;; TODO
         ;; ((alloy-chord "") 'meq/toggle-aiern-ex-cosmoem)
@@ -225,16 +224,9 @@
 
 ;; doom-aiern-modeline
 (use-package doom-aiern-modeline
-    :straight nil
     :hook (after-init . doom-aiern-modeline-mode)
     :use-package-preconfig (shrink-path)
             (god-mode :upnsd-postconfig (aiern-god-state)
-                :use-package-postconfig
-                    (evil-god-state :straight (evil-god-state
-                        :type git
-                        :host github
-                        :repo "gridaphobe/evil-god-state"
-                        :branch "master"))
                 :config (which-key-enable-god-mode-support))
     :gsetq
         ;; How tall the mode-line should be. It's only respected in GUI.
@@ -419,8 +411,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; vlf
-(meq/up vlf :gsetq (vlf-application 'always)
-    :straight (vlf :type git :host github :repo "m00natic/vlfi" :branch "master"))
+(meq/up vlf :gsetq (vlf-application 'always))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -503,7 +494,6 @@
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/ouzud7/error_usepackage_yankpadcatch_invalid_version/h76b6vo?utm_source=share&utm_medium=web2x&context=3
 (meq/upnsd org
     :mode ("\\.org\\'" . org-mode)
-    ;; :straight (org :type git :host github :repo "bzg/org-mode" :branch "master")
     :hook (org-cycle . (lambda (state) (interactive) (when (eq state 'children) (setq org-cycle-subtree-status 'subtree))))
 
     :use-package-postconfig (ox-gfm)
@@ -548,9 +538,7 @@
             :leaf (ox-pandoc :advice (:override org-pandoc-export meq/org-pandoc-export-advice)))
 
         ;; From: https://www.reddit.com/r/orgmode/comments/n56fcv/important_the_contrib_directory_now_lives_outside/gwzz7v5?utm_source=share&utm_medium=web2x&context=3
-        (org-contrib :straight (org-contrib
-            :type git
-            :repo "https://git.sr.ht/~bzg/org-contrib"))
+        (org-contrib)
     :config
         (org-babel-do-load-languages 'org-babel-load-languages
             (append org-babel-load-languages
@@ -613,7 +601,6 @@
 
 ;; vimrc-mode
 (use-package vimrc-mode
-    :straight (vimrc-mode :type git :host github :repo "mcandre/vimrc-mode" :branch "master")
     :commands
         (org-babel-execute:vimrc
         org-babel-expand-body:vimrc)
@@ -623,7 +610,6 @@
 
 ;; xonsh-mode
 (use-package xonsh-mode
-    :straight (xonsh-mode :type git :host github :repo "seanfarley/xonsh-mode" :branch "master")
     :commands (org-babel-execute:xonsh org-babel-expand-body:xonsh)
     :mode ("\\.xonshrc\\'" "\\.xsh\\'")
     :init/defun*
@@ -675,7 +661,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; doc
-(use-package doc :straight nil
+(use-package doc
     :upnsd-preconfig (titan)
     :mode (("\\.doc\\.md\\'" . doc-md-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
@@ -685,7 +671,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; fell
-(use-package fell :straight nil
+(use-package fell
     :upnsd-preconfig (titan)
     :mode (("\\.fell\\.md\\'" . fell-md-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
@@ -835,7 +821,7 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
     ;; cosmog
-    (meq/up cosmog :straight nil :prime ("c" deino-cosmog/body "cosmog"))
+    (meq/upnsd cosmog :prime ("c" deino-cosmog/body "cosmog"))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -845,12 +831,7 @@
         :use-package-postconfig
             ;; Adapted From: https://github.com/mohsenil85/evil-evilified-state and
             ;; https://github.com/syl20bnr/spacemacs
-            (evil-evilified-state
-                :straight (evil-evilified-state
-                    :type git
-                    :host github
-                    :repo "shadowrylander/evil-evilified-state"
-                    :branch "master"))
+            (evil-evilified-state)
         :gsetq (evil-escape-key-sequence nil)
         ;; :demon
             ;; TODO

@@ -38,13 +38,24 @@
 ;; User: https://emacs.stackexchange.com/users/14825/nickd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    (add-to-list 'load-path (concat default-directory "/org/lisp"))
-    (require 'org-loaddefs)
-    ;; (byte-recompile-directory default-directory nil)
+    ;; (add-to-list 'load-path (concat default-directory "/org/lisp"))
+    ;; (require 'org-loaddefs)
+    (byte-recompile-directory default-directory nil)
     (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; We are `borg' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(setq package-enable-at-startup nil)
+(require 'borg)
+(borg-initialize)
+(setq borg-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
+                                ("git@gitlab.com:" . "https://gitlab.com/")))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(require 'org-loaddefs)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up `use-package' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -85,8 +96,8 @@
 ;; Byte-compile the `damascus' profile if the `profile-name' is `damascus' or we need to
 ;;     use its `early-init'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (when (or (string= meq/var/profile-name "damascus") meq/var/udei)
-;;     (byte-recompile-directory (meq/ued* "profiles" "damascus") nil))
+(when (or (string= meq/var/profile-name "damascus") meq/var/udei)
+    (byte-recompile-directory (meq/ued* "profiles" "damascus") nil))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -94,7 +105,7 @@
 ;; Set up the `user-emacs-directory' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq user-emacs-directory (f-full (funcall #'meq/ued* "profiles" meq/var/profile-name)))
-;; (unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
+(unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
 (setq custom-file (funcall #'meq/ued "init.el"))
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/18682/31428
@@ -126,7 +137,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up theming ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (byte-recompile-directory (meq/ued* "themes") nil)
+(byte-recompile-directory (meq/ued* "themes") nil)
 (add-to-list 'custom-theme-load-path (meq/ued* "themes"))
 (setq custom-safe-themes t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

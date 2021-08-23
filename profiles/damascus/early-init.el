@@ -16,11 +16,6 @@
 ;; to skip the mtime checks on every *.elc file.
 (setq load-prefer-newer noninteractive)
 
-;; In Emacs 27+, package initialization occurs before `user-init-file' is
-;; loaded, but after `early-init-file'. Doom handles package initialization, so
-;; we must prevent Emacs from doing it early!
-(setq package-enable-at-startup nil)
-
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/31662/31428
 ;; User: https://emacs.stackexchange.com/users/1979/stefan
@@ -82,8 +77,7 @@
     (setq straight-repository-branch "develop")
     (setq straight-use-package-by-default t)
     ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
-    ;; (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
-    (setq straight-disable-byte-compilation t))
+    (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
 
 (eval-and-compile
@@ -92,18 +86,18 @@
   (setq bootstrap-version 5)
   (setq bootstrap-file (concat straight-base-dir "straight/repos/straight.el/bootstrap.el")))
 
-(unless (file-exists-p bootstrap-file)
-  (with-current-buffer
-      (url-retrieve-synchronously
-       "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-       'silent 'inhibit-cookies)
-    (goto-char (point-max))
-    (eval-print-last-sexp)))
+;; (unless (file-exists-p bootstrap-file)
+;;   (with-current-buffer
+;;       (url-retrieve-synchronously
+;;        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+;;        'silent 'inhibit-cookies)
+;;     (goto-char (point-max))
+;;     (eval-print-last-sexp)))
 
-(load bootstrap-file nil 'nomessage)
+;; (load bootstrap-file nil 'nomessage)
 
-(autoload #'straight-x-pull-all "straight-x")
-(autoload #'straight-x-freeze-versions "straight-x")
+;; (autoload #'straight-x-pull-all "straight-x")
+;; (autoload #'straight-x-freeze-versions "straight-x")
 
 ;; use-package
 (setq use-package-always-defer (member "--always-defer" command-line-args))
@@ -113,11 +107,6 @@
 
 (unless (member system-type '(windows-nt ms-dos))
     (meq/up exec-path-from-shell
-        :straight (exec-path-from-shell
-            :type git
-            :host github
-            :repo "purcell/exec-path-from-shell"
-            :branch "master")
         :custom
             (exec-path-from-shell-check-startup-files nil)
             (exec-path-from-shell-variables '("PATH" "MANPATH" "CACHE_HOME" "FPATH" "PYENV_ROOT"))

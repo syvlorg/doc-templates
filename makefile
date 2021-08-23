@@ -7,6 +7,16 @@ mkfileDir := $(dir $(mkfilePath))
 test := emacs -nw --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 
+DRONES_DIR = $(shell git config "borg.drones-directory" || echo "lib")
+
+-include $(DRONES_DIR)/borg/borg.mk
+
+bootstrap-borg:
+|@git submodule--helper clone --name borg --path $(DRONES_DIR)/borg \
+    --url git@github.com:emacscollective/borg.git
+|@cd $(DRONES_DIR)/borg; git symbolic-ref HEAD refs/heads/master
+|@cd $(DRONES_DIR)/borg; git reset --hard HEAD
+
 init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
@@ -39,24 +49,24 @@ tangle: tangle-setup
     -E testing.aiern.org \
     -E resting.aiern.org \
     -E profiles \
-    -E straight \
+    -E .local \
     -E lib/org \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
     -HIe org \
-    -E straight \
+    -E .local \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/graphene \
     -HIe org \
-    -E straight \
+    -E .local \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/nano \
     -HIe org \
-    -E straight \
+    -E .local \
     -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
     -HIe sh \
-    -E straight \
+    -E .local \
     -x chmod +x
 |cd $(mkfileDir)/lib/org; make autoloads
 
