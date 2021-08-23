@@ -1247,76 +1247,76 @@ cmd_push-all()
     fetch = +refs/heads/*:refs/remotes/evil-evilified-state/*
 [submodule "profiles/doom"]
 	url = https://github.com/hlissner/.emacs.d.git
-	active = true
+	active = false
 [submodule "profiles/spacemacs"]
 	url = https://github.com/spacemacs/spacemacs.git
-	active = true
+	active = false
 [submodule "profiles/nano/lisp"]
 	url = https://github.com/rougier/nano.git
-	active = true
+	active = false
 [submodule "profiles/graphene/lisp"]
     url = https://github.com/rdallasgray/graphene.git
-    active = true
+    active = false
 [submodule "profiles/centaur"]
     url = https://github.com/seagle0128/.emacs.d.git
-    active = true
+    active = false
 [submodule "profiles/prelude"]
     url = https://github.com/bbatsov/prelude.git
-    active = true
+    active = false
 [submodule "dash.el"]
 	url = https://github.com/magnars/dash.el.git
-	active = true
+	active = false
 [submodule "s.el"]
 	url = https://github.com/magnars/s.el.git
-	active = true
+	active = false
 [submodule "a.el"]
 	url = https://github.com/plexus/a.el.git
-	active = true
+	active = false
 [submodule "f.el"]
 	url = https://github.com/rejeep/f.el.git
-	active = true
+	active = false
 [submodule "use-package"]
 	url = https://github.com/jwiegley/use-package.git
-	active = true
+	active = false
 [submodule "use-package-hydra"]
 	url = https://gitlab.com/to1ne/use-package-hydra.git
-	active = true
+	active = false
 [submodule "command-log-mode"]
 	url = https://github.com/lewang/command-log-mode.git
-	active = true
+	active = false
 [submodule "which-key"]
 	url = https://github.com/justbur/emacs-which-key.git
-	active = true
+	active = false
 [submodule "hydra"]
 	url = https://github.com/abo-abo/hydra.git
-	active = true
+	active = false
 [submodule "exwm"]
 	url = https://github.com/ch11ng/exwm.git
-	active = true
+	active = false
 [submodule "dmenu"]
 	url = https://github.com/lujun9972/el-dmenu.git
-	active = true
+	active = false
 [submodule "xelb"]
 	url = https://github.com/ch11ng/xelb.git
-	active = true
+	active = false
 [submodule "org"]
 	url = https://code.orgmode.org/bzg/org-mode.git
-	active = true
+	active = false
 [submodule "gcmh"]
 	url = https://gitlab.com/koral/gcmh.git
-	active = true
+	active = false
 [submodule "no-littering"]
 	url = https://github.com/emacscollective/no-littering.git
-	active = true
+	active = false
 [submodule "leaf"]
 	url = https://github.com/conao3/leaf.el.git
-	active = true
+	active = false
 [submodule "leaf-keywords"]
 	url = https://github.com/conao3/leaf-keywords.el.git
-	active = true
+	active = false
 [submodule "borg"]
 	url = https://github.com/emacscollective/borg.git
-	active = true
+	active = false
 #+end_src
 
 * makefile
@@ -1328,24 +1328,14 @@ cmd_push-all()
 
 #+name: 20210622004216528168500
 #+begin_src makefile :tangle (meq/tangle-path)
+# Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 .RECIPEPREFIX := |
 .DEFAULT_GOAL := emacs
 
-# Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
 test := emacs -nw --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
-
-DRONES_DIR = $(shell git config "borg.drones-directory" || echo "lib")
-
--include $(DRONES_DIR)/borg/borg.mk
-
-bootstrap-borg:
-|@git submodule--helper clone --name borg --path $(DRONES_DIR)/borg \
-    --url git@github.com:emacscollective/borg.git
-|@cd $(DRONES_DIR)/borg; git symbolic-ref HEAD refs/heads/master
-|@cd $(DRONES_DIR)/borg; git reset --hard HEAD
 
 init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/

@@ -1,21 +1,11 @@
+# Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 .RECIPEPREFIX := |
 .DEFAULT_GOAL := emacs
 
-# Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
 test := emacs -nw --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
-
-DRONES_DIR = $(shell git config "borg.drones-directory" || echo "lib")
-
--include $(DRONES_DIR)/borg/borg.mk
-
-bootstrap-borg:
-|@git submodule--helper clone --name borg --path $(DRONES_DIR)/borg \
-    --url git@github.com:emacscollective/borg.git
-|@cd $(DRONES_DIR)/borg; git symbolic-ref HEAD refs/heads/master
-|@cd $(DRONES_DIR)/borg; git reset --hard HEAD
 
 init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
