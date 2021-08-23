@@ -835,10 +835,15 @@ be ignored by `god-execute-with-current-bindings'."
                     (apply func args))) (apply func args)))))
 
 ;;;###autoload
-(with-eval-after-load 'exwm (add-hook 'exwm-init-hook #'(lambda nil (interactive) (advice-add
-                                                                            #'switch-to-buffer
-                                                                            :around
-                                                                            #'meq/switch-to-buffer-advice))))
+(with-eval-after-load 'exwm (add-hook 'exwm-init-hook #'(lambda nil (interactive)
+                                                            (advice-add
+                                                                #'switch-to-buffer
+                                                                :around
+                                                                #'meq/switch-to-buffer-advice)
+                                                            (advice-add
+                                                                #'switch-to-buffer
+                                                                :after
+                                                                #'meq/pre-post-command-hook-command))))
 
 ;;;###autoload
 (defun meq/shell nil (interactive)
