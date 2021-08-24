@@ -62,3 +62,7 @@
 	url = doom-aiern-modeline
 	path = siluam/doom-aiern-modeline
 	branch = master
+[subtree "siluam/alloy"]
+	url = alloy
+	path = siluam/alloy
+	branch = master
