@@ -46,3 +46,7 @@
 	url = prime
 	path = siluam/prime
 	branch = main
+[subtree "siluam/meta"]
+	url = meta
+	path = siluam/meta
+	branch = main
