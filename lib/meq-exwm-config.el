@@ -67,10 +67,11 @@
         ;; (exwm-enable)
 
     ;; Adapted From: https://www.reddit.com/r/emacs/comments/8yf6dx/key_chords_in_exwm/
-    :gsetq (exwm-input-line-mode-passthrough t)
-        (exwm-manage-force-tiling t)
+    :gsetq (exwm-manage-force-tiling t)
+        ;; (exwm-input-line-mode-passthrough t)
 
     :demon ((naked "XF86PowerOff") 'deino-exwm/body)
+    :which-key-change-ryo ("e" "exwm")
     :deino (deino-exwm nil "e e"
                 ("`" nil "cancel")
                 ("XF86PowerOff" deino-exwm/power/body "power")

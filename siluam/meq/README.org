@@ -604,14 +604,15 @@ extract active aiern bidings."
         (unless (or (meq/xwinp) (meq/fbatp olivetti-mode)) (olivetti-mode 1)))
     (with-eval-after-load 'rainbow-identifiers
         (unless (meq/fbatp rainbow-identifiers-mode) (rainbow-identifiers-mode 1)))
-    (when (meq/exwm-p) (if (or
-                            (meq/current-modal-modes)
-                            (not (meq/xwinp))
-                            overriding-terminal-local-map
-                            deino-curr-map
-                            hydra-curr-map)
-        (unless (eq exwm--input-mode 'line-mode) (exwm-input-grab-keyboard exwm--id))
-        (unless (eq exwm--input-mode 'char-mode) (exwm-input-release-keyboard exwm--id)))))
+    ;; (when (meq/exwm-p) (if (or
+    ;;                         (meq/current-modal-modes)
+    ;;                         (not (meq/xwinp))
+    ;;                         overriding-terminal-local-map
+    ;;                         deino-curr-map
+    ;;                         hydra-curr-map)
+    ;;     (unless (eq exwm--input-mode 'line-mode) (exwm-input-grab-keyboard exwm--id))
+    ;;     (unless (eq exwm--input-mode 'char-mode) (exwm-input-release-keyboard exwm--id))))
+        )
 ;;;###autoload
 (add-hook 'pre-command-hook 'meq/pre-post-command-hook-command)
 ;;;###autoload
