@@ -78,3 +78,7 @@
 	url = aiern-god-state
 	path = siluam/aiern-god-state
 	branch = master
+[subtree "siluam/cosmoem"]
+	url = cosmoem
+	path = siluam/cosmoem
+	branch = master
