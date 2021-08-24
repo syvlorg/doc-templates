@@ -21,7 +21,7 @@
         url = https://github.com/emacscollective/borg.git
 [submodule "closql"]
         path = lib/closql
-        url = git@github.com:emacscollective/closql.git
+        url = https://github.com/emacscollective/closql.git
 [submodule "command-log-mode"]
         path = lib/command-log-mode
         url = https://github.com/lewang/command-log-mode.git
@@ -39,11 +39,11 @@
         url = https://github.com/hlissner/emacs-doom-themes.git
 [submodule "emacsql"]
         path = lib/emacsql
-        url = git@github.com:skeeto/emacsql.git
+        url = https://github.com/skeeto/emacsql.git
         no-byte-compile = emacsql-pg.el
 [submodule "epkg"]
         path = lib/epkg
-        url = git@github.com:emacscollective/epkg.git
+        url = https://github.com/emacscollective/epkg.git
 [submodule "evil"]
         path = lib/evil
         url = https://github.com/emacs-evil/evil.git
