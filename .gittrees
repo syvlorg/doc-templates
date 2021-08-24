@@ -34,3 +34,7 @@
 	url = doc
 	path = siluam/doc
 	branch = main
+[subtree "siluam/cosmog"]
+	url = cosmog
+	path = siluam/cosmog
+	branch = main
