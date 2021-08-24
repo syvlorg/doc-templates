@@ -30,3 +30,7 @@
 	url = fell
 	path = siluam/fell
 	branch = main
+[subtree "siluam/doc"]
+	url = doc
+	path = siluam/doc
+	branch = main
