@@ -74,3 +74,7 @@
 	url = sorrow
 	path = siluam/sorrow
 	branch = master
+[subtree "siluam/aiern-god-state"]
+	url = aiern-god-state
+	path = siluam/aiern-god-state
+	branch = master
