@@ -26,3 +26,7 @@
 	url = titan
 	path = siluam/titan
 	branch = main
+[subtree "siluam/fell"]
+	url = fell
+	path = siluam/fell
+	branch = main
