@@ -14,3 +14,7 @@
 	url = lode
 	path = siluam/lode
 	branch = main
+[subtree "siluam/meq"]
+	url = meq
+	path = siluam/meq
+	branch = main
