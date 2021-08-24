@@ -115,6 +115,16 @@
 
 ;; Adapted From: https://github.com/jwiegley/use-package/blob/master/use-package-core.el#L1153
 ;;;###autoload
+(defalias 'use-package-normalize/:load-siluam-file-preconfig 'use-package-normalize-forms)
+
+;; Adapted From: https://gitlab.com/to1ne/use-package-hydra/-/blob/master/use-package-hydra.el#L79
+;;;###autoload
+(defun use-package-handler/:load-siluam-file-preconfig (name keyword args rest state)
+    (use-package-concat (mapcar #'(lambda (def) `(meq/load-siluam-file ,@def)) args)
+    (use-package-process-keywords name rest state)))
+
+;; Adapted From: https://github.com/jwiegley/use-package/blob/master/use-package-core.el#L1153
+;;;###autoload
 (defalias 'use-package-normalize/:use-package-preconfig 'use-package-normalize-forms)
 
 ;; Adapted From: https://gitlab.com/to1ne/use-package-hydra/-/blob/master/use-package-hydra.el#L79
@@ -141,12 +151,14 @@
         collect :init/defun and
         collect :init/defun* and
         collect :load-emacs-file-preconfig and
+        collect :load-siluam-file-preconfig and
         collect :use-package-preconfig and
         collect :upnsd-preconfig
         else
         unless (memq item '(:init/defun
                             :init/defun*
                             :load-emacs-file-preconfig
+                            :load-siluam-file-preconfig
                             :use-package-preconfig
                             :upnsd-preconfig))
         collect item))

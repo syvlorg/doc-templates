@@ -394,7 +394,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; olivetti
-(meq/up olivetti :gsetq (olivetti-body-width 0.60))
+(meq/up olivetti
+    :gsetq (olivetti-body-width 0.60)
+    :use-package-preconfig (fringe :load-emacs-file-preconfig ("fringe")
+                        :config
+                            ;; (fringe-mode (quote (1 . 1)) nil (fringe))
+                            ;; (fringe-mode '(3 . 0))
+                            ;; (fringe-mode 'none)
+                            ;; (fringe-mode 1)
+                            ))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

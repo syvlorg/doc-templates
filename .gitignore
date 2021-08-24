@@ -4,11 +4,10 @@ straight
 auto-save-list
 backup-tangle
 *.elc
-transient
 eln-cache
 var
 .cosmog.
 elpa
 quelpatest.md
 test.md
-/epkgs/
+/transient

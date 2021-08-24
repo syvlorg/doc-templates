@@ -129,6 +129,8 @@
 
 <<normalize-and-handle(name="load-emacs-file-preconfig", func="meq/load-emacs-file")>>
 
+<<normalize-and-handle(name="load-siluam-file-preconfig", func="meq/load-siluam-file")>>
+
 <<normalize-and-handle(name="use-package-preconfig", func="meq/up")>>
 
 <<normalize-and-handle(name="upnsd-preconfig", func="meq/upnsd")>>
@@ -141,12 +143,14 @@
         collect :init/defun and
         collect :init/defun* and
         collect :load-emacs-file-preconfig and
+        collect :load-siluam-file-preconfig and
         collect :use-package-preconfig and
         collect :upnsd-preconfig
         else
         unless (memq item '(:init/defun
                             :init/defun*
                             :load-emacs-file-preconfig
+                            :load-siluam-file-preconfig
                             :use-package-preconfig
                             :upnsd-preconfig))
         collect item))
