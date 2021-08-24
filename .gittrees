@@ -82,3 +82,7 @@
 	url = cosmoem
 	path = siluam/cosmoem
 	branch = master
+[subtree "siluam/evil-evilified-state"]
+	url = evil-evilified-state
+	path = siluam/evil-evilified-state
+	branch = master
