@@ -1,5 +1,5 @@
 [submodule "a.el"]
-        path = lib/a.el
+	path = lib/a
         url = https://github.com/plexus/a.el
 [submodule "ace-window"]
         path = lib/ace-window
@@ -57,7 +57,7 @@
         path = lib/exwm
         url = https://github.com/ch11ng/exwm.git
 [submodule "f.el"]
-        path = lib/f.el
+	path = lib/f
         url = https://github.com/rejeep/f.el
 [submodule "gcmh"]
         path = lib/gcmh
@@ -174,7 +174,7 @@
         path = lib/ryo-modal
         url = https://github.com/kungsgeten/ryo-modal.git
 [submodule "s.el"]
-        path = lib/s.el
+	path = lib/s
         url = https://github.com/magnars/s.el
 [submodule "shrink-path"]
         path = lib/shrink-path
