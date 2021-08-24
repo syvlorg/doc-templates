@@ -42,3 +42,7 @@
 	url = uru
 	path = siluam/uru
 	branch = main
+[subtree "siluam/prime"]
+	url = prime
+	path = siluam/prime
+	branch = main
