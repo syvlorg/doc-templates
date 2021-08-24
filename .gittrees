@@ -10,3 +10,7 @@
 	url = use-package-deino
 	path = siluam/use-package-deino
 	branch = main
+[subtree "siluam/lode"]
+	url = lode
+	path = siluam/lode
+	branch = main
