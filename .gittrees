@@ -6,3 +6,7 @@
 	url = use-package-extras
 	path = siluam/use-package-extras
 	branch = main
+[subtree "siluam/use-package-deino"]
+	url = use-package-deino
+	path = siluam/use-package-deino
+	branch = main
