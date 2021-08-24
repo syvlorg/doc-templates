@@ -54,3 +54,7 @@
 	url = riot
 	path = siluam/riot
 	branch = main
+[subtree "siluam/aiern"]
+	url = aiern
+	path = siluam/aiern
+	branch = master
