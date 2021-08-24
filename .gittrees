@@ -2,3 +2,7 @@
 	url = alamode
 	path = siluam/alamode
 	branch = main
+[subtree "siluam/use-package-extras"]
+	url = use-package-extras
+	path = siluam/use-package-extras
+	branch = main
