@@ -66,3 +66,7 @@
 	url = alloy
 	path = siluam/alloy
 	branch = master
+[subtree "siluam/deino"]
+	url = deino
+	path = siluam/deino
+	branch = master
