@@ -70,3 +70,7 @@
 	url = deino
 	path = siluam/deino
 	branch = master
+[subtree "siluam/sorrow"]
+	url = sorrow
+	path = siluam/sorrow
+	branch = master
