@@ -22,3 +22,7 @@
 	url = janus
 	path = siluam/janus
 	branch = main
+[subtree "siluam/titan"]
+	url = titan
+	path = siluam/titan
+	branch = main
