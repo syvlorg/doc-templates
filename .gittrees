@@ -50,3 +50,7 @@
 	url = meta
 	path = siluam/meta
 	branch = main
+[subtree "siluam/riot"]
+	url = riot
+	path = siluam/riot
+	branch = main
