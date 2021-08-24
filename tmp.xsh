@@ -15,6 +15,7 @@ for lib in [
     "riot",
 ]:
     git subtree add --squash --prefix siluam/@(lib) @(lib) main
+    make super-push-only
 
 for lib in [
     "aiern",
@@ -28,4 +29,5 @@ for lib in [
     "helm-ido-like",
 ]:
     git subtree add --squash --prefix siluam/@(lib) @(lib) master
+    make super-push-only
 

@@ -13,7 +13,7 @@ init:
 subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --force
 |git -C $(mkfileDir) submodule sync
-|git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
+# |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
 |cd $(mkfileDir)/lib/org; make; make autoloads
 
 pull: init
@@ -21,6 +21,7 @@ pull: init
 |git -C $(mkfileDir) subtree pull-all
 
 add:
+|git submodule foreach git stash
 |git -C $(mkfileDir) add .
 
 commit:
