@@ -3,6 +3,13 @@
                     (unless (get-buffer "Alacritty") (meq/run "alacritty"))
                     (unless (get-buffer "obsidian") (meq/run "obsidian")))
     :hook (exwm-init . post-exwm)
+    :use-package-preconfig (fringe :load-emacs-file-preconfig ("fringe")
+                        :config
+                            ;; (fringe-mode (quote (1 . 1)) nil (fringe))
+                            ;; (fringe-mode '(3 . 0))
+                            ;; (fringe-mode 'none)
+                            ;; (fringe-mode 1)
+                            )
     :use-package-postconfig (dmenu)
     :config
         (require 'scroll-bar)
