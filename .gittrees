@@ -38,3 +38,7 @@
 	url = cosmog
 	path = siluam/cosmog
 	branch = main
+[subtree "siluam/uru"]
+	url = uru
+	path = siluam/uru
+	branch = main
