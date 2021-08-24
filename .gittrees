@@ -1,0 +1,4 @@
+[subtree "siluam/alamode"]
+	url = alamode
+	path = siluam/alamode
+	branch = main
