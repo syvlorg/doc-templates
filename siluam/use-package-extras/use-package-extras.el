@@ -42,6 +42,12 @@
             "lib" path))))
 
 ;;;###autoload
+(defun meq/load-siluam-file (path) (interactive)
+    (load (f-full (f-join
+            (if meq/var/profiled pre-user-emacs-directory user-emacs-directory)
+            "siluam" path))))
+
+;;;###autoload
 (defmacro meq/up (&rest args) (interactive)
     `(use-package ,@args :demand ,(cl-getf args :demand t)))
 

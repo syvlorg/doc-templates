@@ -52,6 +52,8 @@
 ;;;###autoload
 (defun meq/ued-lib (&rest args) (f-full (apply #'meq/ued* "lib" args)))
 ;;;###autoload
+(defun meq/ued-siluam (&rest args) (f-full (apply #'meq/ued* "siluam" args)))
+;;;###autoload
 (defun meq/ued (&rest args) (f-full (apply #'f-join user-emacs-directory args)))
 ;;;###autoload
 (defun meq/cl (&rest args) (let* ((path (apply #'meq/ued args))) (when (f-exists? path) (load path))))
@@ -934,7 +936,7 @@ be ignored by `god-execute-with-current-bindings'."
 (advice-add #'exit-minibuffer :after #'meq/which-key--show-popup)
 
 ;;;###autoload
-(with-eval-after-load 'key-chord (add-hook 'after-init-hook 'key-chord-mode))
+(add-hook 'after-init-hook 'key-chord-mode)
 
 (provide 'meq)
 ;;; meq.el ends here
