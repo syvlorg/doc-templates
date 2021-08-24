@@ -757,16 +757,14 @@ be ignored by `god-execute-with-current-bindings'."
 (defun meq/run (command &optional name)
     (when (meq/exwm-p) (exwm-workspace-switch-create (1+ (exwm-workspace--count))))
     (start-process-shell-command (or name command) nil command)
-    (when (and (meq/exwm-p) exwm--floating-frame) (exwm-floating--unset-floating exwm--id))
-    (meq/pre-post-command-hook-command))
+    (when (and (meq/exwm-p) exwm--floating-frame) (exwm-floating--unset-floating exwm--id)))
 
 ;; Adapted From: https://github.com/ch11ng/exwm/blob/master/exwm-config.el#L52
 ;;;###autoload
 (defun meq/run-interactive (command) (interactive (list (read-shell-command "$ ")))
     (when (meq/exwm-p) (exwm-workspace-switch-create (1+ (exwm-workspace--count))))
     (start-process-shell-command command nil command)
-    (when (and (meq/exwm-p) exwm--floating-frame) (exwm-floating--unset-floating exwm--id))
-    (meq/pre-post-command-hook-command))
+    (when (and (meq/exwm-p) exwm--floating-frame) (exwm-floating--unset-floating exwm--id)))
 
 ;; ;;;###autoload
 ;; (defun meq/switch-to-buffer (buffer-or-name) (interactive)
