@@ -18,3 +18,7 @@
 	url = meq
 	path = siluam/meq
 	branch = main
+[subtree "siluam/janus"]
+	url = janus
+	path = siluam/janus
+	branch = main
