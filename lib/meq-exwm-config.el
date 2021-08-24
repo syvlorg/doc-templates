@@ -1,8 +1,7 @@
 (meq/up exwm
     :init/defun* (post-exwm nil (interactive)
                     (unless (get-buffer "Alacritty") (meq/run "alacritty"))
-                    (meq/run "obsidian")
-                    (exwm-workspace-switch 0))
+                    (unless (get-buffer "obsidian") (meq/run "obsidian")))
     :hook (exwm-init . post-exwm)
     :use-package-preconfig (fringe
                         :disabled t
