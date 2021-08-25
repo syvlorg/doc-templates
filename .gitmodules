@@ -221,3 +221,6 @@
 [submodule "yasnippet"]
         path = lib/yasnippet
         url = https://github.com/joaotavora/yasnippet.git
+[submodule "profiles/patrick"]
+	path = profiles/patrick
+	url = https://github.com/patrickt/emacs
