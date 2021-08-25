@@ -52,11 +52,10 @@
 
 ;; all-the-icons
 (meq/up all-the-icons :config
-    ;; From: https://github.com/leanprover/lean/issues/873#issuecomment-159325156
-    (when (member "Cartograph CF Extra Bold" (font-family-list))
-        (set-face-attribute 'default nil :font "Cartograph CF Extra Bold-10")
-        (set-face-attribute 'mode-line nil :font "Cartograph CF Extra Bold-10")
-        (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Extra Bold-10")))
+    (ignore-errors
+        (set-face-attribute 'default nil :font "Cartograph CF Extra Bold-12")
+        (set-face-attribute 'mode-line nil :font "Cartograph CF Extra Bold-12")
+        (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Extra Bold-12")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -739,7 +738,8 @@
             (st-giles-blue . b)
             (lio-fotia . l)
             (orange-purple . C-o)
-            (flamingo-pink-purple . C-p))))
+            (flamingo-pink-purple . C-p)
+            (ghostfreak-green . g))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

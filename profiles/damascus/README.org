@@ -253,7 +253,7 @@ And in my experience... Not a good idea; much too confusing. Use
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(meq/var/current-theme 'dracula-purple-dark)
+ '(meq/var/current-theme 'ghostfreak-green-dark)
  '(meq/var/current-theme-mode "dark")
  '(safe-local-variable-values '((eval message "eval 1"))))
 (custom-set-faces
@@ -477,11 +477,10 @@ And in my experience... Not a good idea; much too confusing. Use
 #+name: 20210819164654924589400
 #+begin_src emacs-lisp
 (meq/up all-the-icons :config
-    ;; From: https://github.com/leanprover/lean/issues/873#issuecomment-159325156
-    (when (member "Cartograph CF Extra Bold" (font-family-list))
-        (set-face-attribute 'default nil :font "Cartograph CF Extra Bold-10")
-        (set-face-attribute 'mode-line nil :font "Cartograph CF Extra Bold-10")
-        (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Extra Bold-10")))
+    (ignore-errors
+        (set-face-attribute 'default nil :font "Cartograph CF Extra Bold-12")
+        (set-face-attribute 'mode-line nil :font "Cartograph CF Extra Bold-12")
+        (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Extra Bold-12")))
 #+end_src
 
 *** counsel
@@ -1345,7 +1344,8 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
             (st-giles-blue . b)
             (lio-fotia . l)
             (orange-purple . C-o)
-            (flamingo-pink-purple . C-p))))
+            (flamingo-pink-purple . C-p)
+            (ghostfreak-green . g))))
 #+end_src
 
 ** postface
