@@ -910,6 +910,30 @@ be ignored by `god-execute-with-current-bindings'."
     (with-eval-after-load 'yasnippet (eval `(meq/with-ymm (yas-expand-snippet (yas-lookup-snippet ,name))))))
 
 ;;;###autoload
+(defun meq/get-next-in-list (item list)
+    (let* ((index (seq-position list item))) (unwind-protect
+        (nth (1+ index) list)
+        (-remove-at-indices (list index (1+ index)) list))))
+
+;;;###autoload
+(defun meq/get-next-in-cla (item) (meq/get-next-in-list item command-line-args))
+
+;;;###autoload
+(defun meq/item-in-list (item list) (unwind-protect (member item list) (delete item list)))
+
+;;;###autoload
+(defun meq/item-in-cla (item) (meq/item-in-list item command-line-args))
+
+;;;###autoload
+(defmacro meq/when-item-in-list (item list &rest body)
+    (when (member item list) (unwind-protect
+        (eval `(progn ,@body))
+        (delete item list))))
+
+;;;###autoload
+(defmacro meq/when-item-in-cla (item &rest body) (eval `(meq/when-item-in-list ,item ,command-line-args ,@body)))
+
+;;;###autoload
 (with-eval-after-load 'aiern (with-eval-after-load 'evil (defun meq/both-ex-define-cmd (cmd function) (interactive)
     (evil-ex-define-cmd cmd function)
     (aiern-ex-define-cmd cmd function))))

@@ -4,7 +4,7 @@
 
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
-test := emacs -nw --bg-daemon=test
+test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 
 init:
@@ -68,19 +68,19 @@ tangle: tangle-setup
 subtree-prep: tangle push-only
 
 test:
-|emacs -nw
+|emacs
 
 test-doom:
-|emacs -nw --doom
+|emacs --doom
 
 test-graphene:
-|emacs -nw --graphene
+|emacs --graphene
 
 test-nano:
-|emacs -nw --nano
+|emacs --nano
 
 pest:
-|emacs -nw -p
+|emacs -p
 
 test-and-kill-pre:
 |-emacsclient -s test -e "(kill-emacs)"
@@ -122,10 +122,10 @@ delete-nano:
 |rm -rf $(mkfileDir)/profiles/nano/.local
 
 update-test:
-|emacs -nw --update
+|emacs --update
 
 no-config-test:
-|emacs -nw -Q
+|emacs -Q
 
 emacs: tangle test
 remacs: delete tangle test-update-and-kill test

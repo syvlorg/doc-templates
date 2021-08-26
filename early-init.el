@@ -12,20 +12,35 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar meq/var/profiled t)
 (defvar pre-user-emacs-directory (file-name-directory load-file-name))
-(defvar meq/var/udei-profiles '(nano graphene))
 (defvar meq/var/profile-name (if (member "--profile" command-line-args)
-    (nth (1+ (seq-position command-line-args "--profile")) command-line-args) "damascus"))
-(defvar meq/var/udei (or (member "--udei" command-line-args)
-                            (member (intern meq/var/profile-name) meq/var/udei-profiles)))
+    (let* ((value (nth (1+ (seq-position command-line-args "--profile")) command-line-args)))
+        (unwind-protect
+            value
+            (delete "--profile" command-line-args)
+            (delete value command-line-args))) "damascus"))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Delete command-line arguments already used
+;; Add to the `command-line-args' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(delete "--profile" command-line-args)
-(delete meq/var/profile-name command-line-args)
-(delete "--udei" command-line-args)
+(require 'cl)
+(defmacro meq/push-to-cla (&rest args)
+    (dolist (arg* args)
+        (let* ((arg (if (stringp arg*) arg* (symbol-name arg*)))
+                (already-in-list (member arg command-line-args)))
+            (unless already-in-list (add-to-list 'command-line-args arg t)))))
+(cl-case (intern meq/var/profile-name)
+    (nano (meq/push-to-cla --udei --profile-lib profiles/nano/lisp/nano.el)))
+(remove-duplicates command-line-args :test 'string=)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Define other variables ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defvar meq/var/udei (unwind-protect (member "--udei" command-line-args)
+                        (delete "--udei" command-line-args)))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -133,7 +148,28 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Use the damascus' early-init if nothing else is available or if preferred ;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when meq/var/udei (meq/use-damascus-early-init) (add-to-list 'load-path (meq/ued "lisp")))
+(when meq/var/udei (meq/use-damascus-early-init))
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Use an alternate `init' and / or `lib' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun meq/load-from-cla (arg &optional byte-compile)
+    (eval `(meq/when-item-in-cla ,arg
+        (let* ((item (meq/get-next-in-cla ,arg))
+                (file (expand-file-name item))
+                (exists (f-exists? file))
+                (is-dir (and exists (f-directory? file)))
+                (dir (if is-dir file (f-dirname file))))
+            (message file)
+            (if (not exists)
+                (eval (intern item))
+                (when ,byte-compile (byte-recompile-directory dir nil))
+                (add-to-list 'load-path dir)
+                (unless is-dir (load file)))))))
+(meq/load-from-cla "--profile-early-lib" t)
+(meq/load-from-cla "--profile-early-init")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 

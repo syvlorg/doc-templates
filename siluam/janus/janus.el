@@ -153,17 +153,12 @@
 
 ;;;###autoload
 (defun meq/which-theme nil (interactive)
-    (when (member "--theme" command-line-args)
-        (let* ((name (nth (1+ (seq-position command-line-args "--theme")) command-line-args)))
+    (meq/when-item-in-cla "--theme"
+        (let* ((name (meq/get-next-in-cla "--theme")))
             (meq/load-theme (intern (concat
                 name
-                (if (member "--light" command-line-args) "-light" "-dark"))))
-            (delete "--theme" command-line-args)
-            (delete name command-line-args)
-            (when (member "--light" command-line-args)
-                (delete "--light" command-line-args))
-            (when (member "--dark" command-line-args)
-                (delete "--dark" command-line-args)))))
+                (if (meq/item-in-cla "--light") "-light" "-dark"))))
+            (delete "--dark" command-line-args))))
 
 ;;;###autoload
 (defun meq/switch-theme-mode nil (interactive)
