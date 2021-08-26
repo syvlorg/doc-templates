@@ -221,6 +221,11 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; dired
+(meq/upnsd dired :use-package-preconfig (ranger :hook (dired . ranger-override-dired-mode)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; doom-aiern-modeline
 (use-package doom-aiern-modeline
     :hook (after-init . doom-aiern-modeline-mode)
@@ -538,6 +543,28 @@
 
         ;; From: https://www.reddit.com/r/orgmode/comments/n56fcv/important_the_contrib_directory_now_lives_outside/gwzz7v5?utm_source=share&utm_medium=web2x&context=3
         (org-contrib)
+        (yasnippet :config (add-to-list 'yas-snippet-dirs (meq/ued* "snippets") t)
+            :deino (deino-yasnippet (:color blue :hint nil) "y"
+                "
+                            ^YASnippets^
+                --------------------------------------------
+                Modes:    Load/Visit:    Actions:
+
+                _g_lobal  _d_irectory    _i_nsert
+                _m_inor   _f_ile         _t_ryout
+                _e_xtra   _l_ist         _n_ew
+                        _a_ll
+                "
+                ("d" yas-load-directory)
+                ("e" yas-activate-extra-mode)
+                ("i" yas-insert-snippet)
+                ("f" yas-visit-snippet-file :color blue)
+                ("n" yas-new-snippet)
+                ("t" yas-tryout-snippet)
+                ("l" yas-describe-tables)
+                ("g" yas/global-mode)
+                ("m" yas/minor-mode)
+                ("a" yas-reload-all)))
     :config
         (org-babel-do-load-languages 'org-babel-load-languages
             (append org-babel-load-languages
@@ -629,33 +656,6 @@
                     (if (eq args nil) "" args)
                     (org-babel-process-file-name in-file))
             ""))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; yasnippet
-(meq/up yasnippet
-    :config (add-to-list 'yas-snippet-dirs (meq/ued* "snippets") t)
-    :deino (deino-yasnippet (:color blue :hint nil) "y"
-        "
-                    ^YASnippets^
-        --------------------------------------------
-        Modes:    Load/Visit:    Actions:
-
-        _g_lobal  _d_irectory    _i_nsert
-        _m_inor   _f_ile         _t_ryout
-        _e_xtra   _l_ist         _n_ew
-                _a_ll
-        "
-        ("d" yas-load-directory)
-        ("e" yas-activate-extra-mode)
-        ("i" yas-insert-snippet)
-        ("f" yas-visit-snippet-file :color blue)
-        ("n" yas-new-snippet)
-        ("t" yas-tryout-snippet)
-        ("l" yas-describe-tables)
-        ("g" yas/global-mode)
-        ("m" yas/minor-mode)
-        ("a" yas-reload-all)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

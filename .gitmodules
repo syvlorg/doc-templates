@@ -25,6 +25,9 @@
 [submodule "command-log-mode"]
         path = lib/command-log-mode
         url = https://github.com/lewang/command-log-mode.git
+[submodule "company"]
+        path = lib/company
+        url = https://github.com/company-mode/company-mode.git
 [submodule "counsel-projectile"]
         path = lib/counsel-projectile
         url = https://github.com/ericdanan/counsel-projectile.git
@@ -59,6 +62,9 @@
 [submodule "f.el"]
         path = lib/f
         url = https://github.com/rejeep/f.el
+[submodule "flycheck"]
+        path = lib/flycheck
+        url = https://github.com/flycheck/flycheck.git
 [submodule "gcmh"]
         path = lib/gcmh
         url = https://gitlab.com/koral/gcmh.git
@@ -86,6 +92,9 @@
 [submodule "hydra"]
         path = lib/hydra
         url = https://github.com/abo-abo/hydra.git
+[submodule "ido-completing-read+"]
+        path = lib/ido-completing-read+
+        url = https://github.com/DarwinAwardWinner/ido-completing-read-plus.git
 [submodule "iedit"]
         path = lib/iedit
         url = https://github.com/victorhge/iedit.git
@@ -137,6 +146,9 @@
 [submodule "ox-pandoc"]
         path = lib/ox-pandoc
         url = https://github.com/kawabata/ox-pandoc.git
+[submodule "ppd-sr-speedbar"]
+        path = lib/ppd-sr-speedbar
+        url = https://github.com/rdallasgray/ppd-sr-speedbar.git
 [submodule "prescient"]
         path = lib/prescient
         url = https://github.com/raxod502/prescient.el.git
@@ -152,12 +164,21 @@
 [submodule "profiles/nano/lisp"]
         path = profiles/nano/lisp
         url = https://github.com/rougier/nano-emacs
+[submodule "profiles/patrick"]
+        path = profiles/patrick
+        url = https://github.com/patrickt/emacs
 [submodule "profiles/prelude"]
         path = profiles/prelude
         url = https://github.com/bbatsov/prelude.git
 [submodule "profiles/spacemacs"]
         path = profiles/spacemacs
         url = https://github.com/syl20bnr/spacemacs.git
+[submodule "project-persist"]
+        path = lib/project-persist
+        url = https://github.com/rdallasgray/project-persist.git
+[submodule "project-persist-drawer"]
+  path = lib/project-persist-drawer
+  url = https://github.com/rdallasgray/project-persist-drawer.git
 [submodule "projectile"]
         path = lib/projectile
         url = https://github.com/bbatsov/projectile.git
@@ -182,9 +203,15 @@
 [submodule "sly"]
         path = lib/sly
         url = https://github.com/joaotavora/sly.git
+[submodule "smartparens"]
+        path = lib/smartparens
+        url = https://github.com/Fuco1/smartparens.git
 [submodule "smex"]
         path = lib/smex
         url = https://github.com/nonsequitur/smex.git
+[submodule "sr-speedbar"]
+  path = lib/sr-speedbar
+  url = https://github.com/emacsorphanage/sr-speedbar.git
 [submodule "transient"]
         path = lib/transient
         url = https://github.com/magit/transient.git
@@ -203,6 +230,9 @@
 [submodule "vterm"]
         path = lib/vterm
         url = https://github.com/akermu/emacs-libvterm.git
+[submodule "web-mode"]
+        path = lib/web-mode
+        url = https://github.com/fxbois/web-mode.git
 [submodule "which-key"]
         path = lib/which-key
         url = https://github.com/justbur/emacs-which-key.git
@@ -221,6 +251,3 @@
 [submodule "yasnippet"]
         path = lib/yasnippet
         url = https://github.com/joaotavora/yasnippet.git
-[submodule "profiles/patrick"]
-	path = profiles/patrick
-	url = https://github.com/patrickt/emacs

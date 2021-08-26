@@ -1718,13 +1718,14 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; Add to the `command-line-args' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (require 'cl)
-(defmacro meq/push-to-cla (&rest args)
+(defun meq/push-to-cla (args)
     (dolist (arg* args)
         (let* ((arg (if (stringp arg*) arg* (symbol-name arg*)))
                 (already-in-list (member arg command-line-args)))
             (unless already-in-list (add-to-list 'command-line-args arg t)))))
 (cl-case (intern meq/var/profile-name)
-    (nano (meq/push-to-cla --udei --profile-lib profiles/nano/lisp/nano.el)))
+    (nano (meq/push-to-cla '(--udei --profile-lib profiles/nano/lisp/nano.el)))
+    (graphene (meq/push-to-cla '(--udei --profile-lib profiles/graphene/lisp/graphene.el))))
 (remove-duplicates command-line-args :test 'string=)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1734,6 +1735,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar meq/var/udei (unwind-protect (member "--udei" command-line-args)
                         (delete "--udei" command-line-args)))
+(defvar meq/var/ddei (or meq/var/udei (string= meq/var/profile-name "damascus")))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1743,7 +1745,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;; User: https://emacs.stackexchange.com/users/14825/nickd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    (add-to-list 'load-path (concat (file-name-directory load-file-name) "lib/org/lisp"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/org/lisp"))
     (require 'org-loaddefs)
 
     ;; To get the latest version of `org-mode', require the load-file before
@@ -1758,15 +1760,17 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; We are `borg' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq package-enable-at-startup nil)
 (require 'borg)
-(borg-initialize)
 (setq borg-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
                                 ("git@gitlab.com:" . "https://gitlab.com/")))
+(borg-initialize)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up `use-package' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1872,6 +1876,24 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 (byte-recompile-directory (meq/ued* "themes") nil)
 (add-to-list 'custom-theme-load-path (meq/ued* "themes"))
 (setq custom-safe-themes t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Perform any last-minute steps for specific profiles ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(let* ((spacemacs-path (meq/ued*
+                            "profiles"
+                            "spacemacs"
+                            "layers"
+                            "+distributions"
+                            "spacemacs-bootstrap")))
+    (cl-case (intern meq/var/profile-name)
+        (doom (load (meq/ued-lib "ido-completing-read+" "ido-completing-read+.el")))
+        (spacemacs (progn
+                        (load (concat spacemacs-path "packages.el"))
+                        (load (concat spacemacs-path "funcs.el"))
+                        (spacemacs-bootstrap/init-use-package)))))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 

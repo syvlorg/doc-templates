@@ -388,6 +388,11 @@ And in my experience... Not a good idea; much too confusing. Use
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; dired
+<<20210826110352292872500>>
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; doom-aiern-modeline
 <<20210708192934464242100>>
 
@@ -659,6 +664,18 @@ And in my experience... Not a good idea; much too confusing. Use
         )
 #+end_src
 
+*** dired
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210826110352292872500
+
+#+name: 20210826110352292872500
+#+begin_src emacs-lisp
+(meq/upnsd dired :use-package-preconfig (ranger :hook (dired . ranger-override-dired-mode)))
+#+end_src
+
 *** doom-aiern-modeline
 
 Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
@@ -669,7 +686,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 : 20210708192934464242100
 
 #+name: 20210708192934464242100
-#+begin_src emacs-lisp :comments link
+#+begin_src emacs-lisp
 (use-package doom-aiern-modeline
     :hook (after-init . doom-aiern-modeline-mode)
     :use-package-preconfig (shrink-path)
@@ -967,11 +984,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; yasnippet
-<<20210822184930874037500>>
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
 ;; doc
 <<20210810191825486923500>>
 
@@ -1148,6 +1160,28 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
         ;; From: https://www.reddit.com/r/orgmode/comments/n56fcv/important_the_contrib_directory_now_lives_outside/gwzz7v5?utm_source=share&utm_medium=web2x&context=3
         (org-contrib)
+        (yasnippet :config (add-to-list 'yas-snippet-dirs (meq/ued* "snippets") t)
+            :deino (deino-yasnippet (:color blue :hint nil) "y"
+                "
+                            ^YASnippets^
+                --------------------------------------------
+                Modes:    Load/Visit:    Actions:
+
+                _g_lobal  _d_irectory    _i_nsert
+                _m_inor   _f_ile         _t_ryout
+                _e_xtra   _l_ist         _n_ew
+                        _a_ll
+                "
+                ("d" yas-load-directory)
+                ("e" yas-activate-extra-mode)
+                ("i" yas-insert-snippet)
+                ("f" yas-visit-snippet-file :color blue)
+                ("n" yas-new-snippet)
+                ("t" yas-tryout-snippet)
+                ("l" yas-describe-tables)
+                ("g" yas/global-mode)
+                ("m" yas/minor-mode)
+                ("a" yas-reload-all)))
     :config
         (org-babel-do-load-languages 'org-babel-load-languages
             (append org-babel-load-languages
@@ -1241,40 +1275,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
                     (if (eq args nil) "" args)
                     (org-babel-process-file-name in-file))
             ""))))
-#+end_src
-
-*** yasnippet
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210822184930874037500
-
-#+name: 20210822184930874037500
-#+begin_src emacs-lisp
-(meq/up yasnippet
-    :config (add-to-list 'yas-snippet-dirs (meq/ued* "snippets") t)
-    :deino (deino-yasnippet (:color blue :hint nil) "y"
-        "
-                    ^YASnippets^
-        --------------------------------------------
-        Modes:    Load/Visit:    Actions:
-
-        _g_lobal  _d_irectory    _i_nsert
-        _m_inor   _f_ile         _t_ryout
-        _e_xtra   _l_ist         _n_ew
-                _a_ll
-        "
-        ("d" yas-load-directory)
-        ("e" yas-activate-extra-mode)
-        ("i" yas-insert-snippet)
-        ("f" yas-visit-snippet-file :color blue)
-        ("n" yas-new-snippet)
-        ("t" yas-tryout-snippet)
-        ("l" yas-describe-tables)
-        ("g" yas/global-mode)
-        ("m" yas/minor-mode)
-        ("a" yas-reload-all)))
 #+end_src
 
 ** doom-themes
