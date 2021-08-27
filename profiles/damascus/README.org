@@ -673,7 +673,9 @@ And in my experience... Not a good idea; much too confusing. Use
 
 #+name: 20210826110352292872500
 #+begin_src emacs-lisp
-(meq/upnsd dired :use-package-preconfig (ranger :hook (dired . ranger-override-dired-mode)))
+(meq/up dired-sidebar
+    ;; :upnsd-preconfig (dired-details :disabled t) (dired-details+ :disabled t)
+    :gsetq (dired-sidebar-close-sidebar-on-file-open t))
 #+end_src
 
 *** doom-aiern-modeline

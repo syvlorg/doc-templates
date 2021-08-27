@@ -222,7 +222,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; dired
-(meq/upnsd dired :use-package-preconfig (ranger :hook (dired . ranger-override-dired-mode)))
+(meq/up dired-sidebar
+    ;; :upnsd-preconfig (dired-details :disabled t) (dired-details+ :disabled t)
+    :gsetq (dired-sidebar-close-sidebar-on-file-open t))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

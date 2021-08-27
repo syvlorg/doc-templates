@@ -601,7 +601,7 @@ extract active aiern bidings."
                                                     (window-minibuffer-p)
                                                     (which-key--popup-showing-p))) (writeroom-mode 1)))
     (with-eval-after-load 'olivetti
-        (unless (or (meq/xwinp) (meq/fbatp olivetti-mode)) (olivetti-mode 1)))
+        (unless (or (derived-mode-p 'dired-mode) (meq/xwinp) (meq/fbatp olivetti-mode)) (olivetti-mode 1)))
     (with-eval-after-load 'rainbow-identifiers
         (unless (meq/fbatp rainbow-identifiers-mode) (rainbow-identifiers-mode 1)))
     ;; (when (meq/exwm-p) (if (or
@@ -965,6 +965,15 @@ be ignored by `god-execute-with-current-bindings'."
 
 ;;;###autoload
 (add-hook 'after-init-hook 'key-chord-mode)
+
+;; From:
+;; Answer: https://emacs.stackexchange.com/a/37530/31428
+;; User: https://emacs.stackexchange.com/users/17921/klutometis
+;;;###autoload
+(with-eval-after-load 'dired+ (unbind-key "M-O" dired-mode-map))
+
+;; ;;;###autoload
+;; (with-eval-after-load 'dired-sidebar (advice-add #'dired-sidebar-find-file :after #'dired-sidebar-hide-sidebar))
 
 (provide 'meq)
 ;;; meq.el ends here

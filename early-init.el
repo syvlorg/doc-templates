@@ -57,12 +57,12 @@
 
     ;; To get the latest version of `org-mode', require the load-file before
     ;; byte-compilation of `lib'
-    (byte-recompile-directory default-directory nil)
+    ;; (byte-recompile-directory default-directory nil)
     
     (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 (let ((default-directory (concat pre-user-emacs-directory "siluam")))
-    (byte-recompile-directory default-directory nil)
+    ;; (byte-recompile-directory default-directory nil)
     (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -118,8 +118,8 @@
 ;; Byte-compile the `damascus' profile if the `profile-name' is `damascus' or we need to
 ;;     use its `early-init'
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(when (or (string= meq/var/profile-name "damascus") meq/var/udei)
-    (byte-recompile-directory (meq/ued* "profiles" "damascus") nil))
+;; (when (or (string= meq/var/profile-name "damascus") meq/var/udei)
+;;     (byte-recompile-directory (meq/ued* "profiles" "damascus") nil))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -127,7 +127,7 @@
 ;; Set up the `user-emacs-directory' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq user-emacs-directory (f-full (funcall #'meq/ued* "profiles" meq/var/profile-name)))
-(unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
+;; (unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
 (setq custom-file (funcall #'meq/ued "init.el"))
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/18682/31428
@@ -169,7 +169,7 @@
             (message file)
             (if (not exists)
                 (eval (intern item))
-                (when ,byte-compile (byte-recompile-directory dir nil))
+                ;; (when ,byte-compile (byte-recompile-directory dir nil))
                 (add-to-list 'load-path dir)
                 (unless is-dir (load file)))))))
 (meq/load-from-cla "--profile-early-lib" t)
@@ -180,7 +180,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up theming ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(byte-recompile-directory (meq/ued* "themes") nil)
+;; (byte-recompile-directory (meq/ued* "themes") nil)
 (add-to-list 'custom-theme-load-path (meq/ued* "themes"))
 (setq custom-safe-themes t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
