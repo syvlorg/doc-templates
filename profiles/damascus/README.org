@@ -674,8 +674,13 @@ And in my experience... Not a good idea; much too confusing. Use
 #+name: 20210826110352292872500
 #+begin_src emacs-lisp
 (meq/up dired-sidebar
-    ;; :upnsd-preconfig (dired-details :disabled t) (dired-details+ :disabled t)
-    :gsetq (dired-sidebar-close-sidebar-on-file-open t))
+    ;; From: https://www.reddit.com/r/emacs/comments/pce8f4/dired_ellipses_in_square_brackets_before_file/hakuehb/?utm_medium=android_app&utm_source=share&context=3
+    :upnsd-preconfig (dired+ :gsetq (diredp-bind-problematic-terminal-keys (display-graphic-p)))
+        (dired-details :if (version< emacs-version "24.4"))
+        (dired-details+ :if (version< emacs-version "24.4"))
+    :gsetq (dired-sidebar-close-sidebar-on-file-open t)
+        ;; From: https://www.emacswiki.org/emacs/DiredDetails#h5o-1
+        (dired-details-hidden-string ""))
 #+end_src
 
 *** doom-aiern-modeline
@@ -1477,14 +1482,16 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
                     :keymaps demon-run
                     (alloy-chord ,(car kons))
                     ',func))
-        (eval `(defun ,func nil (interactive)
+        (eval `(defun ,func (&optional ua) (interactive "p")
                     (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
-                    (,(cdr kons)))))) '(("  " . universal-argument)
-                                        ("''" . aiern-ex)
+                    (if current-prefix-arg
+                        (,(cdr kons) ua)
+                        (,(cdr kons))))))) '(("  " . universal-argument)
+                                        ;; ("''" . aiern-ex)
                                         ;; ("[[" . meq/yankpad-cosmoem-toggle)
                                         ;; ("]]" . yankpad-expand)
-                                        ("\"\"" . evil-ex)
-                                        ("\\\\" . meq/toggle-which-key)
+                                        ;; ("\"\"" . evil-ex)
+                                        ("\\\\" . meq/backslash-toggle)
                                         ("aa" . deino-restart/body)
                                         ("hh" . meq/god-execute-with-current-bindings)
                                         ("ii" . minoru)

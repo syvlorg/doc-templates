@@ -966,14 +966,22 @@ be ignored by `god-execute-with-current-bindings'."
 ;;;###autoload
 (add-hook 'after-init-hook 'key-chord-mode)
 
-;; From:
-;; Answer: https://emacs.stackexchange.com/a/37530/31428
-;; User: https://emacs.stackexchange.com/users/17921/klutometis
+;; Adapted From: https://github.com/jojojames/dired-sidebar/blob/master/dired-sidebar.el#L670
+;; And: https://github.com/jojojames/dired-sidebar/blob/master/dired-sidebar.el#L660
 ;;;###autoload
-(with-eval-after-load 'dired+ (unbind-key "M-O" dired-mode-map))
+(defun meq/dired-sidebar-toggle nil (interactive)
+    (with-eval-after-load 'dired-sidebar
+        (if (dired-sidebar-showing-sidebar-p)
+            (if (equal (current-buffer) (dired-sidebar-buffer))
+                (dired-sidebar-hide-sidebar)
+                (dired-sidebar-jump-to-sidebar))
+            (dired-sidebar-jump-to-sidebar))))
 
-;; ;;;###autoload
-;; (with-eval-after-load 'dired-sidebar (advice-add #'dired-sidebar-find-file :after #'dired-sidebar-hide-sidebar))
+;;;###autoload
+(defun meq/backslash-toggle (&optional ua) (interactive "p")
+    (if current-prefix-arg (cond
+                            ((= ua 4) (meq/toggle-which-key)))
+        (meq/dired-sidebar-toggle)))
 
 (provide 'meq)
 ;;; meq.el ends here

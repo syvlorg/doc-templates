@@ -60,6 +60,8 @@
                             (unwind-protect
                                 (setq overriding-terminal-local-map meq/var/alamode-backup-terminal-local-map)
                                 (funcall mode -1)
+                                (when meq/var/alamode-aiern-was-on (aiern-mode 1))
+                                (when meq/var/alamode-evil-was-on (evil-mode 1))
                                 (meq/which-key-show-top-level)
                                 (remove-hook 'post-command-hook post-hook)))
                         (remove-hook 'post-command-hook post-hook))))
@@ -88,6 +90,9 @@
             (setq meq/var/alamode-backup-terminal-local-map overriding-terminal-local-map)
             (setq deino-enabled-temporarily t
                 overriding-terminal-local-map (symbol-value map))
+            (when (string= prefix "god")
+                (when (meq/fbatp aiern-mode) (setq meq/var/alamode-aiern-was-on t) (aiern-mode -1))
+                (when (meq/fbatp evil-mode) (setq meq/var/alamode-evil-was-on t) (evil-mode -1)))
             (message (format "Switched to %s mode for the next command ..." prefix)))))
 
 ;;;###autoload
