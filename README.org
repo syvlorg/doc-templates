@@ -1297,7 +1297,7 @@ push: push-only init
 |git -C $(mkfileDir) subtree prune
 |-git -C $(mkfileDir) subtree push-all
 
-tangle-setup: subinit
+tangle-setup:
 |cp $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
 |chmod +x $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
 
@@ -1328,22 +1328,30 @@ tangle: tangle-setup
 
 subtree-prep: tangle push-only
 
-test:
+pre-test: subinit
+
+test: pre-test
 |emacs
 
-test-doom:
+test-doom: pre-test
 |emacs --doom
 
-test-graphene:
+test-graphene: pre-test
 |emacs --graphene
 
-test-nano:
+test-nano: pre-test
 |emacs --nano
 
-pest:
+pest: pre-test
 |emacs -p
 
-test-and-kill-pre:
+update-test: pre-test
+|emacs --update
+
+no-config-test:
+|emacs -Q
+
+test-and-kill-pre: pre-test
 |-emacsclient -s test -e "(kill-emacs)"
 
 test-and-kill: test-and-kill-pre
@@ -1381,12 +1389,6 @@ delete-graphene:
 
 delete-nano:
 |rm -rf $(mkfileDir)/profiles/nano/.local
-
-update-test:
-|emacs --update
-
-no-config-test:
-|emacs -Q
 
 emacs: tangle test
 remacs: delete tangle test-update-and-kill test
