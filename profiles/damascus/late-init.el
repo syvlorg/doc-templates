@@ -767,7 +767,9 @@
         :config (winner-mode)
         :deino (deino-wb nil nil ("b" deino-buffer/body "buffer") ("w" deino-window/body "window"))
         :sorrow ("w" :deino '(deino-window (:columns 5) "w"
-            ("b" balance-windows "balance-windows")
+            ("`" nil "cancel")
+            ("s" deino-buffer/body "switch to deino buffers")
+            ("B" balance-windows "balance-windows")
             ("t" toggle-window-spilt "toggle-window-spilt")
             ("H" shrink-window-horizontally "shrink-window-horizontally")
             ("K" shrink-window "shrink-window")
@@ -785,12 +787,11 @@
             ("F" follow-mode "Follow")
             ("v" (lambda nil (interactive) (split-window-right) (windmove-right)) "vertical")
             ("x" (lambda nil (interactive) (split-window-below) (windmove-down)) "horizontal")
-            ("S" save-buffer "save-buffer")
             ("d" delete-window "delete")
             ("o" delete-other-windows "only this")
             ("z" (progn (winner-undo) (setq this-command 'winner-undo)) "undo")
             ("Z" winner-redo "reset")
-            ("`" nil "cancel"))))
+            ("o" other-window "other-window"))))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -820,15 +821,18 @@
       "
       ("`" nil "cancel")
       ("<right>" next-buffer "next")
+      ("n" next-buffer "next")
       ("b" ivy-switch-buffer "switch" :color blue)
       ("B" ibuffer "ibuffer" :color blue)
       ("<left>" previous-buffer "prev")
+      ("p" previous-buffer "prev")
       ("C-b" buffer-menu "buffer menu" :color blue)
       ("N" evil-buffer-new "new" :color blue)
       ("d" kill-this-buffer "delete")
       ;; don't come back to previous buffer after delete
       ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
-      ("s" save-buffer "save")))
+      ("S" save-buffer "save")
+      ("s" deino-window/body "switch to deino window")))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
