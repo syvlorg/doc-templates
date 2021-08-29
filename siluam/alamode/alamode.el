@@ -32,6 +32,8 @@
 (require 'uru)
 
 (defvar meq/var/all-keymaps-map nil)
+(defvar meq/var/alamode-aiern-was-on (member "aiern" meq/var/ignored-modal-prefixes))
+(defvar meq/var/alamode-evil-was-on (member "evil" meq/var/ignored-modal-prefixes))
 
 ;; Adapted From: https://gitlab.com/jjzmajic/cosmoem.el/-/blob/master/cosmoem.el#L83
 ;;;###autoload
