@@ -11,10 +11,10 @@ init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
 subinit:
-|git -C $(mkfileDir) submodule update --init --depth 1 --force
+|git -C $(mkfileDir) submodule update --init --depth 1
 |git -C $(mkfileDir) submodule sync
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
-|cd $(mkfileDir)lib/org; make; make autoloads
+|cd $(mkfileDir)lib/org; make all; make autoloads
 
 pull: init
 |git -C $(mkfileDir) pull
@@ -36,7 +36,7 @@ push: push-only init
 |git -C $(mkfileDir) subtree prune
 |-git -C $(mkfileDir) subtree push-all
 
-tangle-setup:
+tangle-setup: subinit
 |cp $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
 |chmod +x $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
 
