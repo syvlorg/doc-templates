@@ -29,14 +29,15 @@
 (require 'yasnippet)
 (require 'f)
 
-(defvar meq/var/ext-def '(org md adoc))
-(defvar meq/var/mode-def '(org markdown adoc))
+(defvar meq/var/mecons '((org . org)
+    (markdown . md)
+    (adoc . adoc)))
+(defun meq/titan-ph-func nil)
 
-(defun meq/ddm (name ext)
+(defun meq/ddm (name mecons)
     (let* ((snippets (meq/inconcat name "-snippets")))
         (eval `(setq-local
                 ,snippets
-                ;; "/home/shadowrylander/.emacs.d/lib/titan/snippets/"
                 (expand-file-name
                     "snippets"
                     (file-name-directory
@@ -48,28 +49,60 @@
                         ;; Adapted From:
                         ;; Answer: https://stackoverflow.com/a/1344894/10827766
                         ;; User: https://stackoverflow.com/users/8355/cjm
-                        (:else (symbol-file 'meq/mapc-ddm)))))))
+                        (:else ,(symbol-file (meq/inconcat "meq/" name "-ph-func"))))))))
         (when (eval `(f-exists? ,snippets))
             (add-to-list 'yas-snippet-dirs (symbol-value snippets) t)
             (eval `(yas-load-directory ,snippets t)))))
 
-(defun meq/mapc-ddm (name &optional ext-list &rest args) (mapc #'(lambda (ext*) (interactive)
-    (let* ((ext (symbol-name ext*)))
-        (eval `(define-derived-mode
-            ,(intern (concat name "-" ext "-mode"))
-            ,(intern (concat "titan-" ext "-mode"))
-            (meq/ddm ,name ,ext)
-            ,@args)))) (or ext-list meq/var/ext-def)))
+(defun meq/mapc-ddm (name &optional mecons* &rest args) (mapc #'(lambda (mecons) (interactive)
+    (let* ((mode (symbol-name (car mecons)))
+            (ext (symbol-name (cdr mecons))))
+        (eval `(defun ,(meq/inconcat "meq/dired-create-" name "-" mode) nil (interactive)
+            (when (derived-mode-p 'dired-mode) (let* ((file (f-join
 
-(mapc #'(lambda (mode-cons) (interactive)
-    (let* ((mode (symbol-name (car mode-cons)))
-            (ext (symbol-name (cdr mode-cons))))
+                            ;; Adapted From:
+                            ;; Answer: https://stackoverflow.com/a/11046990/10827766
+                            ;; User: https://stackoverflow.com/users/324105/phils
+                            default-directory
+
+                            (format "%s.%s.%s" (meq/timestamp) ,name ,ext))))
+                (with-current-buffer (find-file-noselect file)
+                    (meq/insert-snippet (concat (if (featurep 'riot) "org" ,mode) " titan template"))
+                    (save-buffer)
+                    (kill-buffer))
+                (revert-buffer)))))
+        (eval `(defun ,(meq/inconcat "meq/dired-create-and-open-" name "-" mode) nil (interactive)
+            (when (derived-mode-p 'dired-mode) (let* ((file (f-join
+
+                            ;; Adapted From:
+                            ;; Answer: https://stackoverflow.com/a/11046990/10827766
+                            ;; User: https://stackoverflow.com/users/324105/phils
+                            default-directory
+
+                            (format "%s.%s.%s" (meq/timestamp) ,name ,ext))))
+                
+                ;; Adapted From:
+                ;; Answer: https://stackoverflow.com/a/17984479/10827766
+                ;; User: https://stackoverflow.com/users/2321928/bnzmnzhnz
+                (unless (display-graphic-p) (other-window -1))
+
+                (find-file file)
+                (meq/insert-snippet (concat (if (featurep 'riot) "org" ,mode) " titan template"))))))
         (eval `(define-derived-mode
-            ,(intern (concat "titan-" ext "-mode"))
+            ,(intern (concat name "-" mode "-mode"))
+            ,(intern (concat "titan-" mode "-mode"))
+            (meq/ddm ,name ',mecons)
+            ,@args)))) (or mecons* meq/var/mecons)))
+
+(mapc #'(lambda (mecons) (interactive)
+    (let* ((mode (symbol-name (car mecons)))
+            (ext (symbol-name (cdr mecons))))
+        (eval `(define-derived-mode
+            ,(intern (concat "titan-" mode "-mode"))
             ,(intern (concat mode "-mode"))
-            ,(concat "titan-" ext)
-            ,(meq/ddm "titan" ext)
-            )))) (-zip-with #'cons meq/var/mode-def meq/var/ext-def))
+            ;; ,(concat "titan-" mode)
+            (meq/ddm "titan" ',mecons)
+            )))) meq/var/mecons)
 
 (provide 'titan)
 ;;; titan.el ends here

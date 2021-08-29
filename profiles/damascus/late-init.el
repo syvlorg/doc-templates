@@ -229,7 +229,13 @@
         (dired-details+ :if (version< emacs-version "24.4"))
     :gsetq (dired-sidebar-close-sidebar-on-file-open t)
         ;; From: https://www.emacswiki.org/emacs/DiredDetails#h5o-1
-        (dired-details-hidden-string ""))
+        (dired-details-hidden-string "")
+    :uru (dired-mode t deino-dired-mode (:color blue) "d d"
+            ("`" nil "cancel")
+            ("f" (meq/dired-create-and-open-fell-markdown) "create & edit fell file")
+            ("d" (meq/dired-create-and-open-doc-markdown) "create & edit doc file")
+            ("F" (meq/dired-create-fell-markdown) "create fell file" :color red)
+            ("D" (meq/dired-create-doc-markdown) "create doc file" :color red)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -604,7 +610,7 @@
             ("s" org-edit-src-save "save")
             ("e" org-edit-src-exit "exit")
             ("a" org-edit-src-abort "abort"))
-    :uru (org-mode deino-org (:color blue) "o o"
+    :uru (org-mode nil deino-org (:color blue) "o o"
             "A deino for org-mode!"
             ("`" nil "cancel")
             ("t" org-babel-tangle "tangle")
@@ -668,20 +674,22 @@
 
 ;; doc
 (use-package doc
+    :commands (meq/dired-create-doc-markdown meq/dired-create-and-open-doc-markdown)
     :upnsd-preconfig (titan)
-    :mode (("\\.doc\\.md\\'" . doc-md-mode)
+    :mode (("\\.doc\\.md\\'" . doc-markdown-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
-    :uru (doc-org-mode deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
+    :uru (doc-org-mode nil deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
             ("d" (meq/insert-snippet "org titan template") "template")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; fell
 (use-package fell
+    :commands (meq/dired-create-fell-markdown meq/dired-create-and-open-fell-markdown)
     :upnsd-preconfig (titan)
-    :mode (("\\.fell\\.md\\'" . fell-md-mode)
+    :mode (("\\.fell\\.md\\'" . fell-markdown-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
-    :uru (fell-org-mode deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
+    :uru (fell-org-mode nil deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
             ("f" (meq/insert-snippet "org titan template") "template")))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

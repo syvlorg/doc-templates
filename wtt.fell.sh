@@ -4,7 +4,7 @@
 (meq/up markdown-mode :mode ("\\.md\\'")
     :use-package-postconfig (yasnippet)
     :upnsd-postconfig (titan))
-(meq/upnsd fell :mode ("\\.fell\\.md\\'" . fell-md-mode))
+(meq/upnsd fell :mode ("\\.fell\\.md\\'" . fell-markdown-mode))
 (find-file (concat (meq/timestamp) ".fell.md"))
 (meq/insert-snippet "markdown titan template")
 (save-buffer)

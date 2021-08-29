@@ -83,7 +83,7 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :shebang "#!/usr/bin/env sh"
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
 <<20210821132334835661400>>
-(meq/upnsd fell :mode ("\\.fell\\.md\\'" . fell-md-mode))
+(meq/upnsd fell :mode ("\\.fell\\.md\\'" . fell-markdown-mode))
 (find-file (concat (meq/timestamp) ".fell.md"))
 <<20210821140509092087900>>
 #+end_src
@@ -99,7 +99,7 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :shebang "#!/usr/bin/env sh"
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
 <<20210821132334835661400>>
-(meq/upnsd doc :mode ("\\.doc\\.md\\'" . doc-md-mode))
+(meq/upnsd doc :mode ("\\.doc\\.md\\'" . doc-markdown-mode))
 (find-file (concat (meq/timestamp) ".doc.md"))
 <<20210821140509092087900>>
 #+end_src
@@ -1532,7 +1532,7 @@ super-push-only: tangle push-only
                 ("XF86PowerOff" (meq/run "systemctl suspend" "suspend") "suspend"))
             (deino-exwm/shells (:color blue) "e s"
                 ("a" (meq/run "alacritty") "alacritty"))
-    :uru (exwm-mode deino-exwm-global (:color blue) "e g"
+    :uru (exwm-mode t deino-exwm-global (:color blue) "e g"
         ("`" nil "cancel")
         ("c" exwm-input-release-keyboard "char mode")
         ("l" exwm-input-grab-keyboard "line mode")

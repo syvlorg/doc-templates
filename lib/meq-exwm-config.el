@@ -81,7 +81,7 @@
                 ("XF86PowerOff" (meq/run "systemctl suspend" "suspend") "suspend"))
             (deino-exwm/shells (:color blue) "e s"
                 ("a" (meq/run "alacritty") "alacritty"))
-    :uru (exwm-mode deino-exwm-global (:color blue) "e g"
+    :uru (exwm-mode t deino-exwm-global (:color blue) "e g"
         ("`" nil "cancel")
         ("c" exwm-input-release-keyboard "char mode")
         ("l" exwm-input-grab-keyboard "line mode")

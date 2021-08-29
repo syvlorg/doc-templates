@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'titan)
+(defun meq/fell-ph-func nil)
 (meq/mapc-ddm "fell")
 (provide 'fell)
 ;;; fell.el ends here

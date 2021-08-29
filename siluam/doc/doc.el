@@ -26,6 +26,7 @@
 ;;; Code:
 
 (require 'titan)
+(defun meq/doc-ph-func nil)
 (meq/mapc-ddm "doc")
 (provide 'doc)
 ;;; doc.el ends here

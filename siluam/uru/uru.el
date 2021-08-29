@@ -30,19 +30,19 @@
 (defvar meq/var/ua-major-mode-deinos nil)
 
 ;;;###autoload
-(defmacro defuru* (ua major-mode name &rest args)
-  (push `(,ua ,major-mode ,(meq/inconcat (symbol-name name) "/body")) meq/var/ua-major-mode-deinos)
+(defmacro defuru* (ua major-mode derived name &rest args)
+  (push `(,ua ,major-mode ,derived ,(meq/inconcat (symbol-name name) "/body")) meq/var/ua-major-mode-deinos)
   `(defdeino ,name ,@args))
 
 ;;;###autoload
-(defmacro defuru (major-mode name &rest args) `(defuru* nil ,major-mode ,name ,@args))
+(defmacro defuru (major-mode derived name &rest args) `(defuru* nil ,major-mode ,derived ,name ,@args))
 
 ;;;###autoload
-(defmacro defurua (ua major-mode name &rest args) `(defuru* ,ua ,major-mode ,name ,@args))
+(defmacro defurua (ua major-mode name &rest args) `(defuru* ,ua ,major-mode nil ,name ,@args))
 
-(defun uru* (uru-list) (if current-prefix-arg
-  (when (derived-mode-p (cadr uru-list)) (funcall (caddr uru-list)))
-  (when (equal major-mode (cadr uru-list)) (funcall (caddr uru-list)))))
+(defun uru* (uru-list) (if (or (caddr uru-list) current-prefix-arg)
+  (when (derived-mode-p (cadr uru-list)) (funcall (cadddr uru-list)))
+  (when (equal major-mode (cadr uru-list)) (funcall (cadddr uru-list)))))
 
 ;;;###autoload
 (defun uru (&optional ua) (interactive "p")
