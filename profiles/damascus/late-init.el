@@ -768,7 +768,7 @@
         :deino (deino-wb nil nil ("b" deino-buffer/body "buffer") ("w" deino-window/body "window"))
         :sorrow ("w" :deino '(deino-window (:columns 5) "w"
             ("`" nil "cancel")
-            ("s" deino-buffer/body "switch to deino buffers")
+            ("s" deino-buffer/body "switch to deino buffers" :color blue)
             ("B" balance-windows "balance-windows")
             ("t" toggle-window-spilt "toggle-window-spilt")
             ("H" shrink-window-horizontally "shrink-window-horizontally")
@@ -832,7 +832,7 @@
       ;; don't come back to previous buffer after delete
       ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
       ("S" save-buffer "save")
-      ("s" deino-window/body "switch to deino window")))
+      ("s" deino-window/body "switch to deino window" :color blue)))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
