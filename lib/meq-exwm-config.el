@@ -31,8 +31,8 @@
                     ([?\s-`] . uru)
                     ([?\s-z] . uru)
 
-                    (,(naked "s-tab") . next-buffer)
-                    (,(naked "s-M-tab") . previous-buffer)
+                    (,(naked "s-TAB") . next-buffer)
+                    (,(naked "s-M-TAB") . previous-buffer)
 
                     ([?\s-q] . (lambda nil (interactive)
                         (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
