@@ -60,7 +60,11 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; buffer
-(alloy-def :keymaps demon-run "C-tab" 'next-buffer "C-<iso-lefttab>" 'previous-buffer)
+(alloy-def :keymaps demon-run
+    "C-tab" 'next-buffer
+    "C-<iso-lefttab>" 'previous-buffer
+    "C-TAB" 'next-buffer
+    "C-S-TAB" 'previous-buffer)
 (sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
   "
                 Buffers :
