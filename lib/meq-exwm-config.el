@@ -57,7 +57,10 @@
                     ([?\M-v] . [prior])
                     ([?\C-v] . [next])
                     ([?\C-d] . [delete])
-                    ([?\C-k] . [S-end delete]))))
+                    ([?\C-k] . [S-end delete])
+
+                    (,(naked "C-tab") . (lambda nil (interactive) (next-buffer)))
+                    (,(naked "C-<iso-lefttab>") . (lambda nil (interactive) (previous-buffer))))))
         ;; Enable EXWM
         (exwm-enable)
         ;; Configure Ido

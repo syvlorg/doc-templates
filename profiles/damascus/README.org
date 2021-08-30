@@ -509,11 +509,7 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
 
 #+name: 20210709153546184642900
 #+begin_src emacs-lisp
-(alloy-def :keymaps demon-run
-    "C-tab" 'next-buffer
-    "C-<iso-lefttab>" 'previous-buffer
-    "C-TAB" 'next-buffer
-    "C-S-TAB" 'previous-buffer)
+(alloy-def :keymaps demon-run "C-tab" 'next-buffer "C-<iso-lefttab>" 'previous-buffer)
 (sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
   "
                 Buffers :
