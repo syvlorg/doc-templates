@@ -32,24 +32,14 @@
 (defvar meq/var/mecons '((org . org)
     (markdown . md)
     (adoc . adoc)))
-(defun meq/titan-ph-func nil)
 
-(defun meq/ddm (name mecons)
-    (let* ((snippets (meq/inconcat name "-snippets")))
-        (eval `(setq-local
-                ,snippets
-                (expand-file-name
-                    "snippets"
-                    (file-name-directory
-                        ;; Copied from ‘f-this-file’ from f.el.
-                        (cond
-                        (load-in-progress load-file-name)
-                        ((and (boundp 'byte-compile-current-file) byte-compile-current-file)
-                        byte-compile-current-file)
-                        ;; Adapted From:
-                        ;; Answer: https://stackoverflow.com/a/1344894/10827766
-                        ;; User: https://stackoverflow.com/users/8355/cjm
-                        (:else ,(symbol-file (meq/inconcat "meq/" name "-ph-func"))))))))
+(defun meq/ddm (name)
+    (let* ((snippets (meq/inconcat "meq/var/" name "-snippets-dir")))
+        (defcustom meq/var/titan-snippets-dir user-emacs-directory "The titan snippets directory")
+        (when (f-exists? meq/var/titan-snippets-dir)
+            (add-to-list 'yas-snippet-dirs meq/var/titan-snippets-dir t)
+            (yas-load-directory meq/var/titan-snippets-dir t))
+        (eval `(defcustom ,snippets user-emacs-directory (format "The %s snippets directory" ,name)))
         (when (eval `(f-exists? ,snippets))
             (add-to-list 'yas-snippet-dirs (symbol-value snippets) t)
             (eval `(yas-load-directory ,snippets t)))))
@@ -91,7 +81,7 @@
         (eval `(define-derived-mode
             ,(intern (concat name "-" mode "-mode"))
             ,(intern (concat "titan-" mode "-mode"))
-            (meq/ddm ,name ',mecons)
+            (meq/ddm ,name)
             ,@args)))) (or mecons* meq/var/mecons)))
 
 (mapc #'(lambda (mecons) (interactive)
@@ -101,7 +91,7 @@
             ,(intern (concat "titan-" mode "-mode"))
             ,(intern (concat mode "-mode"))
             ;; ,(concat "titan-" mode)
-            (meq/ddm "titan" ',mecons)
+            (meq/ddm "titan")
             )))) meq/var/mecons)
 
 (provide 'titan)

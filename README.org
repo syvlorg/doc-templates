@@ -43,7 +43,7 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 (load (concat (getenv "HOME") "/.emacs.d/early-init.el"))
 (meq/up markdown-mode :mode ("\\.md\\'")
     :use-package-postconfig (yasnippet)
-    :upnsd-postconfig (titan))
+    :upnsd-preconfig (titan :custom (meq/var/titan-snippets-dir (meq/ued-siluam "titan" "snippets"))))
 #+end_src
 
 * wtt-post
@@ -83,7 +83,9 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :shebang "#!/usr/bin/env sh"
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
 <<20210821132334835661400>>
-(meq/upnsd fell :mode ("\\.fell\\.md\\'" . fell-markdown-mode))
+(meq/upnsd fell
+    :custom (meq/var/fell-snippets-dir (meq/ued-siluam "fell" "snippets"))
+    :mode ("\\.fell\\.md\\'" . fell-markdown-mode))
 (find-file (concat (meq/timestamp) ".fell.md"))
 <<20210821140509092087900>>
 #+end_src
@@ -99,7 +101,9 @@ which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :shebang "#!/usr/bin/env sh"
 ":"; exec emacs --quick --script "$0" -- "$@" # -*- mode: emacs-lisp; lexical-binding: t; -*-
 <<20210821132334835661400>>
-(meq/upnsd doc :mode ("\\.doc\\.md\\'" . doc-markdown-mode))
+(meq/upnsd doc
+    :custom (meq/var/doc-snippets-dir (meq/ued-siluam "doc" "snippets"))
+    :mode ("\\.doc\\.md\\'" . doc-markdown-mode))
 (find-file (concat (meq/timestamp) ".doc.md"))
 <<20210821140509092087900>>
 #+end_src
@@ -1290,7 +1294,7 @@ commit:
 
 cammit: add commit
 
-push-only: add commit
+push-only: cammit
 |-git -C $(mkfileDir) push
 
 push: push-only init
@@ -1483,6 +1487,9 @@ super-push-only: tangle push-only
                     ([?\s-p] . uru)
                     ([?\s-`] . uru)
                     ([?\s-z] . uru)
+
+                    (,(naked "s-tab") . next-buffer)
+                    (,(naked "s-M-tab") . previous-buffer)
 
                     ([?\s-q] . (lambda nil (interactive)
                         (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
@@ -1797,10 +1804,7 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package use-package-extras
     :demand t
-    :init (require 'a)
-        (require 'dash)
-        (require 's)
-        (require 'f)
+    :init (require 'a) (require 'dash) (require 's) (require 'f)
     :config
         (meq/up meq :load-emacs-file-preconfig ("naked"))
         (meq/up leaf :use-package-preconfig
@@ -1821,9 +1825,9 @@ Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up the `user-emacs-directory' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq user-emacs-directory (f-full (funcall #'meq/ued* "profiles" meq/var/profile-name)))
+(setq user-emacs-directory (f-full (meq/ued* "profiles" meq/var/profile-name)))
 ;; (unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
-(setq custom-file (funcall #'meq/ued "init.el"))
+(setq custom-file (meq/ued "init.el"))
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/18682/31428
 ;; User: https://emacs.stackexchange.com/users/2731/ebpa

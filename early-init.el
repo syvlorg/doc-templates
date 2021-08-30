@@ -102,10 +102,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (use-package use-package-extras
     :demand t
-    :init (require 'a)
-        (require 'dash)
-        (require 's)
-        (require 'f)
+    :init (require 'a) (require 'dash) (require 's) (require 'f)
     :config
         (meq/up meq :load-emacs-file-preconfig ("naked"))
         (meq/up leaf :use-package-preconfig
@@ -126,9 +123,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up the `user-emacs-directory' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq user-emacs-directory (f-full (funcall #'meq/ued* "profiles" meq/var/profile-name)))
+(setq user-emacs-directory (f-full (meq/ued* "profiles" meq/var/profile-name)))
 ;; (unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
-(setq custom-file (funcall #'meq/ued "init.el"))
+(setq custom-file (meq/ued "init.el"))
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/18682/31428
 ;; User: https://emacs.stackexchange.com/users/2731/ebpa

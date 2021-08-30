@@ -378,6 +378,11 @@ And in my experience... Not a good idea; much too confusing. Use
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; buffer
+<<20210709153546184642900>>
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; counsel
 <<20210721205302528744400>>
 
@@ -385,6 +390,11 @@ And in my experience... Not a good idea; much too confusing. Use
 
 ;; damascus
 <<20210708190855491868100>>
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; one-on-one
+<<20210716142349656093500>>
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -486,6 +496,38 @@ And in my experience... Not a good idea; much too confusing. Use
         (set-face-attribute 'default nil :font "Cartograph CF Extra Bold-12")
         (set-face-attribute 'mode-line nil :font "Cartograph CF Extra Bold-12")
         (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Extra Bold-12")))
+#+end_src
+
+*** buffer
+
+Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210709153546184642900
+
+#+name: 20210709153546184642900
+#+begin_src emacs-lisp
+(alloy-def :keymaps demon-run "C-tab" 'next-buffer "C-<iso-lefttab>" 'previous-buffer)
+(sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
+  "
+                Buffers :
+  "
+  ("`" nil "cancel")
+  ("<right>" next-buffer "next")
+  ("n" next-buffer "next")
+  ("b" ivy-switch-buffer "switch" :color blue)
+  ("B" ibuffer "ibuffer" :color blue)
+  ("<left>" previous-buffer "prev")
+  ("p" previous-buffer "prev")
+  ("C-b" buffer-menu "buffer menu" :color blue)
+  ("N" evil-buffer-new "new" :color blue)
+  ("d" kill-this-buffer "delete")
+  ;; don't come back to previous buffer after delete
+  ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
+  ("S" save-buffer "save")
+  ("s" deino-window/body "window" :color blue)))
 #+end_src
 
 *** counsel
@@ -661,7 +703,36 @@ And in my experience... Not a good idea; much too confusing. Use
         ;; (put 'buffer-save-without-query 'safe-local-variable #'booleanp)
 
         ;; (toggle-debug-on-error)
-        )
+
+        ;; Adapted From:
+        ;; Answer: https://emacs.stackexchange.com/a/3017/31428
+        ;; User: https://emacs.stackexchange.com/users/253/dan
+        (add-to-list 'default-frame-alist '(fullscreen . fullboth)))
+#+end_src
+
+*** one-on-one
+
+#+call: hash() :exports none
+
+#+RESULTS:
+: 20210716142349656093500
+
+#+name: 20210716142349656093500
+#+begin_src emacs-lisp
+;; !!! THE ORDER HERE MATTERS! !!!
+(meq/up oneonone
+    :if (not (meq/exwm-p))
+    :load-emacs-file-preconfig
+        ("fit-frame") ("autofit-frame")
+        ;; ("buff-menu+")
+        ("compile-") ("compile+") ("grep+") ("dired+") ("dired-details") ("dired-details+")
+        ("doremi") ("hexrgb") ("frame-fns") ("faces+") ("doremi-frm") ("eyedropper") ("facemenu+")
+        ("frame+") ("help+") ("info+") ("menu-bar+") ("mouse+") ("setup-keys") ("strings")
+        ;; ("simple+")
+        ("frame-cmds") ("thumb-frm") ("window+") ("zoom-frm") ("oneonone")
+    :gsetq
+        (1on1-minibuffer-frame-width 10000)
+        (1on1-minibuffer-frame-height 10000))
 #+end_src
 
 *** dired
@@ -1017,7 +1088,8 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+begin_src emacs-lisp
 (use-package doc
     :commands (meq/dired-create-doc-markdown meq/dired-create-and-open-doc-markdown)
-    :upnsd-preconfig (titan)
+    :upnsd-preconfig (titan :gsetq (meq/var/titan-snippets-dir (meq/ued-siluam "titan" "snippets")))
+    :gsetq (meq/var/doc-snippets-dir (meq/ued-siluam "doc" "snippets"))
     :mode (("\\.doc\\.md\\'" . doc-markdown-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
     :uru (doc-org-mode nil deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
@@ -1047,7 +1119,8 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+begin_src emacs-lisp
 (use-package fell
     :commands (meq/dired-create-fell-markdown meq/dired-create-and-open-fell-markdown)
-    :upnsd-preconfig (titan)
+    :upnsd-preconfig (titan :gsetq (meq/var/titan-snippets-dir (meq/ued-siluam "titan" "snippets")))
+    :gsetq (meq/var/fell-snippets-dir (meq/ued-siluam "fell" "snippets"))
     :mode (("\\.fell\\.md\\'" . fell-markdown-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
     :uru (fell-org-mode nil deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
@@ -1389,11 +1462,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    ;; buffer
-    <<20210709153546184642900>>
-
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
     ;; cosmog
     <<20210720041944274541900>>
 
@@ -1421,11 +1489,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
     ;; objed
     <<20210601225316366565400>>
-
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-    ;; one-on-one
-    <<20210716142349656093500>>
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -1591,37 +1654,6 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 (meq/upnsd alamode)
 #+end_src
 
-**** buffer
-
-Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210709153546184642900
-
-#+name: 20210709153546184642900
-#+begin_src emacs-lisp
-(sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
-  "
-                Buffers :
-  "
-  ("`" nil "cancel")
-  ("<right>" next-buffer "next")
-  ("n" next-buffer "next")
-  ("b" ivy-switch-buffer "switch" :color blue)
-  ("B" ibuffer "ibuffer" :color blue)
-  ("<left>" previous-buffer "prev")
-  ("p" previous-buffer "prev")
-  ("C-b" buffer-menu "buffer menu" :color blue)
-  ("N" evil-buffer-new "new" :color blue)
-  ("d" kill-this-buffer "delete")
-  ;; don't come back to previous buffer after delete
-  ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
-  ("S" save-buffer "save")
-  ("s" deino-window/body "window" :color blue)))
-#+end_src
-
 **** cosmog
 
 #+call: hash() :exports none
@@ -1762,31 +1794,6 @@ Adapted From: https://github.com/asok/.emacs.d/blob/master/inits/init-hydra.el#L
 #+name: 20210601225316366565400
 #+begin_src emacs-lisp
 (meq/up objed)
-#+end_src
-
-**** one-on-one
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210716142349656093500
-
-#+name: 20210716142349656093500
-#+begin_src emacs-lisp
-;; !!! THE ORDER HERE MATTERS! !!!
-(meq/up oneonone
-    :if (not (meq/exwm-p))
-    :load-emacs-file-preconfig
-        ("fit-frame") ("autofit-frame")
-        ;; ("buff-menu+")
-        ("compile-") ("compile+") ("grep+") ("dired+") ("dired-details") ("dired-details+")
-        ("doremi") ("hexrgb") ("frame-fns") ("faces+") ("doremi-frm") ("eyedropper") ("facemenu+")
-        ("frame+") ("help+") ("info+") ("menu-bar+") ("mouse+") ("setup-keys") ("strings")
-        ;; ("simple+")
-        ("frame-cmds") ("thumb-frm") ("window+") ("zoom-frm") ("oneonone")
-    :gsetq
-        (1on1-minibuffer-frame-width 10000)
-        (1on1-minibuffer-frame-height 10000))
 #+end_src
 
 **** projectile

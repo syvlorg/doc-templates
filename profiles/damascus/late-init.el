@@ -59,6 +59,29 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; buffer
+(alloy-def :keymaps demon-run "C-tab" 'next-buffer "C-<iso-lefttab>" 'previous-buffer)
+(sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
+  "
+                Buffers :
+  "
+  ("`" nil "cancel")
+  ("<right>" next-buffer "next")
+  ("n" next-buffer "next")
+  ("b" ivy-switch-buffer "switch" :color blue)
+  ("B" ibuffer "ibuffer" :color blue)
+  ("<left>" previous-buffer "prev")
+  ("p" previous-buffer "prev")
+  ("C-b" buffer-menu "buffer menu" :color blue)
+  ("N" evil-buffer-new "new" :color blue)
+  ("d" kill-this-buffer "delete")
+  ;; don't come back to previous buffer after delete
+  ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
+  ("S" save-buffer "save")
+  ("s" deino-window/body "window" :color blue)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; counsel
 (meq/up counsel :use-package-preconfig (smex)
         (ivy :sorrow ("x" :deino '(deino-execute (:color blue) "x" "A deino for launching stuff!"
@@ -217,7 +240,29 @@
         ;; (put 'buffer-save-without-query 'safe-local-variable #'booleanp)
 
         ;; (toggle-debug-on-error)
-        )
+
+        ;; Adapted From:
+        ;; Answer: https://emacs.stackexchange.com/a/3017/31428
+        ;; User: https://emacs.stackexchange.com/users/253/dan
+        (add-to-list 'default-frame-alist '(fullscreen . fullboth)))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; one-on-one
+;; !!! THE ORDER HERE MATTERS! !!!
+(meq/up oneonone
+    :if (not (meq/exwm-p))
+    :load-emacs-file-preconfig
+        ("fit-frame") ("autofit-frame")
+        ;; ("buff-menu+")
+        ("compile-") ("compile+") ("grep+") ("dired+") ("dired-details") ("dired-details+")
+        ("doremi") ("hexrgb") ("frame-fns") ("faces+") ("doremi-frm") ("eyedropper") ("facemenu+")
+        ("frame+") ("help+") ("info+") ("menu-bar+") ("mouse+") ("setup-keys") ("strings")
+        ;; ("simple+")
+        ("frame-cmds") ("thumb-frm") ("window+") ("zoom-frm") ("oneonone")
+    :gsetq
+        (1on1-minibuffer-frame-width 10000)
+        (1on1-minibuffer-frame-height 10000))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -675,7 +720,8 @@
 ;; doc
 (use-package doc
     :commands (meq/dired-create-doc-markdown meq/dired-create-and-open-doc-markdown)
-    :upnsd-preconfig (titan)
+    :upnsd-preconfig (titan :gsetq (meq/var/titan-snippets-dir (meq/ued-siluam "titan" "snippets")))
+    :gsetq (meq/var/doc-snippets-dir (meq/ued-siluam "doc" "snippets"))
     :mode (("\\.doc\\.md\\'" . doc-markdown-mode)
             ("\\.doc\\.org\\'" . doc-org-mode))
     :uru (doc-org-mode nil deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
@@ -686,7 +732,8 @@
 ;; fell
 (use-package fell
     :commands (meq/dired-create-fell-markdown meq/dired-create-and-open-fell-markdown)
-    :upnsd-preconfig (titan)
+    :upnsd-preconfig (titan :gsetq (meq/var/titan-snippets-dir (meq/ued-siluam "titan" "snippets")))
+    :gsetq (meq/var/fell-snippets-dir (meq/ued-siluam "fell" "snippets"))
     :mode (("\\.fell\\.md\\'" . fell-markdown-mode)
             ("\\.fell\\.org\\'" . fell-org-mode))
     :uru (fell-org-mode nil deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
@@ -814,28 +861,6 @@
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    ;; buffer
-    (sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
-      "
-                    Buffers :
-      "
-      ("`" nil "cancel")
-      ("<right>" next-buffer "next")
-      ("n" next-buffer "next")
-      ("b" ivy-switch-buffer "switch" :color blue)
-      ("B" ibuffer "ibuffer" :color blue)
-      ("<left>" previous-buffer "prev")
-      ("p" previous-buffer "prev")
-      ("C-b" buffer-menu "buffer menu" :color blue)
-      ("N" evil-buffer-new "new" :color blue)
-      ("d" kill-this-buffer "delete")
-      ;; don't come back to previous buffer after delete
-      ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
-      ("S" save-buffer "save")
-      ("s" deino-window/body "window" :color blue)))
-
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
     ;; cosmog
     (meq/upnsd cosmog :prime ("c" deino-cosmog/body "cosmog"))
 
@@ -931,24 +956,6 @@
 
     ;; objed
     (meq/up objed)
-
-    ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-    ;; one-on-one
-    ;; !!! THE ORDER HERE MATTERS! !!!
-    (meq/up oneonone
-        :if (not (meq/exwm-p))
-        :load-emacs-file-preconfig
-            ("fit-frame") ("autofit-frame")
-            ;; ("buff-menu+")
-            ("compile-") ("compile+") ("grep+") ("dired+") ("dired-details") ("dired-details+")
-            ("doremi") ("hexrgb") ("frame-fns") ("faces+") ("doremi-frm") ("eyedropper") ("facemenu+")
-            ("frame+") ("help+") ("info+") ("menu-bar+") ("mouse+") ("setup-keys") ("strings")
-            ;; ("simple+")
-            ("frame-cmds") ("thumb-frm") ("window+") ("zoom-frm") ("oneonone")
-        :gsetq
-            (1on1-minibuffer-frame-width 10000)
-            (1on1-minibuffer-frame-height 10000))
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

@@ -29,7 +29,7 @@ commit:
 
 cammit: add commit
 
-push-only: add commit
+push-only: cammit
 |-git -C $(mkfileDir) push
 
 push: push-only init

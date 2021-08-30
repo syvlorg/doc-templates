@@ -31,6 +31,9 @@
                     ([?\s-`] . uru)
                     ([?\s-z] . uru)
 
+                    (,(naked "s-tab") . next-buffer)
+                    (,(naked "s-M-tab") . previous-buffer)
+
                     ([?\s-q] . (lambda nil (interactive)
                         (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
                         (deino-buffer/body)))
