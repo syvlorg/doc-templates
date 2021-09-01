@@ -17,5 +17,7 @@
  ;; If there is more than one, they won't work right.
  )
 
-(org-babel-load-file (meq/ued "README.org"))
+(defun meq/reload-init nil (interactive)
+    (org-babel-load-file (meq/ued "README.org")))
+(meq/reload-init)
 ;; 20210811234927547343000 ends here

@@ -1289,12 +1289,16 @@ tangle: tangle-setup
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
     -HIe org \
     -E .local \
+    -E lib \
+    -E var \
     -x $(mkfileDir)/backup-tangle.sh
 |-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/graphene/README.org
 |-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/nano/README.org
 |fd . $(mkfileDir) \
     -HIe sh \
     -E .local \
+    -E lib \
+    -E var \
     -x chmod +x
 
 subtree-prep: tangle push-only
@@ -1664,7 +1668,7 @@ super-push-only: tangle push-only
 : 20210604182053300746900
 
 #+name: 20210604182053300746900
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments both
+#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
 (defvar pre-user-emacs-directory (file-name-directory load-file-name))
@@ -1688,46 +1692,6 @@ super-push-only: tangle push-only
 
 #+name: 20210604182053300746900
 #+begin_src emacs-lisp :tangle (meq/tangle-path)
-;; Adapted From: https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body
-(defvar default-file-name-handler-alist file-name-handler-alist)
-
-(setq-default auto-window-vscroll nil
-              file-name-handler-alist nil
-              frame-inhibit-implied-resize t
-              gc-cons-percentage 0.6
-              inhibit-compacting-font-caches t
-              package-enable-at-startup nil)
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (setq file-name-handler-alist default-file-name-handler-alist)
-            (setq gc-cons-percentage 0.1)
-
-            (defun meq/gc-on-lose-focus ()
-              (unless (frame-focus-state)
-                (garbage-collect)))
-
-            (if (boundp 'after-focus-change-function)
-                (add-function :after after-focus-change-function #'meq/gc-on-lose-focus))))
-
-(fset 'yes-or-no-p 'y-or-n-p)
-(fset 'view-hello-file 'ignore)
-(fset 'display-startup-echo-area-message 'ignore)
-
-(put 'narrow-to-region 'disabled nil)
-(put 'up-case-rgion 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'erase-buffer 'disabled nil)
-
-(push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . nil) default-frame-alist)
-(push '(internal-border . 0) default-frame-alist)
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars . 0) default-frame-alist)
-(push '(left-fringe . 0) default-frame-alist)
-(push '(right-fringe . 0) default-frame-alist)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Get rid of double dashes in scripts ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1777,11 +1741,11 @@ super-push-only: tangle push-only
 ;; User: https://emacs.stackexchange.com/users/14825/nickd ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    ;; (byte-recompile-directory default-directory nil)
+    (byte-recompile-directory default-directory nil)
     (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 (let ((default-directory (concat pre-user-emacs-directory "siluam")))
-    ;; (byte-recompile-directory default-directory nil)
+    (byte-recompile-directory default-directory nil)
     (normal-top-level-add-to-load-path '("."))
     (normal-top-level-add-subdirs-to-load-path))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1891,7 +1855,7 @@ super-push-only: tangle push-only
 ;; Set up the `user-emacs-directory' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq user-emacs-directory (f-full (meq/ued* "profiles" meq/var/profile-name)))
-;; (unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
+(unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
 (setq custom-file (meq/ued "init.el"))
 ;; Adapted From:
 ;; Answer: https://emacs.stackexchange.com/a/18682/31428
@@ -1916,7 +1880,7 @@ super-push-only: tangle push-only
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up theming ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; (byte-recompile-directory (meq/ued* "themes") nil)
+(byte-recompile-directory (meq/ued* "themes") nil)
 (add-to-list 'custom-theme-load-path (meq/ued* "themes"))
 (setq custom-safe-themes t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1955,7 +1919,7 @@ super-push-only: tangle push-only
             (message file)
             (if (not exists)
                 (eval (intern item))
-                ;; (when ,byte-compile (byte-recompile-directory dir nil))
+                (when ,byte-compile (byte-recompile-directory dir nil))
                 (add-to-list 'load-path dir)
                 (unless is-dir (load file)))))))
 (if (member "--profile-early-init" command-line-args)
@@ -2148,7 +2112,9 @@ And in my experience... Not a good idea; much too confusing. Use
  ;; If there is more than one, they won't work right.
  )
 
-(org-babel-load-file (meq/ued "README.org"))
+(defun meq/reload-init nil (interactive)
+    (org-babel-load-file (meq/ued "README.org")))
+(meq/reload-init)
 #+end_src
 
 ** graphene

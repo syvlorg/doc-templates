@@ -34,7 +34,8 @@ First of all, I don't know how to check if I'm running on my phone, so I pass in
 --------------
 
 These next few lines are unabashedly stolen from
-[[https://github.com/hlissner/doom-emacs/blob/develop/early-init.el][Henrik Lissner's Doom Emacs' early-init.el]]:
+[[https://github.com/hlissner][Henrik Lissner's]]
+[[https://github.com/hlissner/doom-emacs/blob/develop/early-init.el][Doom Emacs' ~early-init.el~]]:
 
 #+begin_quote
 Emacs 27.1 introduced early-init.el, which is run before init.el, before
@@ -51,31 +52,134 @@ enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
 (setq gc-cons-threshold most-positive-fixnum)
 #+end_src
 
+And for the ~file-name-handler-alist~:
+
+#+begin_src emacs-lisp
+(unless (or (daemonp) noninteractive)
+  (let ((old-file-name-handler-alist file-name-handler-alist))
+#+end_src
+
 #+begin_quote
-In noninteractive sessions, prioritize non-byte-compiled source files to
-prevent the use of stale byte-code. Otherwise, it saves us a little IO time
-to skip the mtime checks on every *.elc file.
+`file-name-handler-alist' is consulted on each `require', `load' and
+various path/io functions. You get a minor speed up by unsetting this.
+Some warning, however: this could cause problems on builds of Emacs where
+its site lisp files aren't byte-compiled and we're forced to load the
+*.el.gz files (e.g. on Alpine).
 #+end_quote
 
 #+begin_src emacs-lisp
-(setq load-prefer-newer noninteractive)
+    (setq-default file-name-handler-alist nil)
+#+end_src
+
+#+begin_quote
+...but restore `file-name-handler-alist' later, because it is needed for
+handling encrypted or compressed files, among other things.
+#+end_quote
+
+#+begin_src emacs-lisp
+    (defun meq/reset-file-handler-alist-h ()
+      (setq file-name-handler-alist
+#+end_src
+
+#+begin_quote
+Merge instead of overwrite because there may have bene changes to
+`file-name-handler-alist' since startup we want to preserve.
+#+end_quote
+
+#+begin_src emacs-lisp
+            (delete-dups (append file-name-handler-alist
+                                 old-file-name-handler-alist))))
+    (add-hook 'emacs-startup-hook #'meq/reset-file-handler-alist-h 101)))
+#+end_src
+
+--------------
+
+I would like to always prefer newer byte-compiled files, therefore, I use
+[[https://emacs.stackexchange.com/a/186/31428][this answer]], by
+[[https://emacs.stackexchange.com/users/50/malabarba][Malabarba]]:
+
+#+begin_src emacs-lisp
+(setq load-prefer-newer t)
 #+end_src
 
 --------------
 
 If I ever need it, this will give me the initial directory I was in; the code is adapted from
-[[https://emacs.stackexchange.com/users/1979/stefan][Stefan's answer]]
-[[https://emacs.stackexchange.com/a/31662/31428][here]]:
+[[https://emacs.stackexchange.com/users/1979/stefan][Stefan's]]
+[[https://emacs.stackexchange.com/a/31662/31428][answer here]]:
 
 #+begin_src emacs-lisp
-(setq initial-directory default-directory)
+(setq meq/var/initial-directory default-directory)
+#+end_src
+
+--------------
+
+The next few bits are adapted from
+[[https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body][here]],
+with a few quotes from myself and other scattered here and there, such as this bit
+[[https://www.reddit.com/r/emacs/comments/41m7x3/why_are_you_changing_gcconsthreshold/cz3t775?utm_source=share&utm_medium=web2x&context=3][about ~gc-cons-percentage~]]:
+
+#+begin_quote
+... There's also gc-cons-percentage which performs a gc if the amount of new memory used as a percentage
+of the total has increased by a certain amount.
+If you set gc-cons-threshold to a large number that effectively puts gc-cons-percentage into the driving seat.
+The default gc-cons-threshold is 400000 bytes, not 800000. ...
+#+end_quote
+
+#+begin_src emacs-lisp
+(defvar meq/var/gc-cons-percentage gc-cons-percentage)
+
+(add-hook 'after-init-hook
+          (lambda ()
+            (setq gc-cons-percentage meq/var/gc-cons-percentage)
+
+            (defun meq/gc-on-lose-focus ()
+              (unless (frame-focus-state)
+                (garbage-collect)))
+
+            (if (boundp 'after-focus-change-function)
+                (add-function :after after-focus-change-function #'meq/gc-on-lose-focus))))
+
+(setq-default gc-cons-percentage 0.6
+#+end_src
+
+Dunno /quite/ what this bit does...
+
+#+begin_src emacs-lisp
+              auto-window-vscroll nil
+              frame-inhibit-implied-resize t
+              inhibit-compacting-font-caches t)
+#+end_src
+
+
+
+#+begin_src emacs-lisp
+(fset 'yes-or-no-p 'y-or-n-p)
+#+end_src
+
+(fset 'view-hello-file 'ignore)
+(fset 'display-startup-echo-area-message 'ignore)
+
+(put 'narrow-to-region 'disabled nil)
+(put 'up-case-rgion 'disabled nil)
+(put 'downcase-region 'disabled nil)
+(put 'erase-buffer 'disabled nil)
+
+(push '(ns-transparent-titlebar . t) default-frame-alist)
+(push '(ns-appearance . nil) default-frame-alist)
+(push '(internal-border . 0) default-frame-alist)
+(push '(menu-bar-lines . 0) default-frame-alist)
+(push '(tool-bar-lines . 0) default-frame-alist)
+(push '(vertical-scroll-bars . 0) default-frame-alist)
+(push '(left-fringe . 0) default-frame-alist)
+(push '(right-fringe . 0) default-frame-alist)
 #+end_src
 
 --------------
 
 * Addendum
 
-These are just a few blocks I use regularly in my =org= files, whether in =noweb=, naming, or otherwise:
+These are just a few blocks I use regularly in my ~org~ files, whether in ~noweb~, naming, or otherwise:
 
 # Adapted From: https://www.reddit.com/r/emacs/comments/4o9f0e/anyone_have_disabled_parts_of_their_config_being/d4apjey?utm_source=share&utm_medium=web2x&context=3
 :PROPERTIES:

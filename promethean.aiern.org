@@ -1,7 +1,7 @@
 #+setupfile: ./README.org
 #+include: ./README.org
 
-This is used to hold themes for =emacs=.
+This is used to hold themes for ~emacs~.
 
 * themes
 
