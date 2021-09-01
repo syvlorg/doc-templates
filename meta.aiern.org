@@ -1284,6 +1284,7 @@ tangle: tangle-setup
     -E resting.aiern.org \
     -E profiles \
     -E lib \
+    -E var \
     -x $(mkfileDir)/backup-tangle.sh
 |yes yes | fd . $(mkfileDir)/profiles/damascus \
     -HIe org \

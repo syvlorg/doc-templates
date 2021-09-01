@@ -24,8 +24,6 @@ and [[https://github.com/patrickt/emacs][Patrick Thomson]].
 
 * Wheee!
 
-# #######################################################################################################
-
 First of all, I don't know how to check if I'm running on my phone, so I pass in a command-line argument:
 
 #+begin_src emacs-lisp
@@ -33,7 +31,7 @@ First of all, I don't know how to check if I'm running on my phone, so I pass in
 (delete "-p" command-line-args)
 #+end_src
 
-# #######################################################################################################
+--------------
 
 These next few lines are unabashedly stolen from
 [[https://github.com/hlissner/doom-emacs/blob/develop/early-init.el][Henrik Lissner's Doom Emacs' early-init.el]]:
@@ -63,7 +61,7 @@ to skip the mtime checks on every *.elc file.
 (setq load-prefer-newer noninteractive)
 #+end_src
 
-# #######################################################################################################
+--------------
 
 If I ever need it, this will give me the initial directory I was in; the code is adapted from
 [[https://emacs.stackexchange.com/users/1979/stefan][Stefan's answer]]
@@ -73,7 +71,7 @@ If I ever need it, this will give me the initial directory I was in; the code is
 (setq initial-directory default-directory)
 #+end_src
 
-# #######################################################################################################
+--------------
 
 * Addendum
 
