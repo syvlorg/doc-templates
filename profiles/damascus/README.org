@@ -1,270 +1,4 @@
 #+setupfile: ../../README.org
-#+include: ../../README.org
-
-* early-init.el
-
-Adapted From: https://github.com/hlissner/doom-emacs/blob/develop/early-init.el
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210604182053300746900
-
-#+name: 20210604182053300746900
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
-;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
-
-(defvar meq/var/phone (member "-p" command-line-args))
-(delete "-p" command-line-args)
-
-;; Emacs 27.1 introduced early-init.el, which is run before init.el, before
-;; package and UI initialization happens, and before site files are loaded.
-
-;; A big contributor to startup times is garbage collection. We up the gc
-;; threshold to temporarily prevent it from running, then reset it later by
-;; enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
-(setq gc-cons-threshold most-positive-fixnum)
-
-;; In noninteractive sessions, prioritize non-byte-compiled source files to
-   ;; prevent the use of stale byte-code. Otherwise, it saves us a little IO time
-;; to skip the mtime checks on every *.elc file.
-(setq load-prefer-newer noninteractive)
-
-;; Adapted From:
-;; Answer: https://emacs.stackexchange.com/a/31662/31428
-;; User: https://emacs.stackexchange.com/users/1979/stefan
-(setq initial-directory default-directory)
-
-;; Adapted From: https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body
-(defvar default-file-name-handler-alist file-name-handler-alist)
-
-(setq-default auto-window-vscroll nil
-              file-name-handler-alist nil
-              frame-inhibit-implied-resize t
-              gc-cons-percentage 0.6
-              inhibit-compacting-font-caches t
-              package-enable-at-startup nil)
-
-(add-hook 'after-init-hook
-          (lambda ()
-            (setq file-name-handler-alist default-file-name-handler-alist)
-            (setq gc-cons-percentage 0.1)
-
-            (defun meq/gc-on-lose-focus ()
-              (unless (frame-focus-state)
-                (garbage-collect)))
-
-            (if (boundp 'after-focus-change-function)
-                (add-function :after after-focus-change-function #'meq/gc-on-lose-focus))))
-
-(fset 'yes-or-no-p 'y-or-n-p)
-(fset 'view-hello-file 'ignore)
-(fset 'display-startup-echo-area-message 'ignore)
-
-(put 'narrow-to-region 'disabled nil)
-(put 'up-case-rgion 'disabled nil)
-(put 'downcase-region 'disabled nil)
-(put 'erase-buffer 'disabled nil)
-
-(push '(ns-transparent-titlebar . t) default-frame-alist)
-(push '(ns-appearance . nil) default-frame-alist)
-(push '(internal-border . 0) default-frame-alist)
-(push '(menu-bar-lines . 0) default-frame-alist)
-(push '(tool-bar-lines . 0) default-frame-alist)
-(push '(vertical-scroll-bars . 0) default-frame-alist)
-(push '(left-fringe . 0) default-frame-alist)
-(push '(right-fringe . 0) default-frame-alist)
-
-;; Tell straight.el about the profiles we are going to be using.
-(setq straight-profiles
-      '((nil . "default.el")
-        ;; Packages which are pinned to a specific commit.
-        (pinned . "pinned.el")))
-
-(with-no-warnings
-    (setq straight-vc-git-default-clone-depth 1)
-    (setq straight-base-dir (meq/ued ".local/"))
-    (setq straight-repository-branch "develop")
-    (setq straight-build-dir (format "build-%s" emacs-version))
-    (setq straight-cache-autoloads t)
-    (setq straight-check-for-modifications '(check-on-save))
-    (setq straight-repository-branch "develop")
-    (setq straight-use-package-by-default t)
-    ;; From: https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649
-    (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
-(delete "--no-byte-compilation" command-line-args)
-
-(eval-and-compile
-  (setq straight-recipes-gnu-elpa-use-mirror t)
-  (setq straight-recipes-emacsmirror-use-mirror t)
-  (setq bootstrap-version 5)
-  (setq bootstrap-file (concat straight-base-dir "straight/repos/straight.el/bootstrap.el")))
-
-;; (unless (file-exists-p bootstrap-file)
-;;   (with-current-buffer
-;;       (url-retrieve-synchronously
-;;        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-;;        'silent 'inhibit-cookies)
-;;     (goto-char (point-max))
-;;     (eval-print-last-sexp)))
-
-;; (load bootstrap-file nil 'nomessage)
-
-;; (autoload #'straight-x-pull-all "straight-x")
-;; (autoload #'straight-x-freeze-versions "straight-x")
-
-;; use-package
-<<20210601225235077502200>>
-
-(unless (member system-type '(windows-nt ms-dos))
-    (meq/up exec-path-from-shell
-        :custom
-            (exec-path-from-shell-check-startup-files nil)
-            (exec-path-from-shell-variables '("PATH" "MANPATH" "CACHE_HOME" "FPATH" "PYENV_ROOT"))
-            (exec-path-from-shell-arguments '("-l"))
-        :config
-            (exec-path-from-shell-initialize)))
-
-;; Adapted From: https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation
-(ignore-errors
-    ;; Silence compiler warnings as they can be pretty disruptive
-    (setq native-comp-async-report-warnings-errors nil)
-    ;; Set the right directory to store the native comp cache
-    (add-to-list 'native-comp-eln-load-path (meq/ued "eln-cache/")))
-#+end_src
-
-** use-package
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225235077502200
-
-#+name: 20210601225235077502200
-#+begin_src emacs-lisp
-<<20210601225231422834500>>
-(setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
-(delete "--always-demand" command-line-args)
-#+end_src
-
-*** always defer package loading
-
-Quoted from [[https://github.com/jwiegley/use-package#loading-packages-in-sequence][Use-Package's Loading packages in sequence]]:
-
-#+begin_quote
-NOTE: pay attention if you set use-package-always-defer to t, and also use the :after keyword, as you will need to specify how the
-declared package is to be loaded: e.g., by some :bind. If you're not using one of the mechanisms that registers autoloads, such as
-:bind or :hook, and your package manager does not provide autoloads, it's possible that without adding :defer 2 to those declarations,
-your package will never be loaded.
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#notes-about-lazy-loading][Use-Package's Notes about lazy loading]]:
-
-#+begin_quote
-In almost all cases you don't need to manually specify :defer t. This is implied whenever :bind or :mode or :interpreter is used.
-Typically, you only need to specify :defer if you know for a fact that some other package will do something to cause your package to
-load at the appropriate time, and thus you would like to defer loading even though use-package isn't creating any autoloads for you.
-You can override package deferral with the :demand keyword. Thus, even if you use :bind, using :demand will force loading to occur
-immediately and not establish an autoload for the bound key.
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#modes-and-interpreters][Use-Package's Modes and interpreters]]:
-
-#+begin_quote
-Similar to :bind, you can use :mode and :interpreter to establish a deferred binding within the auto-mode-alist and interpreter-mode-alist variables.
-...
-If you aren't using :commands, :bind, :bind*, :bind-keymap, :bind-keymap*, :mode, :interpreter, or :hook
-(all of which imply :defer; see the docstring for use-package for a brief description of each), you can still defer loading with the :defer keyword...
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#magic-handlers][Use-Package's Magic handlers]]:
-
-#+begin_quote
-Similar to :mode and :interpreter, you can also use :magic and :magic-fallback to cause certain function to be run if the beginning of a file matches
-a given regular expression.
-...
-This registers an autoloaded command for pdf-view-mode, defers loading of pdf-tools, and runs pdf-view-mode if the beginning of a buffer matches the string "%PDF".
-#+end_quote
-
-Quoted from [[https://github.com/Kungsgeten/ryo-modal#use-package-keyword][RYO-Modal's Use-package keyword]]:
-
-#+begin_quote
-Ryo-modal also provides a use-package keyword: :ryo, which is similar to :bind in that it implies :defer t and create autoloads for the bound commands.
-The keyword is followed by one or more key-binding commands, using the same syntax as used by ryo-modal-keys...
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#use-package-keywords][General's Use-package Keywords]]:
-
-#+begin_quote
-:general is similar to :bind in that it implies :defer t whenever there are bound commands that can be autoloaded
-(e.g. it will not imply :defer t if the only bound command is to a lambda, for example). Whenever autoloadable commands are bound,
-use-package will create autoloads for them (though this is usually not necessary).
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#ghook-keyword][General's :ghook Keyword]]:
-
-#+begin_quote
-:ghook is intended to be used to add a package’s minor mode enabling function to a user-specified hook, so that when hook is run,
-the package will be loaded and the mode enabled. This means that :ghook will usually imply :defer t. While it does not always imply :defer t,
-it will add any non-lambda functions to :commands (this is the same behavior as :hook).
-Though this is usually unnecessary (the commands probably already have autoloads), it will in turn imply :defer t.
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#gfhook-keyword][General's :gfhook Keyword]]:
-
-#+begin_quote
-Unlike :ghook, :gfhook never adds functions to :commands and therefore never implies :defer t.
-This is because the functions specified are ones that should be run when turning on (or toggling) the mode(s) the package provides.
-The specified functions are external to the package, could be called elsewhere, and therefore should not trigger the package to load.
-#+end_quote
-
-Also see [[https://github.com/jwiegley/use-package/issues/738#issuecomment-447631609][this comment]].
-
-Note that I assume that [[https://github.com/jwiegley/use-package#use-package-chords][chords]] also defer and create autoloads.
-
-And in my experience... Not a good idea; much too confusing. Use
-[[https://www.reddit.com/r/emacs/comments/j2xezg/usepackage_best_practices/][the arguments here]] to decide whether to use this or =:defer <n>= instead.
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225231422834500
-
-#+name: 20210601225231422834500
-#+begin_src emacs-lisp
-(setq use-package-always-defer (member "--always-defer" command-line-args))
-(delete "--always-defer" command-line-args)
-#+end_src
-
-* init.el
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210811234927547343000
-
-#+name: 20210811234927547343000
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
-;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
-(when (version< emacs-version "27") (load (meq/ued "early-init.el")))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(meq/var/current-theme 'ghostfreak-green-dark)
- '(meq/var/current-theme-mode "dark")
- '(safe-local-variable-values '((eval message "eval 1"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-(load (meq/ued "late-init.el"))
-#+end_src
 
 * late-init.el
 
@@ -1532,7 +1266,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 #+name: 20210810194339916976700
 #+begin_src emacs-lisp
 (defvar meq/var/everything-else-initialized nil)
-(defun meq/initialize-everything-else nil (interactive)
+(defun meq/initialize-everything-else nil (interactive) (unless meq/var/everything-else-initialized
 #+end_src
 
 **** end
@@ -1544,8 +1278,10 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
 
 #+name: 20210810194341280479100
 #+begin_src emacs-lisp
-    (setq meq/var/everything-else-initialized t)
+    (setq meq/var/everything-else-initialized t))
     (message nil))
+
+(meq/unless-item-in-cla "--diee" (meq/initialize-everything-else))
 
 (with-eval-after-load 'alloy (mapc #'(lambda (kons) (interactive)
     (let* ((func (meq/inconcat "mec/" (symbol-name (cdr kons)))))
@@ -1554,7 +1290,7 @@ Adapted From: https://github.com/seagle0128/doom-aiern-modeline#customize
                     (alloy-chord ,(car kons))
                     ',func))
         (eval `(defun ,func (&optional ua) (interactive "p")
-                    (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
+                    (meq/initialize-everything-else)
                     (if current-prefix-arg
                         (,(cdr kons) ua)
                         (,(cdr kons))))))) '(("  " . universal-argument)

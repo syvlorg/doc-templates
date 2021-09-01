@@ -54,6 +54,8 @@
 ;;;###autoload
 (defun meq/ued-siluam (&rest args) (f-full (apply #'meq/ued* "siluam" args)))
 ;;;###autoload
+(defun meq/ued-profiles (&rest args) (f-full (apply #'meq/ued* "profiles" args)))
+;;;###autoload
 (defun meq/ued (&rest args) (f-full (apply #'f-join user-emacs-directory args)))
 ;;;###autoload
 (defun meq/cl (&rest args) (let* ((path (apply #'meq/ued args))) (when (f-exists? path) (load path))))
@@ -927,13 +929,27 @@ be ignored by `god-execute-with-current-bindings'."
 (defun meq/item-in-cla (item) (meq/item-in-list item command-line-args))
 
 ;;;###autoload
+(defmacro meq/if-item-in-list (item list &rest body)
+    (if (member item list)
+        (unwind-protect (eval `(progn ,@(pop body))) (delete item list))
+        (eval `(progn ,@body))))
+
+;;;###autoload
+(defmacro meq/if-item-in-cla (item &rest body) (eval `(meq/if-item-in-list ,item ,command-line-args ,@body)))
+
+;;;###autoload
 (defmacro meq/when-item-in-list (item list &rest body)
-    (when (member item list) (unwind-protect
-        (eval `(progn ,@body))
-        (delete item list))))
+    (when (member item list) (unwind-protect (eval `(progn ,@body)) (delete item list))))
 
 ;;;###autoload
 (defmacro meq/when-item-in-cla (item &rest body) (eval `(meq/when-item-in-list ,item ,command-line-args ,@body)))
+
+;;;###autoload
+(defmacro meq/unless-item-in-list (item list &rest body)
+    (unless (member item list) (unwind-protect (eval `(progn ,@body)) (delete item list))))
+
+;;;###autoload
+(defmacro meq/unless-item-in-cla (item &rest body) (eval `(meq/unless-item-in-list ,item ,command-line-args ,@body)))
 
 ;;;###autoload
 (with-eval-after-load 'aiern (with-eval-after-load 'evil (defun meq/both-ex-define-cmd (cmd function) (interactive)

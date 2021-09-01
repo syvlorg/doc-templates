@@ -10,6 +10,9 @@
 [submodule "async"]
         path = lib/async
         url = https://github.com/jwiegley/emacs-async.git
+[submodule "auto-package-update"]
+        path = lib/auto-package-update
+        url = https://github.com/rranelli/auto-package-update.el.git
 [submodule "avy"]
         path = lib/avy
         url = https://github.com/abo-abo/avy.git
@@ -173,6 +176,9 @@
 [submodule "prescient"]
         path = lib/prescient
         url = https://github.com/raxod502/prescient.el.git
+[submodule "profiles/alhassy"]
+        path = profiles/alhassy
+        url = https://github.com/alhassy/emacs.d.git
 [submodule "profiles/centaur"]
         path = profiles/centaur
         url = https://github.com/seagle0128/.emacs.d.git
@@ -203,6 +209,15 @@
 [submodule "projectile"]
         path = lib/projectile
         url = https://github.com/bbatsov/projectile.git
+[submodule "quelpa"]
+        path = lib/quelpa
+        url = https://github.com/quelpa/quelpa.git
+[submodule "quelpa-leaf"]
+        path = lib/quelpa-leaf
+        url = https://github.com/quelpa/quelpa-leaf.git
+[submodule "quelpa-use-package"]
+        path = lib/quelpa-use-package
+        url = https://github.com/quelpa/quelpa-use-package.git
 [submodule "rainbow-identifiers"]
         path = lib/rainbow-identifiers
         url = https://github.com/Fanael/rainbow-identifiers.git
@@ -233,6 +248,9 @@
 [submodule "sr-speedbar"]
   path = lib/sr-speedbar
   url = https://github.com/emacsorphanage/sr-speedbar.git
+[submodule "system-packages"]
+        path = lib/system-packages
+        url = https://gitlab.com/jabranham/system-packages.git
 [submodule "transient"]
         path = lib/transient
         url = https://github.com/magit/transient.git

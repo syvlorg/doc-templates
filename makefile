@@ -52,14 +52,8 @@ tangle: tangle-setup
     -HIe org \
     -E .local \
     -x $(mkfileDir)/backup-tangle.sh
-|yes yes | fd . $(mkfileDir)/profiles/graphene \
-    -HIe org \
-    -E .local \
-    -x $(mkfileDir)/backup-tangle.sh
-|yes yes | fd . $(mkfileDir)/profiles/nano \
-    -HIe org \
-    -E .local \
-    -x $(mkfileDir)/backup-tangle.sh
+|-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/graphene/README.org
+|-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/nano/README.org
 |fd . $(mkfileDir) \
     -HIe sh \
     -E .local \

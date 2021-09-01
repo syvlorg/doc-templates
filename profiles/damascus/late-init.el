@@ -629,19 +629,7 @@
             '((python . t)
             (shell . t))))
 
-        (when (file-exists-p "~/.emacs.d/README.org")
-            (org-babel-lob-ingest "~/.emacs.d/README.org"))
-        (when (file-exists-p "~/.emacs.d/strange.aiern.org")
-            (org-babel-lob-ingest "~/.emacs.d/strange.aiern.org"))
         
-        (defun meq/get-header nil (interactive)
-            (nth 4 (org-heading-components)))
-        (defun meq/tangle-path nil (interactive)
-            (string-remove-prefix "/" (concat
-                (org-format-outline-path (org-get-outline-path)) "/"
-                    (meq/get-header))))
-        (defun meq/get-theme-from-header nil (interactive)
-            (string-remove-suffix "-theme.el" (meq/get-header)))
     ;; :demon ((naked "backtab") 'evil-close-fold)
     :meta (org-mode-map)
     :meta-rename (org-mode-map "ESC" "org-metadir")
@@ -804,7 +792,7 @@
 
 ;; postface
 (defvar meq/var/everything-else-initialized nil)
-(defun meq/initialize-everything-else nil (interactive)
+(defun meq/initialize-everything-else nil (interactive) (unless meq/var/everything-else-initialized
 
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -1043,8 +1031,10 @@
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
     ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-    (setq meq/var/everything-else-initialized t)
+    (setq meq/var/everything-else-initialized t))
     (message nil))
+
+(meq/unless-item-in-cla "--diee" (meq/initialize-everything-else))
 
 (with-eval-after-load 'alloy (mapc #'(lambda (kons) (interactive)
     (let* ((func (meq/inconcat "mec/" (symbol-name (cdr kons)))))
@@ -1053,7 +1043,7 @@
                     (alloy-chord ,(car kons))
                     ',func))
         (eval `(defun ,func (&optional ua) (interactive "p")
-                    (unless meq/var/everything-else-initialized (meq/initialize-everything-else))
+                    (meq/initialize-everything-else)
                     (if current-prefix-arg
                         (,(cdr kons) ua)
                         (,(cdr kons))))))) '(("  " . universal-argument)
