@@ -31,8 +31,6 @@
 !**/**/siluam/**
 !themes
 !themes/screenshots
-!themes
-!themes/screenshots/**
 
 !*.git*
 !**/**/*.git*

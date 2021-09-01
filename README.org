@@ -157,6 +157,7 @@ Dunno /quite/ what this bit does...
 (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
 
+#+begin_src emacs-lisp
 (fset 'view-hello-file 'ignore)
 (fset 'display-startup-echo-area-message 'ignore)
 
