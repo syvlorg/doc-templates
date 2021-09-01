@@ -10,14 +10,15 @@
 #+startup: show3levels
 
 #+begin_quote
-Like Chemacs, but worse! — John Oliver
+Like Chemacs, but worse! — John Oliver (... Yeah, no; I wish!)
 #+end_quote
 
 * হ্যালো! Hello!
 
 This is the beginning of my version of a literate configuration for [[https://www.gnu.org/software/emacs/][GNU Emacs]].
 
-
+They were inspired primarily by the configurations of [[https://alhassy.github.io/emacs.d/index.html][Musa Al-hassy]]
+and [[https://github.com/patrickt/emacs][Patrick Thomson]].
 
 * Addendum
 
@@ -28,10 +29,14 @@ These are just a few blocks I use regularly in my =org= files, whether in =noweb
 :header-args: :tangle no
 :END:
 
+** username
+
 #+name: username
 #+begin_src text
 shadowrylander
 #+end_src
+
+** hash-deprecated
 
 #+name: hash-deprecated
 #+begin_src emacs-lisp :var name=""
@@ -39,6 +44,8 @@ shadowrylander
     org-format-outline-path (org-get-outline-path))) (
         nth 4 (org-heading-components)) name))
 #+end_src
+
+** hash
 
 #+name: hash
 #+begin_src emacs-lisp
