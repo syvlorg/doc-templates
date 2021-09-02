@@ -37,3 +37,5 @@ profiles/damascus/var
 
 !*.git*
 !**/**/*.git*
+
+!borg.gif
