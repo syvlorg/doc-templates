@@ -9,8 +9,8 @@
 !README.*
 !**/**/README.*
 
-!org-tangle
-!**/**/org-tangle
+!org-tangle.sh
+!**/**/org-tangle.sh
 
 !makefile
 !**/**/makefile
@@ -18,20 +18,22 @@
 !*.mk
 !**/**/*.mk
 
-!profiles/
-!damascus
-!**/**/damascus/**
-**/**/damascus/**/.cosmog.
-**/**/damascus/**/.local
-**/**/damascus/**/auto-save-list
-**/**/damascus/**/eln-cache
-**/**/damascus/**/etc
-**/**/damascus/**/var
+!profiles
+!profiles/damascus
+!profiles/damascus/**
+profiles/damascus/.cosmog.
+profiles/damascus/.local
+profiles/damascus/auto-save-list
+profiles/damascus/eln-cache
+profiles/damascus/etc
+profiles/damascus/var
+
 !siluam
-!**/**/siluam/**
+!siluam/**
+
 !themes
 !themes/screenshots
-!**/**/themes/screenshots/**
+!themes/screenshots/**
 
 !*.git*
 !**/**/*.git*

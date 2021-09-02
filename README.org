@@ -151,11 +151,13 @@ Dunno /quite/ what this bit does...
               inhibit-compacting-font-caches t)
 #+end_src
 
-
+I don't like typing ~yes~ or ~no~ all the time, so we'll shorten the answer statement a bit.
 
 #+begin_src emacs-lisp
 (fset 'yes-or-no-p 'y-or-n-p)
 #+end_src
+
+Dunno what /this/ bit does either...
 
 #+begin_src emacs-lisp
 (fset 'view-hello-file 'ignore)
