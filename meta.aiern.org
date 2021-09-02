@@ -1693,41 +1693,6 @@ super-push-only: tangle push-only
 #+name: 20210604182053300746900
 #+begin_src emacs-lisp :tangle (meq/tangle-path)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up `use-package' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(with-no-warnings
-  (setq use-package-verbose t)
-  (setq use-package-enable-imenu-support t))
-(require 'use-package)
-
-;; use-package
-<<20210601225235077502200>>
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up cleanup mechanisms ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package no-littering :demand t)
-(use-package gcmh :demand t :config (gcmh-mode 1))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up my `use-package-extras' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(use-package use-package-extras
-    :demand t
-    :init (require 'a) (require 'dash) (require 's) (require 'f)
-    :config
-        (meq/up meq :load-emacs-file-preconfig ("naked"))
-        (meq/up leaf :use-package-preconfig
-            (use-package-ensure-system-package)
-            (leaf-keywords)))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Set up the `user-emacs-directory' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (setq user-emacs-directory (f-full (meq/ued* "profiles" meq/var/profile-name)))
@@ -1741,6 +1706,15 @@ super-push-only: tangle push-only
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Set up theming ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(byte-recompile-directory (meq/ued* "themes") nil)
+(add-to-list 'custom-theme-load-path (meq/ued* "themes"))
+(setq custom-safe-themes t)
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Implement `doom-emacs' updating ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (when (and
@@ -1750,15 +1724,6 @@ super-push-only: tangle push-only
     (call-process (meq/ued* "profiles" "doom" "bin" "doom") nil nil nil "update")
     (call-process (meq/ued* "profiles" "doom" "bin" "doom") nil nil nil "sync")
     (call-process (meq/ued* "profiles" "doom" "bin" "doom") nil nil nil "doctor"))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up theming ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(byte-recompile-directory (meq/ued* "themes") nil)
-(add-to-list 'custom-theme-load-path (meq/ued* "themes"))
-(setq custom-safe-themes t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
@@ -1809,109 +1774,6 @@ super-push-only: tangle push-only
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (meq/load-from-cla "--profile-early-lib" t)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-#+end_src
-
-** use-package
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225235077502200
-
-#+name: 20210601225235077502200
-#+begin_src emacs-lisp
-<<20210601225231422834500>>
-(setq use-package-always-demand (or (member "--always-demand" command-line-args) (daemonp)))
-(delete "--always-demand" command-line-args)
-#+end_src
-
-*** always defer package loading
-
-Quoted from [[https://github.com/jwiegley/use-package#loading-packages-in-sequence][Use-Package's Loading packages in sequence]]:
-
-#+begin_quote
-NOTE: pay attention if you set use-package-always-defer to t, and also use the :after keyword, as you will need to specify how the
-declared package is to be loaded: e.g., by some :bind. If you're not using one of the mechanisms that registers autoloads, such as
-:bind or :hook, and your package manager does not provide autoloads, it's possible that without adding :defer 2 to those declarations,
-your package will never be loaded.
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#notes-about-lazy-loading][Use-Package's Notes about lazy loading]]:
-
-#+begin_quote
-In almost all cases you don't need to manually specify :defer t. This is implied whenever :bind or :mode or :interpreter is used.
-Typically, you only need to specify :defer if you know for a fact that some other package will do something to cause your package to
-load at the appropriate time, and thus you would like to defer loading even though use-package isn't creating any autoloads for you.
-You can override package deferral with the :demand keyword. Thus, even if you use :bind, using :demand will force loading to occur
-immediately and not establish an autoload for the bound key.
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#modes-and-interpreters][Use-Package's Modes and interpreters]]:
-
-#+begin_quote
-Similar to :bind, you can use :mode and :interpreter to establish a deferred binding within the auto-mode-alist and interpreter-mode-alist variables.
-...
-If you aren't using :commands, :bind, :bind*, :bind-keymap, :bind-keymap*, :mode, :interpreter, or :hook
-(all of which imply :defer; see the docstring for use-package for a brief description of each), you can still defer loading with the :defer keyword...
-#+end_quote
-
-Quoted from [[https://github.com/jwiegley/use-package#magic-handlers][Use-Package's Magic handlers]]:
-
-#+begin_quote
-Similar to :mode and :interpreter, you can also use :magic and :magic-fallback to cause certain function to be run if the beginning of a file matches
-a given regular expression.
-...
-This registers an autoloaded command for pdf-view-mode, defers loading of pdf-tools, and runs pdf-view-mode if the beginning of a buffer matches the string "%PDF".
-#+end_quote
-
-Quoted from [[https://github.com/Kungsgeten/ryo-modal#use-package-keyword][RYO-Modal's Use-package keyword]]:
-
-#+begin_quote
-Ryo-modal also provides a use-package keyword: :ryo, which is similar to :bind in that it implies :defer t and create autoloads for the bound commands.
-The keyword is followed by one or more key-binding commands, using the same syntax as used by ryo-modal-keys...
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#use-package-keywords][General's Use-package Keywords]]:
-
-#+begin_quote
-:general is similar to :bind in that it implies :defer t whenever there are bound commands that can be autoloaded
-(e.g. it will not imply :defer t if the only bound command is to a lambda, for example). Whenever autoloadable commands are bound,
-use-package will create autoloads for them (though this is usually not necessary).
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#ghook-keyword][General's :ghook Keyword]]:
-
-#+begin_quote
-:ghook is intended to be used to add a package’s minor mode enabling function to a user-specified hook, so that when hook is run,
-the package will be loaded and the mode enabled. This means that :ghook will usually imply :defer t. While it does not always imply :defer t,
-it will add any non-lambda functions to :commands (this is the same behavior as :hook).
-Though this is usually unnecessary (the commands probably already have autoloads), it will in turn imply :defer t.
-#+end_quote
-
-Quoted from [[https://github.com/noctuid/general.el#gfhook-keyword][General's :gfhook Keyword]]:
-
-#+begin_quote
-Unlike :ghook, :gfhook never adds functions to :commands and therefore never implies :defer t.
-This is because the functions specified are ones that should be run when turning on (or toggling) the mode(s) the package provides.
-The specified functions are external to the package, could be called elsewhere, and therefore should not trigger the package to load.
-#+end_quote
-
-Also see [[https://github.com/jwiegley/use-package/issues/738#issuecomment-447631609][this comment]].
-
-Note that I assume that [[https://github.com/jwiegley/use-package#use-package-chords][chords]] also defer and create autoloads.
-
-And in my experience... Not a good idea; much too confusing. Use
-[[https://www.reddit.com/r/emacs/comments/j2xezg/usepackage_best_practices/][the arguments here]] to decide whether to use this or =:defer <n>= instead.
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210601225231422834500
-
-#+name: 20210601225231422834500
-#+begin_src emacs-lisp
-(setq use-package-always-defer (member "--always-defer" command-line-args))
-(delete "--always-defer" command-line-args)
 #+end_src
 
 * init.el
