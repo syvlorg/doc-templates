@@ -33,6 +33,14 @@ First of all, I don't know how to check if I'm running on my phone, so I pass in
 
 --------------
 
+Then I'll remove the double dashes from scripts:
+
+#+begin_src emacs-lisp
+(when (string= (car (last command-line-args)) "--") (delete "--" command-line-args))
+#+end_src
+
+--------------
+
 These next few lines are unabashedly stolen from
 [[https://github.com/hlissner][Henrik Lissner's]]
 [[https://github.com/hlissner/doom-emacs/blob/develop/early-init.el][Doom Emacs' ~early-init.el~]]:
@@ -179,6 +187,80 @@ Dunno what /this/ bit does either...
 #+end_src
 
 --------------
+
+Now that that's over with, let's get the profile name; this is done by searching through the ~command-line-args~
+list for the ~--profile~ argument. If found, get the profile name from the index of the ~--profile~ argument
+plus 1, otherwise, set it to the default name of ~damascus~.
+
+#+begin_src emacs-lisp
+(defvar meq/var/profiled t)
+(defvar meq/var/profile-name (if (member "--profile" command-line-args)
+    (let* ((value (nth (1+ (seq-position command-line-args "--profile")) command-line-args)))
+        (unwind-protect
+            value
+#+end_src
+
+While we're at it, we'll delete the the appropriate command-line arguments as well:
+
+#+begin_src emacs-lisp
+            (delete "--profile" command-line-args)
+            (delete value command-line-args))) "damascus"))
+#+end_src
+
+--------------
+
+This next bit defines a function which will add arguments to the ~command-line-args~ list, if and only if it
+doesn't already exist in the list and the argument is an option, as when prefixed by ~-~ or ~--~.
+
+#+begin_src emacs-lisp
+(require 'cl)
+(defun meq/push-to-cla (args)
+    (dolist (arg* args)
+        (let* ((arg (if (stringp arg*) arg* (symbol-name arg*)))
+                (already-in-list (member arg command-line-args)))
+            (when (and
+                    (or (string-prefix-p "-" arg) (string-prefix-p "--" arg))
+                    (not already-in-list)) (add-to-list 'command-line-args arg t)))))
+#+end_src
+
+Next, for specific profiles, if applicable, we will add any arguments necessary to be able to run the profile.
+
+#+begin_src emacs-lisp
+(cl-case (intern meq/var/profile-name)
+    (nano (meq/push-to-cla '(--profile-lib profiles/nano/lisp/nano.el)))
+    (graphene (meq/push-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el))))
+#+end_src
+
+--------------
+
+Let's byte-compile the library directories and add them to the load-path now;
+the following bits are adapted from [[https://emacs.stackexchange.com/users/14825/nickd][NickD's answer]]
+[[https://emacs.stackexchange.com/a/55415/31428][here]], and
+[[https://www.emacswiki.org/emacs/LoadPath#h5o-2][from this section of the Emacs Wiki]].
+
+The first directory to compile and add is the directory of emacs packages, as git submodules, of my project,
+managed by... well... you'll see.
+
+#+begin_src emacs-lisp
+(let ((default-directory (concat pre-user-emacs-directory "lib")))
+    (byte-recompile-directory default-directory nil)
+    (normal-top-level-add-to-load-path '("."))
+    (normal-top-level-add-subdirs-to-load-path))
+#+end_src
+
+The second directory consists of the packages I develop, as git subtrees:
+
+#+begin_src emacs-lisp
+(let ((default-directory (concat pre-user-emacs-directory "siluam")))
+    (byte-recompile-directory default-directory nil)
+    (normal-top-level-add-to-load-path '("."))
+    (normal-top-level-add-subdirs-to-load-path))
+#+end_src
+
+--------------
+
+[[https://github.com/emacscollective/borg][[[borg.gif]]]]
+https://youtu.be/rQxluLOMcVE?t=33
 
 * Addendum
 
