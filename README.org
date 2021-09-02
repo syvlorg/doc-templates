@@ -526,6 +526,187 @@ And finally:
             (leaf-keywords)))
 #+end_src
 
+** There's no place like ~user-emacs-directory~
+
+Now that we have ~f.el~ set up, we can set the ~user-emacs-directory~ to the root directory of the profile
+being used:
+
+#+begin_src emacs-lisp
+(setq user-emacs-directory (f-full (meq/ued* "profiles" meq/var/profile-name)))
+#+end_src
+
+And, unless it's [[https://github.com/hlissner/doom-emacs][Doom Emacs]] being run,
+we'll ~byte-compile~ the profile directory as well:
+
+#+begin_src emacs-lisp
+(unless (string= meq/var/profile-name "doom") (byte-recompile-directory user-emacs-directory nil))
+#+end_src
+
+Then we'll set the custom file for the profile:
+
+#+begin_src emacs-lisp
+(setq custom-file (meq/ued "init.el"))
+#+end_src
+
+And then finally the ~auto-save-list-prefix~, as adapted from
+[[https://emacs.stackexchange.com/users/2731/ebpa][ebpa's]]
+[[https://emacs.stackexchange.com/a/18682/31428][answer here]]:
+
+#+begin_src emacs-lisp
+(setq auto-save-list-file-prefix user-emacs-directory)
+#+end_src
+
+** Mmm... Orange...
+
+And now for my favorite part: ORANGE! Erm... Sorry, I meant themes. Let's byte-compile them first:
+
+#+begin_src emacs-lisp
+(byte-recompile-directory (meq/ued* "themes") nil)
+#+end_src
+
+Now we can add them to the ~custom-theme-load-path~ list:
+
+#+begin_src emacs-lisp
+(add-to-list 'custom-theme-load-path (meq/ued* "themes"))
+#+end_src
+
+Also, my themes are safe (I think...):
+
+#+begin_src emacs-lisp
+(setq custom-safe-themes t)
+#+end_src
+
+By the way, I get most of my themes from [[themer.dev][https://themer.dev/]]; bloody brilliant, it is!
+
+** The doom dimension (get that reference, anyone...? No? Just me? Alright.)
+
+Here I'm /trying/ to implement updating ~Doom Emacs~ when the ~doom~ profile is selected and ~--update~ is
+passed on the command-line; dunno if it's working, though. Try it out for yourself!
+
+#+begin_src emacs-lisp
+(let* ((doom (apply-partially #'call-process (meq/ued* "profiles" "doom" "bin" "doom")
+                                                nil)))
+    (when (and
+        (string= meq/var/profile-name "doom")
+        (member "--update" command-line-args))
+    (delete "--update" command-line-args)
+    (doom "*doom-update*" t "update")
+    (doom "*doom-sync*" t "sync")
+    (doom "*doom-doctor*" t "doctor")))
+#+end_src
+
+** Would you like fries with that?
+
+These are any last-minute steps before running any specific Emacs profile.
+
+#+begin_src emacs-lisp
+(let* ((spacemacs-path (meq/ued-profiles
+                            "spacemacs"
+                            "layers"
+                            "+distributions"
+                            "spacemacs-bootstrap")))
+    (cl-case (intern meq/var/profile-name)
+        (doom (load (meq/ued-lib "ido-completing-read+" "ido-completing-read+.el")))
+        (spacemacs (progn
+                        (load (concat spacemacs-path "packages.el"))
+                        (load (concat spacemacs-path "funcs.el"))
+                        (spacemacs-bootstrap/init-use-package)))
+        (patrick (advice-add #'reload-config :override #'(lambda nil (interactive)
+                    (org-babel-load-file (meq/ued-profiles "patrick" "readme.org")))))
+        (alhassy (require 'quelpa-use-package))))
+#+end_src
+
+** Party in the CLA
+
+This function can be succinctly explained in a few steps.
+
+When the ~arg~ passed to this function exists in ~command-line-args~...
+
+#+begin_src emacs-lisp
+(defun meq/load-from-cla (arg &optional byte-compile)
+    (eval `(meq/when-item-in-cla ,arg
+#+end_src
+
+Get the item after the ~arg~:
+
+#+begin_src emacs-lisp
+        (let* ((item (meq/get-next-in-cla ,arg))
+#+end_src
+
+Let's assume the item is a file:
+
+#+begin_src emacs-lisp
+                (file (expand-file-name item))
+#+end_src
+
+Does the file exist?
+
+#+begin_src emacs-lisp
+                (exists (f-exists? file))
+#+end_src
+
+If it does, is it /really/ a directory?
+
+#+begin_src emacs-lisp
+                (is-dir (and exists (f-directory? file)))
+#+end_src
+
+If it's a directory, then, well, it's a directory; if not, assume it's a file, and get it's parent directory.
+
+#+begin_src emacs-lisp
+                (dir (if is-dir file (f-dirname file))))
+#+end_src
+
+Now. If the file doesn't exist...
+
+#+begin_src emacs-lisp
+            (if (not exists)
+#+end_src
+
+Assume it's a function, macro, or command, and run it:
+
+#+begin_src emacs-lisp
+                (eval (intern item))
+#+end_src
+
+Otherwise, if we told ~meq/load-from-cla~ to byte-compile ~dir~:
+
+#+begin_src emacs-lisp
+                (when ,byte-compile (byte-recompile-directory dir nil))
+#+end_src
+
+Then add ~dir~ to the ~load-path~:
+
+#+begin_src emacs-lisp
+                (add-to-list 'load-path dir)
+#+end_src
+
+And finally, if ~item~ was originally a file that exists, load it:
+
+#+begin_src emacs-lisp
+                (unless is-dir (load file)))))))
+#+end_src
+
+*** Yay, we're early!
+
+This bit here will load an alternate ~early-init~ for a profile if ~--profile-early-init~ is passed on the
+command-line, and otherwise, load the profile's usual ~early-init~ if it exists.
+
+#+begin_src emacs-lisp
+(meq/if-item-in-cla "--profile-early-init"
+    (meq/load-from-cla "--profile-early-init")
+    (meq/cl "early-init.el"))
+#+end_src
+
+*** A quiet place
+
+If there's an alternate library directory or file the user wants to load,
+~--profile-early-lib~ will do the trick:
+
+#+begin_src emacs-lisp
+(meq/load-from-cla "--profile-early-lib" t)
+#+end_src
+
 * Addendum
 
 These are just a few blocks I use regularly in my ~org~ files, whether in ~noweb~, naming, or otherwise:
