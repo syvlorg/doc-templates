@@ -253,7 +253,7 @@ subtrees:
 
 ------------------------------------------------------------------------
 
-<center>[![](borg.gif)](https://github.com/emacscollective/borg)</center>
+<centre>[![](borg.gif)](https://github.com/emacscollective/borg)</centre>
 <https://youtu.be/rQxluLOMcVE?t=33>
 
 # Addendum
