@@ -259,7 +259,7 @@ The second directory consists of the packages I develop, as git subtrees:
 
 --------------
 
-[[https://github.com/emacscollective/borg][[[borg.gif]]]]
+[[https://github.com/emacscollective/borg][[borg.gif]]]
 https://youtu.be/rQxluLOMcVE?t=33
 
 * Addendum
