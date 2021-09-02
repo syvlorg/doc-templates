@@ -23,6 +23,7 @@ They were inspired primarily by the configurations of
 and [[https://github.com/patrickt/emacs][Patrick Thomson]].
 
 * Wheee!
+** Electric Sheep
 
 First of all, I don't know how to check if I'm running on my phone, so I pass in a command-line argument:
 
@@ -31,7 +32,7 @@ First of all, I don't know how to check if I'm running on my phone, so I pass in
 (delete "-p" command-line-args)
 #+end_src
 
---------------
+** Double Dutch can be beat
 
 Then I'll remove the double dashes from scripts:
 
@@ -39,7 +40,7 @@ Then I'll remove the double dashes from scripts:
 (when (string= (car (last command-line-args)) "--") (delete "--" command-line-args))
 #+end_src
 
---------------
+** XLR8!
 
 These next few lines are unabashedly stolen from
 [[https://github.com/hlissner][Henrik Lissner's]]
@@ -100,7 +101,7 @@ Merge instead of overwrite because there may have bene changes to
     (add-hook 'emacs-startup-hook #'meq/reset-file-handler-alist-h 101)))
 #+end_src
 
---------------
+** Bite the gold
 
 I would like to always prefer newer byte-compiled files, therefore, I use
 [[https://emacs.stackexchange.com/a/186/31428][this answer]], by
@@ -110,7 +111,7 @@ I would like to always prefer newer byte-compiled files, therefore, I use
 (setq load-prefer-newer t)
 #+end_src
 
---------------
+** Remember your origins
 
 If I ever need it, this will give me the initial directory I was in; the code is adapted from
 [[https://emacs.stackexchange.com/users/1979/stefan][Stefan's]]
@@ -120,7 +121,7 @@ If I ever need it, this will give me the initial directory I was in; the code is
 (setq meq/var/initial-directory default-directory)
 #+end_src
 
---------------
+** ¯\_(ツ)_/¯
 
 The next few bits are adapted from
 [[https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body][here]],
@@ -186,7 +187,7 @@ Dunno what /this/ bit does either...
 (push '(right-fringe . 0) default-frame-alist)
 #+end_src
 
---------------
+** Here's your profile
 
 Now that that's over with, let's get the profile name; this is done by searching through the ~command-line-args~
 list for the ~--profile~ argument. If found, get the profile name from the index of the ~--profile~ argument
@@ -207,7 +208,7 @@ While we're at it, we'll delete the the appropriate command-line arguments as we
             (delete value command-line-args))) "damascus"))
 #+end_src
 
---------------
+** Did I forget something...?
 
 This next bit defines a function which will add arguments to the ~command-line-args~ list, if and only if it
 doesn't already exist in the list and the argument is an option, as when prefixed by ~-~ or ~--~.
@@ -231,7 +232,7 @@ Next, for specific profiles, if applicable, we will add any arguments necessary 
     (graphene (meq/push-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el))))
 #+end_src
 
---------------
+** Silva Scientiae
 
 Let's byte-compile the library directories and add them to the load-path now;
 the following bits are adapted from [[https://emacs.stackexchange.com/users/14825/nickd][NickD's answer]]
@@ -257,13 +258,127 @@ The second directory consists of the packages I develop, as git subtrees:
     (normal-top-level-add-subdirs-to-load-path))
 #+end_src
 
---------------
+** RESISTANCE IS FUTILE
 
 #+begin_export html
 <p align="center"><a href="https://github.com/emacscollective/borg"><img src="borg.gif"></a></p>
 #+end_export
 
+#+begin_src emacs-lisp
+(setq package-enable-at-startup nil)
+(require 'borg)
+(setq borg-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
+                                ("git@gitlab.com:" . "https://gitlab.com/")))
+(borg-initialize)
+#+end_src
 
+** Straight and a bit /too/ narrow
+
+Before I was assimilated, I used [[https://github.com/raxod502][Radon Rosborough's]]
+[[https://github.com/raxod502/straight.el][straight.el]]; however, problems with ~org-mode~ got to me,
+and I eventually switched over to — WE ARE BORG — ... Ahem. Sorry about that. Where were we...?
+
+Right. My straight config. Here's how I pinned packages, adapted from
+[[https://github.com/raxod502/straight.el#how-do-i-pin-package-versions-or-use-only-tagged-releases][here]]:
+
+#+begin_quote
+Tell straight.el about the profiles we are going to be using.
+#+end_quote
+
+#+begin_src emacs-lisp
+(setq straight-profiles
+      '((nil . "default.el")
+#+end_src
+
+#+begin_quote
+Packages which are pinned to a specific commit.
+#+end_quote
+
+#+begin_src emacs-lisp
+        (pinned . "pinned.el")))
+#+end_src
+
+From here on out, til mentioned otherwise, the configuration is more or less again adapted from
+[[https://www.reddit.com/r/emacs/comments/dppmqj/do_i_even_need_to_leverage_earlyinitel_if_i_have/?utm_source=amp&utm_medium=&utm_content=post_body][here]]:
+
+#+begin_src emacs-lisp
+(with-no-warnings
+    (setq straight-vc-git-default-clone-depth 1)
+    (setq straight-base-dir (meq/ued ".local/"))
+    (setq straight-repository-branch "develop")
+    (setq straight-build-dir (format "build-%s" emacs-version))
+    (setq straight-cache-autoloads t)
+    (setq straight-check-for-modifications '(check-on-save))
+    (setq straight-repository-branch "develop")
+    (setq straight-use-package-by-default t)
+#+end_src
+
+(Well, except for this, adapted from
+[[https://github.com/hartzell/straight.el/commit/882649137f73998d60741c7c8c993c7ebbe0f77a#diff-b335630551682c19a781afebcf4d07bf978fb1f8ac04c6bf87428ed5106870f5R1649][here]]:)
+
+#+begin_src emacs-lisp
+    (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
+(delete "--no-byte-compilation" command-line-args)
+#+end_src
+
+#+begin_src emacs-lisp
+(eval-and-compile
+  (setq straight-recipes-gnu-elpa-use-mirror t)
+  (setq straight-recipes-emacsmirror-use-mirror t)
+  (setq bootstrap-version 5)
+  (setq bootstrap-file (concat straight-base-dir "straight/repos/straight.el/bootstrap.el")))
+
+;; (unless (file-exists-p bootstrap-file)
+;;   (with-current-buffer
+;;       (url-retrieve-synchronously
+;;        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+;;        'silent 'inhibit-cookies)
+;;     (goto-char (point-max))
+;;     (eval-print-last-sexp)))
+
+;; (load bootstrap-file nil 'nomessage)
+
+;; (autoload #'straight-x-pull-all "straight-x")
+;; (autoload #'straight-x-freeze-versions "straight-x")
+#+end_src
+
+** Yellow Brick Executable Road
+
+Unless I'm on Windows or a DOS-based OS, I'll need to make sure every executable available on my ~$PATH~ can be
+found by Emacs as well:
+
+#+begin_src emacs-lisp
+(unless (member system-type '(windows-nt ms-dos))
+    (meq/up exec-path-from-shell
+        :custom
+            (exec-path-from-shell-check-startup-files nil)
+            (exec-path-from-shell-variables '("PATH" "MANPATH" "CACHE_HOME" "FPATH" "PYENV_ROOT"))
+            (exec-path-from-shell-arguments '("-l"))
+        :config
+            (exec-path-from-shell-initialize)))
+#+end_src
+
+** That was fast
+
+These are two settings I like for ~native compilation~, adapted from
+[[https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation][here]]:
+
+#+begin_quote
+Silence compiler warnings as they can be pretty disruptive
+#+end_quote
+
+#+begin_src emacs-lisp
+(ignore-errors
+    (setq native-comp-async-report-warnings-errors nil)
+#+end_src
+
+#+begin_quote
+Set the right directory to store the native comp cache
+#+end_quote
+
+#+begin_src emacs-lisp
+    (add-to-list 'native-comp-eln-load-path (meq/ued "eln-cache/")))
+#+end_src
 
 * Addendum
 
