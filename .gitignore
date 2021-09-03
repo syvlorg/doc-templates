@@ -21,7 +21,6 @@
 !/themes/screenshots/**/**
 
 !**/**/*.git*
-**/**/*.git
 
 !/borg.gif
 
