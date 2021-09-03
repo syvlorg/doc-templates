@@ -3,6 +3,7 @@
 # TODO: Implement saku as well
 
 #+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
+#+property: header-args:emacs-lisp :comments both
 
 # Adapted From:
 # Answer: https://stackoverflow.com/a/65232183/10827766
@@ -64,8 +65,8 @@ enabling `gcmh-mode'. Not resetting it will cause stuttering/freezes.
 And for the ~file-name-handler-alist~:
 
 #+begin_src emacs-lisp
+(setq meq/var/file-name-handler-alist file-name-handler-alist)
 (unless (or (daemonp) noninteractive)
-  (let ((old-file-name-handler-alist file-name-handler-alist))
 #+end_src
 
 #+begin_quote
@@ -97,8 +98,8 @@ Merge instead of overwrite because there may have bene changes to
 
 #+begin_src emacs-lisp
             (delete-dups (append file-name-handler-alist
-                                 old-file-name-handler-alist))))
-    (add-hook 'emacs-startup-hook #'meq/reset-file-handler-alist-h 101)))
+                                 meq/var/file-name-handler-alist))))
+    (add-hook 'emacs-startup-hook #'meq/reset-file-handler-alist-h 101))
 #+end_src
 
 ** Bite the gold
@@ -267,12 +268,49 @@ The second directory consists of the packages I develop, as git subtrees:
 #+begin_src emacs-lisp
 (setq package-enable-at-startup nil)
 (require 'borg)
+#+end_src
+
+I would like to force adding the git submodules:
+
+#+begin_src emacs-lisp
+(defun meq/borg-assimilate-advice (package url &optional partially)
+  "Assimilate the package named PACKAGE from URL.
+If `epkg' is available, then only read the name of the package
+in the minibuffer and use the url stored in the Epkg database.
+If `epkg' is unavailable, the package is not in the database, or
+with a prefix argument, then also read the url in the minibuffer.
+With a negative prefix argument only add the submodule but don't
+build and activate the drone."
+  (interactive
+   (nconc (borg-read-package "Assimilate package: " current-prefix-arg)
+          (list (< (prefix-numeric-value current-prefix-arg) 0))))
+  (borg--maybe-confirm-unsafe-action "assimilate" package url)
+  (message "Assimilating %s..." package)
+  (let ((default-directory borg-top-level-directory))
+    (borg--maybe-reuse-gitdir package)
+    (borg--call-git package "submodule" "add" "-f" "--name" package url
+                    (file-relative-name (borg-worktree package)))
+    (borg--sort-submodule-sections ".gitmodules")
+    (borg--call-git package "add" ".gitmodules")
+    (borg--maybe-absorb-gitdir package))
+  (unless partially
+    (borg-build package)
+    (borg-activate package))
+  (borg--refresh-magit)
+  (message "Assimilating %s...done" package))
+(advice-add #'borg-assimilate :override #'meq/borg-assimilate-advice)
+#+end_src
+
+#+begin_src emacs-lisp
 (setq borg-rewrite-urls-alist '(("git@github.com:" . "https://github.com/")
                                 ("git@gitlab.com:" . "https://gitlab.com/")))
 (borg-initialize)
 #+end_src
 
 ** Straight and a bit /too/ narrow
+:PROPERTIES:
+:header-args: :tangle no
+:END:
 
 Before I was assimilated, I used [[https://github.com/raxod502][Radon Rosborough's]]
 [[https://github.com/raxod502/straight.el][straight.el]]; however, problems with ~org-mode~ got to me,
@@ -328,61 +366,24 @@ From here on out, til mentioned otherwise, the configuration is more or less aga
   (setq bootstrap-version 5)
   (setq bootstrap-file (concat straight-base-dir "straight/repos/straight.el/bootstrap.el")))
 
-;; (unless (file-exists-p bootstrap-file)
-;;   (with-current-buffer
-;;       (url-retrieve-synchronously
-;;        "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
-;;        'silent 'inhibit-cookies)
-;;     (goto-char (point-max))
-;;     (eval-print-last-sexp)))
+(unless (file-exists-p bootstrap-file)
+  (with-current-buffer
+      (url-retrieve-synchronously
+       "https://raw.githubusercontent.com/raxod502/straight.el/develop/install.el"
+       'silent 'inhibit-cookies)
+    (goto-char (point-max))
+    (eval-print-last-sexp)))
 
-;; (load bootstrap-file nil 'nomessage)
+(load bootstrap-file nil 'nomessage)
 
-;; (autoload #'straight-x-pull-all "straight-x")
-;; (autoload #'straight-x-freeze-versions "straight-x")
-#+end_src
-
-** Yellow Brick Executable Road
-
-Unless I'm on Windows or a DOS-based OS, I'll need to make sure every executable available on my ~$PATH~ can be
-found by Emacs as well:
-
-#+begin_src emacs-lisp
-(unless (member system-type '(windows-nt ms-dos))
-    (meq/up exec-path-from-shell
-        :custom
-            (exec-path-from-shell-check-startup-files nil)
-            (exec-path-from-shell-variables '("PATH" "MANPATH" "CACHE_HOME" "FPATH" "PYENV_ROOT"))
-            (exec-path-from-shell-arguments '("-l"))
-        :config
-            (exec-path-from-shell-initialize)))
-#+end_src
-
-** That was fast
-
-These are two settings I like for ~native compilation~, adapted from
-[[https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation][here]]:
-
-#+begin_quote
-Silence compiler warnings as they can be pretty disruptive
-#+end_quote
-
-#+begin_src emacs-lisp
-(ignore-errors
-    (setq native-comp-async-report-warnings-errors nil)
-#+end_src
-
-#+begin_quote
-Set the right directory to store the native comp cache
-#+end_quote
-
-#+begin_src emacs-lisp
-    (add-to-list 'native-comp-eln-load-path (meq/ued "eln-cache/")))
+(autoload #'straight-x-pull-all "straight-x")
+(autoload #'straight-x-freeze-versions "straight-x")
 #+end_src
 
 ** The one, the only...
 
-Now for the fun part: let's ~use-package~!
+Now for the fun part: let's [[https://github.com/jwiegley/use-package][use-package]]
+with [[https://github.com/jwiegley][John Wiegley]]!
 
 #+begin_src emacs-lisp
 (with-no-warnings
@@ -526,6 +527,44 @@ And finally:
             (leaf-keywords)))
 #+end_src
 
+** Yellow Brick Executable Road
+
+Unless I'm on Windows or a DOS-based OS, I'll need to make sure every executable available on my ~$PATH~ can be
+found by Emacs as well:
+
+#+begin_src emacs-lisp
+(unless (member system-type '(windows-nt ms-dos))
+    (meq/up exec-path-from-shell
+        :custom
+            (exec-path-from-shell-check-startup-files nil)
+            (exec-path-from-shell-variables '("PATH" "MANPATH" "CACHE_HOME" "FPATH" "PYENV_ROOT"))
+            (exec-path-from-shell-arguments '("-l"))
+        :config
+            (exec-path-from-shell-initialize)))
+#+end_src
+
+** That was fast
+
+These are two settings I like for ~native compilation~, adapted from
+[[https://github.com/daviwil/dotfiles/blob/master/Emacs.org#native-compilation][here]]:
+
+#+begin_quote
+Silence compiler warnings as they can be pretty disruptive
+#+end_quote
+
+#+begin_src emacs-lisp
+(ignore-errors
+    (setq native-comp-async-report-warnings-errors nil)
+#+end_src
+
+#+begin_quote
+Set the right directory to store the native comp cache
+#+end_quote
+
+#+begin_src emacs-lisp
+    (add-to-list 'native-comp-eln-load-path (meq/ued-local "eln-cache/")))
+#+end_src
+
 ** There's no place like ~user-emacs-directory~
 
 Now that we have ~f.el~ set up, we can set the ~user-emacs-directory~ to the root directory of the profile
@@ -545,7 +584,8 @@ we'll ~byte-compile~ the profile directory as well:
 Then we'll set the custom file for the profile:
 
 #+begin_src emacs-lisp
-(setq custom-file (meq/ued "init.el"))
+(setq custom-file (meq/ued "custom.el"))
+(meq/cl custom-file)
 #+end_src
 
 And then finally the ~auto-save-list-prefix~, as adapted from
@@ -577,23 +617,6 @@ Also, my themes are safe (I think...):
 #+end_src
 
 By the way, I get most of my themes from [[themer.dev][https://themer.dev/]]; bloody brilliant, it is!
-
-** The doom dimension (get that reference, anyone...? No? Just me? Alright.)
-
-Here I'm /trying/ to implement updating ~Doom Emacs~ when the ~doom~ profile is selected and ~--update~ is
-passed on the command-line; dunno if it's working, though. Try it out for yourself!
-
-#+begin_src emacs-lisp
-(let* ((doom (apply-partially #'call-process (meq/ued* "profiles" "doom" "bin" "doom")
-                                                nil)))
-    (when (and
-        (string= meq/var/profile-name "doom")
-        (member "--update" command-line-args))
-    (delete "--update" command-line-args)
-    (doom "*doom-update*" t "update")
-    (doom "*doom-sync*" t "sync")
-    (doom "*doom-doctor*" t "doctor")))
-#+end_src
 
 ** Would you like fries with that?
 
@@ -657,6 +680,13 @@ If it's a directory, then, well, it's a directory; if not, assume it's a file, a
                 (dir (if is-dir file (f-dirname file))))
 #+end_src
 
+Assuming the item is a file, is it an ~org~ file?
+
+#+begin_src emacs-lisp
+                (org-file* (f-ext file))
+                (org-file (and org-file* (string= org-file* "org")))
+#+end_src
+
 Now. If the file doesn't exist...
 
 #+begin_src emacs-lisp
@@ -681,10 +711,11 @@ Then add ~dir~ to the ~load-path~:
                 (add-to-list 'load-path dir)
 #+end_src
 
-And finally, if ~item~ was originally a file that exists, load it:
+And finally, if ~item~ was originally a file that exists, load it, and if it's an ~org~ file,
+~org-babel-load-file~ it:
 
 #+begin_src emacs-lisp
-                (unless is-dir (load file)))))))
+                (unless is-dir (if org-file (org-babel-load-file file) (load file))))))))
 #+end_src
 
 *** Yay, we're early!
@@ -711,11 +742,6 @@ If there's an alternate library directory or file the user wants to load,
 
 These are just a few blocks I use regularly in my ~org~ files, whether in ~noweb~, naming, or otherwise:
 
-# Adapted From: https://www.reddit.com/r/emacs/comments/4o9f0e/anyone_have_disabled_parts_of_their_config_being/d4apjey?utm_source=share&utm_medium=web2x&context=3
-:PROPERTIES:
-:header-args: :tangle no
-:END:
-
 ** username
 
 #+name: username
@@ -725,8 +751,10 @@ shadowrylander
 
 ** hash-deprecated
 
+# Adapted From: https://www.reddit.com/r/emacs/comments/4o9f0e/anyone_have_disabled_parts_of_their_config_being/d4apjey?utm_source=share&utm_medium=web2x&context=3
+
 #+name: hash-deprecated
-#+begin_src emacs-lisp :var name=""
+#+begin_src emacs-lisp :var name="" :tangle no
 (md5 (concat (replace-regexp-in-string "/" "" (
     org-format-outline-path (org-get-outline-path))) (
         nth 4 (org-heading-components)) name))
@@ -735,6 +763,6 @@ shadowrylander
 ** hash
 
 #+name: hash
-#+begin_src emacs-lisp
+#+begin_src emacs-lisp :tangle no
 (format-time-string "%Y%m%d%H%M%S%N")
 #+end_src

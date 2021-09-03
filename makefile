@@ -42,21 +42,10 @@ tangle-setup:
 
 tangle: tangle-setup
 |yes yes | fd . $(mkfileDir) \
-    -HIe org \
+    -He org \
     -E testing.aiern.org \
     -E resting.aiern.org \
-    -E profiles \
-    -E lib \
-    -E var \
     -x $(mkfileDir)/backup-tangle.sh
-|yes yes | fd . $(mkfileDir)/profiles/damascus \
-    -HIe org \
-    -E .local \
-    -E lib \
-    -E var \
-    -x $(mkfileDir)/backup-tangle.sh
-|-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/graphene/README.org
-|-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/nano/README.org
 |fd . $(mkfileDir) \
     -HIe sh \
     -E .local \

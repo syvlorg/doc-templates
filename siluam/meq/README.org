@@ -63,11 +63,11 @@
 ;;;###autoload
 (defun meq/ued-profiles (&rest args) (f-full (apply #'meq/ued* "profiles" args)))
 ;;;###autoload
+(defun meq/ued-local (&rest args) (f-full (apply #'meq/ued ".local" args)))
+;;;###autoload
 (defun meq/ued (&rest args) (f-full (apply #'f-join user-emacs-directory args)))
 ;;;###autoload
 (defun meq/cl (&rest args) (let* ((path (apply #'meq/ued args))) (when (f-exists? path) (load path))))
-;;;###autoload
-(defun meq/use-damascus-early-init nil (interactive) (load (meq/ued* "profiles" "damascus" "early-init.el")))
 
 ;;;###autoload
 (defun meq/timestamp nil (interactive) (format-time-string "%Y%m%d%H%M%S%N"))
@@ -320,12 +320,6 @@ session as the current block. ARG has same meaning as in
     (let* ((file-buffer (get-file-buffer file)))
         (meq/org-babel-detangle-and-return file origin)
         (when file-buffer (kill-buffer file-buffer))))
-
-;;;###autoload
-(advice-add #'customize-save-variable :after #'(lambda (&rest args) (interactive)
-                                                (meq/org-babel-detangle-kill-and-return
-                                                    (meq/ued "init.el")
-                                                    (meq/ued "README.org"))))
 
 ;;;###autoload
 (defun meq/generate-obdar (file &optional origin)
@@ -720,8 +714,7 @@ be ignored by `god-execute-with-current-bindings'."
 ;; User: user4104817
 ;;;###autoload
 (defun meq/reload-emacs nil (interactive)
-    (load (meq/ued "early-init.el"))
-    (load (meq/ued "init.el"))
+    (meq/reload-early-init)
     (with-eval-after-load 'exwm (when (meq/exwm-p) (exwm-reset))))
 
 ;; Adapted From: http://whattheemacsd.com/file-defuns.el-01.html

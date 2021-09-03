@@ -1,119 +1,126 @@
-#+setupfile: ../../README.org
-#+property: header-args :tangle yes
+;; aiern
 
-* হ্যালো হ্যাটট্রিক! Hello hat trick!
+;; This is my version of [[https://github.com/emacs-evil/evil][evil]]; this first bit of config will enable
+;; ~aiern~ on initialization and add it to the list of ignored modal-modes, such that it isn't disabled by
+;; ~meq/disable-all-modal-modes~:
 
-This is the ~damascus~ profile's ~init.el~ of my version of a literate configuration for
-[[https://www.gnu.org/software/emacs/][GNU Emacs]].
 
-... Whew.
-
-* Alright, let's do this one last time.
-** aiern
-
-This is my version of [[https://github.com/emacs-evil/evil][evil]]; this first bit of config will enable
-~aiern~ on initialization and add it to the list of ignored modal-modes, such that it isn't disabled by
-~meq/disable-all-modal-modes~:
-
-#+begin_src emacs-lisp
+;; [[file:README.org::*aiern][aiern:1]]
 (use-package aiern
     :hook (after-init . (lambda nil (interactive)
         (aiern-mode 1)
         (push 'aiern-mode meq/var/ignored-modal-modes)
         (push "aiern" meq/var/ignored-modal-prefixes)))
-#+end_src
+;; aiern:1 ends here
 
-Both ~evil~ and ~aiern~ require [[https://github.com/justbur/emacs-bind-map][emacs-bind-map]], by
-[[https://github.com/justbur][Justin Burkett]]:
 
-#+begin_src emacs-lisp
-    :use-package-preconfig (bind-map)
-#+end_src
 
-The ~:meta-aiern~ keyword, from my very own [[https://github.com/shadowrylander/meta][meta]] package,
-creates a hydra out of the keymaps passed to it, in this case being ~aiern-normal-state-map~ and
-~aiern-insert-state-map~:
+;; Both ~evil~ and ~aiern~ require [[https://github.com/justbur/emacs-bind-map][emacs-bind-map]], by
+;; [[https://github.com/justbur][Justin Burkett]]:
 
-#+begin_src emacs-lisp
-    :meta-aiern (aiern-normal-state-map) (aiern-insert-state-map)
-#+end_src
 
-¯\_(ツ)_/¯
+;; [[file:README.org::*aiern][aiern:2]]
+:use-package-preconfig (bind-map)
+;; aiern:2 ends here
 
-#+begin_src emacs-lisp
-    :demon
-        ((alloy-chord "jj") 'meq/aiern-execute-with-current-bindings)
-        ;; ((alloy-chord "") 'meq/toggle-aiern-ex-cosmoem)
 
-        ;; TODO
-        ;; ((alloy-chord "''") 'aiern-ex)
-    :config
-        ;; TODO: How do I create a keymap `aiern-ex-keymap' out of the `aiern-ex-commands' alist?
 
-        ;; (cosmoem-def :show-funs #'meq/aiern-ex-cosmoem-show
-        ;;     :hide-funs #'meq/aiern-ex-cosmoem-hide
-        ;;     :toggle-funs #'meq/aiern-ex-cosmoem-toggle
-        ;;     :keymap 'aiern-ex-keymap
-        ;;     ;; :transient t
-        ;; )
+;; The ~:meta-aiern~ keyword, from my very own [[https://github.com/shadowrylander/meta][meta]] package,
+;; creates a hydra out of the keymaps passed to it, in this case being ~aiern-normal-state-map~ and
+;; ~aiern-insert-state-map~:
 
-        ;; (defun meq/aiern-ex-cosmoem-toggle nil (interactive))
-        ;; (defun meq/aiern-ex-show-top-level nil (interactive)
-        ;;     (meq/which-key-show-top-level 'aiern-ex-keymap))
 
-        ;; (defun meq/toggle-aiern-ex (ua) (interactive "p")
-        ;;     (if (= ua 4)
-        ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap nil t)
-        ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap)))
-        ;; (defun meq/toggle-aiern-ex-cosmoem (ua) (interactive "p")
-        ;;     (if (= ua 4)
-        ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap t t)
-        ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap t)))
-#+end_src
+;; [[file:README.org::*aiern][aiern:3]]
+:meta-aiern (aiern-normal-state-map) (aiern-insert-state-map)
+;; aiern:3 ends here
 
-And here are the ~aiern~ bindings set in the ~sorrow~ modal-mode:
 
-#+begin_src emacs-lisp
-    :sorrow ("l" :deino
-                '(aiern-exits (:color blue) "e"
-                    ;; From: https://github.com/emacs-evil/evil/blob/master/evil-maps.el#L449
-                    "A deino for getting the fuck outta' here!"
-                    ("`" nil "cancel")
-                    ("l" aiern-save-and-quit ":wq")
-                    ("p" aiern-quit ":q")
-                    ("o" aiern-write ":w")
-                    ("O" aiern-write-all ":wa")
-                    ;; ("q" (funcall (alloy-simulate-key ":q! <RET>")) ":q!"))
-                    ("q" (aiern-quit t) ":q!"))
-                :name "aiern exits"))
-#+end_src
 
-** all-the-icons
+;; ¯\_(ツ)_/¯
 
-[[https://connary.com/cartograph.html][Cartograph]] by
-[[https://connary.com/index.html][Connary Fagen, Inc.]],
-but I got it cheaper [[https://www.fontspring.com/fonts/connary-fagen-type-design/cartograph-cf][here]];
-the second site often has sales on fonts.
 
-#+begin_src emacs-lisp
+;; [[file:README.org::*aiern][aiern:4]]
+:demon
+    ((alloy-chord "jj") 'meq/aiern-execute-with-current-bindings)
+    ;; ((alloy-chord "") 'meq/toggle-aiern-ex-cosmoem)
+
+    ;; TODO
+    ;; ((alloy-chord "''") 'aiern-ex)
+:config
+    ;; TODO: How do I create a keymap `aiern-ex-keymap' out of the `aiern-ex-commands' alist?
+
+    ;; (cosmoem-def :show-funs #'meq/aiern-ex-cosmoem-show
+    ;;     :hide-funs #'meq/aiern-ex-cosmoem-hide
+    ;;     :toggle-funs #'meq/aiern-ex-cosmoem-toggle
+    ;;     :keymap 'aiern-ex-keymap
+    ;;     ;; :transient t
+    ;; )
+
+    ;; (defun meq/aiern-ex-cosmoem-toggle nil (interactive))
+    ;; (defun meq/aiern-ex-show-top-level nil (interactive)
+    ;;     (meq/which-key-show-top-level 'aiern-ex-keymap))
+
+    ;; (defun meq/toggle-aiern-ex (ua) (interactive "p")
+    ;;     (if (= ua 4)
+    ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap nil t)
+    ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap)))
+    ;; (defun meq/toggle-aiern-ex-cosmoem (ua) (interactive "p")
+    ;;     (if (= ua 4)
+    ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap t t)
+    ;;         (funcall 'meq/toggle-inner 'aiern-mode "aiern-ex" (meq/fbatp aiern-mode) 'aiern-ex-keymap t)))
+;; aiern:4 ends here
+
+
+
+;; And here are the ~aiern~ bindings set in the ~sorrow~ modal-mode:
+
+
+;; [[file:README.org::*aiern][aiern:5]]
+:sorrow ("l" :deino
+            '(aiern-exits (:color blue) "e"
+                ;; From: https://github.com/emacs-evil/evil/blob/master/evil-maps.el#L449
+                "A deino for getting the fuck outta' here!"
+                ("`" nil "cancel")
+                ("l" aiern-save-and-quit ":wq")
+                ("p" aiern-quit ":q")
+                ("o" aiern-write ":w")
+                ("O" aiern-write-all ":wa")
+                ;; ("q" (funcall (alloy-simulate-key ":q! <RET>")) ":q!"))
+                ("q" (aiern-quit t) ":q!"))
+            :name "aiern exits"))
+;; aiern:5 ends here
+
+;; all-the-icons
+
+;; [[https://connary.com/cartograph.html][Cartograph]] by
+;; [[https://connary.com/index.html][Connary Fagen, Inc.]],
+;; but I got it cheaper [[https://www.fontspring.com/fonts/connary-fagen-type-design/cartograph-cf][here]];
+;; the second site often has sales on fonts.
+
+
+;; [[file:README.org::*all-the-icons][all-the-icons:1]]
 (meq/up all-the-icons :config
     (ignore-errors
         (set-face-attribute 'default nil :font "Cartograph CF Extra Bold-12")
         (set-face-attribute 'mode-line nil :font "Cartograph CF Extra Bold-12")
         (set-face-attribute 'mode-line-inactive nil :font "Cartograph CF Extra Bold-12")))
-#+end_src
+;; all-the-icons:1 ends here
 
-** buffer
+;; buffer
 
-This binds ~ctrl-tab~ and ~ctrl-shift-tab~ to buffer-cycling motions:
+;; This binds ~ctrl-tab~ and ~ctrl-shift-tab~ to buffer-cycling motions:
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*buffer][buffer:1]]
 (alloy-def :keymaps demon-run "C-tab" 'next-buffer "C-<iso-lefttab>" 'previous-buffer)
-#+end_src
+;; buffer:1 ends here
 
-And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/][here]]:
 
-#+begin_src emacs-lisp
+
+;; And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/][here]]:
+
+
+;; [[file:README.org::*buffer][buffer:2]]
 (sorrow-key "b" :deino '(deino-buffer (:color red :columns 3) "b"
   "
                 Buffers :
@@ -132,11 +139,12 @@ And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindi
   ("D" (progn (kill-this-buffer) (next-buffer)) "Delete")
   ("S" save-buffer "save")
   ("s" deino-window/body "window" :color blue)))
-#+end_src
+;; buffer:2 ends here
 
-** counsel
+;; counsel
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*counsel][counsel:1]]
 (meq/up counsel :use-package-preconfig (smex)
         (ivy :sorrow ("x" :deino '(deino-execute (:color blue) "x" "A deino for launching stuff!"
                 ("`" nil "cancel")
@@ -160,11 +168,12 @@ And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindi
                             (propertize name 'face 'font-lock-builtin-face)
                             (or comment "")))
    :gsetq (counsel-linux-app-format-function #'meq/counsel-linux-app-format-function))
-#+end_src
+;; counsel:1 ends here
 
-** damascus
+;; damascus
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*damascus][damascus:1]]
 (meq/upnsd damascus
     :use-package-postconfig (rainbow-mode :config (rainbow-mode 1))
     :alloy (:keymaps 'override
@@ -300,327 +309,362 @@ And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindi
         ;; Answer: https://emacs.stackexchange.com/a/3017/31428
         ;; User: https://emacs.stackexchange.com/users/253/dan
         (add-to-list 'default-frame-alist '(fullscreen . fullboth)))
-#+end_src
+;; damascus:1 ends here
 
-** dired
+;; dired
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*dired][dired:1]]
 (meq/up dired-sidebar
     :demon ((alloy-chord "\\\\") 'meq/backslash-toggle)
-#+end_src
+;; dired:1 ends here
 
-For some reason, on terminal interfaces, the arrow keys in ~dired~ tried to change ownership of file; this was
-resolved using the following bit, adapted from
-[[https://www.reddit.com/r/emacs/comments/pce8f4/dired_ellipses_in_square_brackets_before_file/hakuehb/?utm_medium=android_app&utm_source=share&context=3][here]]:
 
-#+begin_src emacs-lisp
-    :upnsd-preconfig (dired+ :gsetq (diredp-bind-problematic-terminal-keys (display-graphic-p)))
-#+end_src
 
-Since ~dired-details~ is already implemented in ~dired~ from Emacs version 24.4, we'll enable it only for prior
-versions:
+;; For some reason, on terminal interfaces, the arrow keys in ~dired~ tried to change ownership of file; this was
+;; resolved using the following bit, adapted from
+;; [[https://www.reddit.com/r/emacs/comments/pce8f4/dired_ellipses_in_square_brackets_before_file/hakuehb/?utm_medium=android_app&utm_source=share&context=3][here]]:
 
-#+begin_src emacs-lisp
-        (dired-details :if (version< emacs-version "24.4"))
-        (dired-details+ :if (version< emacs-version "24.4"))
-#+end_src
 
-I don't quite like the ~dired-sidebar~ open all the time, so I close it on opening a file from it; also,
-no hidden details hint, courtesy of [[https://www.emacswiki.org/emacs/DiredDetails#h5o-1][the Emacs wiki]]:
+;; [[file:README.org::*dired][dired:2]]
+:upnsd-preconfig (dired+ :gsetq (diredp-bind-problematic-terminal-keys (display-graphic-p)))
+;; dired:2 ends here
 
-#+begin_src emacs-lisp
-    :gsetq (dired-sidebar-close-sidebar-on-file-open t)
-        (dired-details-hidden-string "")
-#+end_src
 
-When in the ~dired~ major mode or derived major modes, [[https://github.com/shadowrylander/uru][uru]] will
-allow me to quickly create, and optionally open, Zettelkasten files for my novel and documentation:
 
-#+begin_src emacs-lisp
-    :uru (dired-mode t deino-dired-mode (:color blue) "d d"
-            ("`" nil "cancel")
-            ("f" (meq/dired-create-and-open-fell-markdown) "create & edit fell file")
-            ("d" (meq/dired-create-and-open-doc-markdown) "create & edit doc file")
-            ("F" (meq/dired-create-fell-markdown) "create fell file" :color red)
-            ("D" (meq/dired-create-doc-markdown) "create doc file" :color red)))
-#+end_src
+;; Since ~dired-details~ is already implemented in ~dired~ from Emacs version 24.4, we'll enable it only for prior
+;; versions:
 
-** doom-aiern-modeline
 
-This sets up [[https://github.com/shadowrylander/doom-aiern-modeline][my fork]] of
-[[https://github.com/seagle0128/doom-modeline][doom-modeline]] by
-[[https://github.com/seagle0128][Vincent Zhang]] upon initialization:
+;; [[file:README.org::*dired][dired:3]]
+(dired-details :if (version< emacs-version "24.4"))
+(dired-details+ :if (version< emacs-version "24.4"))
+;; dired:3 ends here
 
-#+begin_src emacs-lisp
+
+
+;; I don't quite like the ~dired-sidebar~ open all the time, so I close it on opening a file from it; also,
+;; no hidden details hint, courtesy of [[https://www.emacswiki.org/emacs/DiredDetails#h5o-1][the Emacs wiki]]:
+
+
+;; [[file:README.org::*dired][dired:4]]
+:gsetq (dired-sidebar-close-sidebar-on-file-open t)
+    (dired-details-hidden-string "")
+;; dired:4 ends here
+
+
+
+;; When in the ~dired~ major mode or derived major modes, [[https://github.com/shadowrylander/uru][uru]] will
+;; allow me to quickly create, and optionally open, Zettelkasten files for my novel and documentation:
+
+
+;; [[file:README.org::*dired][dired:5]]
+:uru (dired-mode t deino-dired-mode (:color blue) "d d"
+        ("`" nil "cancel")
+        ("f" (meq/dired-create-and-open-fell-markdown) "create & edit fell file")
+        ("d" (meq/dired-create-and-open-doc-markdown) "create & edit doc file")
+        ("F" (meq/dired-create-fell-markdown) "create fell file" :color red)
+        ("D" (meq/dired-create-doc-markdown) "create doc file" :color red)))
+;; dired:5 ends here
+
+;; doom-aiern-modeline
+
+;; This sets up [[https://github.com/shadowrylander/doom-aiern-modeline][my fork]] of
+;; [[https://github.com/seagle0128/doom-modeline][doom-modeline]] by
+;; [[https://github.com/seagle0128][Vincent Zhang]] upon initialization:
+
+
+;; [[file:README.org::*doom-aiern-modeline][doom-aiern-modeline:1]]
 (use-package doom-aiern-modeline
     :hook (after-init . doom-aiern-modeline-mode)
-#+end_src
+;; doom-aiern-modeline:1 ends here
 
-Then this sets up [[https://github.com/emacsorphanage/god-mode][god-mode]],
-[[https://github.com/gridaphobe/evil-god-state][evil-god-state]] by
-[[https://github.com/gridaphobe][Eric Seidel]],
-and my fork of it [[https://github.com/shadowrylander/aiern-god-state][aiern-god-state]]
 
-#+begin_src emacs-lisp
-    :use-package-preconfig (shrink-path)
-            (god-mode :demon ((alloy-chord "hh") 'meq/god-execute-with-current-bindings)
-                :upnsd-postconfig (aiern-god-state) (evil-god-state)
-                :config (which-key-enable-god-mode-support))
-#+end_src
 
-Most of the following is adapted from [[https://github.com/seagle0128/doom-aiern-modeline#customize][here]]:
+;; Then this sets up [[https://github.com/emacsorphanage/god-mode][god-mode]],
+;; [[https://github.com/gridaphobe/evil-god-state][evil-god-state]] by
+;; [[https://github.com/gridaphobe][Eric Seidel]],
+;; and my fork of it [[https://github.com/shadowrylander/aiern-god-state][aiern-god-state]]
 
-#+begin_src emacs-lisp
-    :gsetq
-        ;; How tall the mode-line should be. It's only respected in GUI.
-        ;; If the actual char height is larger, it respects the actual height.
-        (doom-aiern-modeline-height 25)
 
-        ;; How wide the mode-line bar should be. It's only respected in GUI.
-        (doom-aiern-modeline-bar-width 3)
+;; [[file:README.org::*doom-aiern-modeline][doom-aiern-modeline:2]]
+:use-package-preconfig (shrink-path)
+        (god-mode :demon ((alloy-chord "hh") 'meq/god-execute-with-current-bindings)
+            :upnsd-postconfig (aiern-god-state) (evil-god-state)
+            :config (which-key-enable-god-mode-support))
+;; doom-aiern-modeline:2 ends here
 
-        ;; The limit of the window width.
-        ;; If `window-width' is smaller than the limit, some information won't be displayed.
-        (doom-aiern-modeline-window-width-limit fill-column)
 
-        ;; How to detect the project root.
-        ;; The default priority of detection is `ffip' > `projectile' > `project'.
-        ;; nil means to use `default-directory'.
-        ;; The project management packages have some issues on detecting project root.
-        ;; e.g. `projectile' doesn't handle symlink folders well, while `project' is unable
-        ;; to hanle sub-projects.
-        ;; You can specify one if you encounter the issue.
-        (doom-aiern-modeline-project-detection 'project)
 
-        ;; Determines the style used by `doom-aiern-modeline-buffer-file-name'.
-        ;;
-        ;; Given ~/Projects/FOSS/emacs/lisp/comint.el
-        ;;   auto => emacs/lisp/comint.el (in a project) or comint.el
-        ;;   truncate-upto-project => ~/P/F/emacs/lisp/comint.el
-        ;;   truncate-from-project => ~/Projects/FOSS/emacs/l/comint.el
-        ;;   truncate-with-project => emacs/l/comint.el
-        ;;   truncate-except-project => ~/P/F/emacs/l/comint.el
-        ;;   truncate-upto-root => ~/P/F/e/lisp/comint.el
-        ;;   truncate-all => ~/P/F/e/l/comint.el
-        ;;   truncate-nil => ~/Projects/FOSS/emacs/lisp/comint.el
-        ;;   relative-from-project => emacs/lisp/comint.el
-        ;;   relative-to-project => lisp/comint.el
-        ;;   file-name => comint.el
-        ;;   buffer-name => comint.el<2> (uniquify buffer name)
-        ;;
-        ;; If you are experiencing the laggy issue, especially while editing remote files
-        ;; with tramp, please try `file-name' style.
-        ;; Please refer to https://github.com/bbatsov/projectile/issues/657.
-        (doom-aiern-modeline-buffer-file-name-style 'auto)
+;; Most of the following is adapted from [[https://github.com/seagle0128/doom-aiern-modeline#customize][here]]:
 
-        ;; Whether display icons in the mode-line.
-        ;; While using the server mode in GUI, should set the value explicitly.
-        (doom-aiern-modeline-icon (display-graphic-p))
 
-        ;; Whether display the icon for `major-mode'. It respects `doom-aiern-modeline-icon'.
-        (doom-aiern-modeline-major-mode-icon t)
+;; [[file:README.org::*doom-aiern-modeline][doom-aiern-modeline:3]]
+:gsetq
+    ;; How tall the mode-line should be. It's only respected in GUI.
+    ;; If the actual char height is larger, it respects the actual height.
+    (doom-aiern-modeline-height 25)
 
-        ;; Whether display the colorful icon for `major-mode'.
-        ;; It respects `all-the-icons-color-icons'.
-        (doom-aiern-modeline-major-mode-color-icon t)
+    ;; How wide the mode-line bar should be. It's only respected in GUI.
+    (doom-aiern-modeline-bar-width 3)
 
-        ;; Whether display the icon for the buffer state. It respects `doom-aiern-modeline-icon'.
-        (doom-aiern-modeline-buffer-state-icon t)
+    ;; The limit of the window width.
+    ;; If `window-width' is smaller than the limit, some information won't be displayed.
+    (doom-aiern-modeline-window-width-limit fill-column)
 
-        ;; Whether display the modification icon for the buffer.
-        ;; It respects `doom-aiern-modeline-icon' and `doom-aiern-modeline-buffer-state-icon'.
-        (doom-aiern-modeline-buffer-modification-icon t)
+    ;; How to detect the project root.
+    ;; The default priority of detection is `ffip' > `projectile' > `project'.
+    ;; nil means to use `default-directory'.
+    ;; The project management packages have some issues on detecting project root.
+    ;; e.g. `projectile' doesn't handle symlink folders well, while `project' is unable
+    ;; to hanle sub-projects.
+    ;; You can specify one if you encounter the issue.
+    (doom-aiern-modeline-project-detection 'project)
 
-        ;; Whether to use unicode as a fallback (instead of ASCII) when not using icons.
-        (doom-aiern-modeline-unicode-fallback nil)
+    ;; Determines the style used by `doom-aiern-modeline-buffer-file-name'.
+    ;;
+    ;; Given ~/Projects/FOSS/emacs/lisp/comint.el
+    ;;   auto => emacs/lisp/comint.el (in a project) or comint.el
+    ;;   truncate-upto-project => ~/P/F/emacs/lisp/comint.el
+    ;;   truncate-from-project => ~/Projects/FOSS/emacs/l/comint.el
+    ;;   truncate-with-project => emacs/l/comint.el
+    ;;   truncate-except-project => ~/P/F/emacs/l/comint.el
+    ;;   truncate-upto-root => ~/P/F/e/lisp/comint.el
+    ;;   truncate-all => ~/P/F/e/l/comint.el
+    ;;   truncate-nil => ~/Projects/FOSS/emacs/lisp/comint.el
+    ;;   relative-from-project => emacs/lisp/comint.el
+    ;;   relative-to-project => lisp/comint.el
+    ;;   file-name => comint.el
+    ;;   buffer-name => comint.el<2> (uniquify buffer name)
+    ;;
+    ;; If you are experiencing the laggy issue, especially while editing remote files
+    ;; with tramp, please try `file-name' style.
+    ;; Please refer to https://github.com/bbatsov/projectile/issues/657.
+    (doom-aiern-modeline-buffer-file-name-style 'auto)
 
-        ;; Whether display the minor modes in the mode-line.
-        (doom-aiern-modeline-minor-modes nil)
+    ;; Whether display icons in the mode-line.
+    ;; While using the server mode in GUI, should set the value explicitly.
+    (doom-aiern-modeline-icon (display-graphic-p))
 
-        ;; If non-nil, a word count will be added to the selection-info modeline segment.
-        (doom-aiern-modeline-enable-word-count nil)
+    ;; Whether display the icon for `major-mode'. It respects `doom-aiern-modeline-icon'.
+    (doom-aiern-modeline-major-mode-icon t)
 
-        ;; Major modes in which to display word count continuously.
-        ;; Also applies to any derived modes. Respects `doom-aiern-modeline-enable-word-count'.
-        ;; If it brings the sluggish issue, disable `doom-aiern-modeline-enable-word-count' or
-        ;; remove the modes from `doom-aiern-modeline-continuous-word-count-modes'.
-        (doom-aiern-modeline-continuous-word-count-modes '(
-            markdown-mode
-            gfm-mode
-            org-mode
-            outline-mode))
+    ;; Whether display the colorful icon for `major-mode'.
+    ;; It respects `all-the-icons-color-icons'.
+    (doom-aiern-modeline-major-mode-color-icon t)
 
-        ;; Whether display the buffer encoding.
-        (doom-aiern-modeline-buffer-encoding t)
+    ;; Whether display the icon for the buffer state. It respects `doom-aiern-modeline-icon'.
+    (doom-aiern-modeline-buffer-state-icon t)
 
-        ;; Whether display the indentation information.
-        (doom-aiern-modeline-indent-info nil)
+    ;; Whether display the modification icon for the buffer.
+    ;; It respects `doom-aiern-modeline-icon' and `doom-aiern-modeline-buffer-state-icon'.
+    (doom-aiern-modeline-buffer-modification-icon t)
 
-        ;; If non-nil, only display one number for checker information if applicable.
-        (doom-aiern-modeline-checker-simple-format t)
+    ;; Whether to use unicode as a fallback (instead of ASCII) when not using icons.
+    (doom-aiern-modeline-unicode-fallback nil)
 
-        ;; The maximum number displayed for notifications.
-        (doom-aiern-modeline-number-limit 99)
+    ;; Whether display the minor modes in the mode-line.
+    (doom-aiern-modeline-minor-modes nil)
 
-        ;; The maximum displayed length of the branch name of version control.
-        (doom-aiern-modeline-vcs-max-length 12)
+    ;; If non-nil, a word count will be added to the selection-info modeline segment.
+    (doom-aiern-modeline-enable-word-count nil)
 
-        ;; Whether display the workspace name. Non-nil to display in the mode-line.
-        (doom-aiern-modeline-workspace-name t)
+    ;; Major modes in which to display word count continuously.
+    ;; Also applies to any derived modes. Respects `doom-aiern-modeline-enable-word-count'.
+    ;; If it brings the sluggish issue, disable `doom-aiern-modeline-enable-word-count' or
+    ;; remove the modes from `doom-aiern-modeline-continuous-word-count-modes'.
+    (doom-aiern-modeline-continuous-word-count-modes '(
+        markdown-mode
+        gfm-mode
+        org-mode
+        outline-mode))
 
-        ;; Whether display the perspective name. Non-nil to display in the mode-line.
-        (doom-aiern-modeline-persp-name t)
+    ;; Whether display the buffer encoding.
+    (doom-aiern-modeline-buffer-encoding t)
 
-        ;; If non nil the default perspective name is displayed in the mode-line.
-        (doom-aiern-modeline-display-default-persp-name nil)
+    ;; Whether display the indentation information.
+    (doom-aiern-modeline-indent-info nil)
 
-        ;; If non nil the perspective name is displayed alongside a folder icon.
-        (doom-aiern-modeline-persp-icon t)
+    ;; If non-nil, only display one number for checker information if applicable.
+    (doom-aiern-modeline-checker-simple-format t)
 
-        ;; Whether display the `lsp' state. Non-nil to display in the mode-line.
-        (doom-aiern-modeline-lsp t)
+    ;; The maximum number displayed for notifications.
+    (doom-aiern-modeline-number-limit 99)
 
-        ;; Whether display the GitHub notifications. It requires `ghub' package.
-        (doom-aiern-modeline-github nil)
+    ;; The maximum displayed length of the branch name of version control.
+    (doom-aiern-modeline-vcs-max-length 12)
 
-        ;; The interval of checking GitHub.
-        (doom-aiern-modeline-github-interval (* 30 60))
+    ;; Whether display the workspace name. Non-nil to display in the mode-line.
+    (doom-aiern-modeline-workspace-name t)
 
-        ;; Whether display the modal state icon.
-        ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys', etc.
-        ;; From: https://www.reddit.com/r/emacs/comments/gqc9fm/visual_indication_of_the_mode_of_editing_with_evil/frt8trg?utm_source=share&utm_medium=web2x&context=3
-        (doom-aiern-modeline-modal-icon nil)
+    ;; Whether display the perspective name. Non-nil to display in the mode-line.
+    (doom-aiern-modeline-persp-name t)
 
-        ;; Whether display the mu4e notifications. It requires `mu4e-alert' package.
-        (doom-aiern-modeline-mu4e nil)
+    ;; If non nil the default perspective name is displayed in the mode-line.
+    (doom-aiern-modeline-display-default-persp-name nil)
 
-        ;; Whether display the gnus notifications.
-        (doom-aiern-modeline-gnus t)
+    ;; If non nil the perspective name is displayed alongside a folder icon.
+    (doom-aiern-modeline-persp-icon t)
 
-        ;; Wheter gnus should automatically be updated and how often (set to 0 or smaller than 0 to disable)
-        (doom-aiern-modeline-gnus-timer 2)
+    ;; Whether display the `lsp' state. Non-nil to display in the mode-line.
+    (doom-aiern-modeline-lsp t)
 
-        ;; Wheter groups should be excludede when gnus automatically being updated.
-        (doom-aiern-modeline-gnus-excluded-groups '("dummy.group"))
+    ;; Whether display the GitHub notifications. It requires `ghub' package.
+    (doom-aiern-modeline-github nil)
 
-        ;; Whether display the IRC notifications. It requires `circe' or `erc' package.
-        (doom-aiern-modeline-irc t)
+    ;; The interval of checking GitHub.
+    (doom-aiern-modeline-github-interval (* 30 60))
 
-        ;; Function to stylize the irc buffer names.
-        (doom-aiern-modeline-irc-stylize 'identity)
+    ;; Whether display the modal state icon.
+    ;; Including `evil', `overwrite', `god', `ryo' and `xah-fly-keys', etc.
+    ;; From: https://www.reddit.com/r/emacs/comments/gqc9fm/visual_indication_of_the_mode_of_editing_with_evil/frt8trg?utm_source=share&utm_medium=web2x&context=3
+    (doom-aiern-modeline-modal-icon nil)
 
-        ;; Whether display the environment version.
-        (doom-aiern-modeline-env-version t)
-        ;; Or for individual languages
-        (doom-aiern-modeline-env-enable-python t)
-        (doom-aiern-modeline-env-enable-ruby t)
-        (doom-aiern-modeline-env-enable-perl t)
-        (doom-aiern-modeline-env-enable-go t)
-        (doom-aiern-modeline-env-enable-elixir t)
-        (doom-aiern-modeline-env-enable-rust t)
+    ;; Whether display the mu4e notifications. It requires `mu4e-alert' package.
+    (doom-aiern-modeline-mu4e nil)
 
-        ;; Change the executables to use for the language version string
-        (doom-aiern-modeline-env-python-executable "python") ; or `python-shell-interpreter'
-        (doom-aiern-modeline-env-ruby-executable "ruby")
-        (doom-aiern-modeline-env-perl-executable "perl")
-        (doom-aiern-modeline-env-go-executable "go")
-        (doom-aiern-modeline-env-elixir-executable "iex")
-        (doom-aiern-modeline-env-rust-executable "rustc")
+    ;; Whether display the gnus notifications.
+    (doom-aiern-modeline-gnus t)
 
-        ;; What to dispaly as the version while a new one is being loaded
-        (doom-aiern-modeline-env-load-string "...")
+    ;; Wheter gnus should automatically be updated and how often (set to 0 or smaller than 0 to disable)
+    (doom-aiern-modeline-gnus-timer 2)
 
-        ;; Hooks that run before/after the modeline version string is updated
-        (doom-aiern-modeline-before-update-env-hook nil)
-        (doom-aiern-modeline-after-update-env-hook nil))
-#+end_src
+    ;; Wheter groups should be excludede when gnus automatically being updated.
+    (doom-aiern-modeline-gnus-excluded-groups '("dummy.group"))
 
-** evil
+    ;; Whether display the IRC notifications. It requires `circe' or `erc' package.
+    (doom-aiern-modeline-irc t)
 
-As mentioned before, both ~evil~ and ~aiern~ require
-[[https://github.com/justbur/emacs-bind-map][emacs-bind-map]], by
-[[https://github.com/justbur][Justin Burkett]]:
+    ;; Function to stylize the irc buffer names.
+    (doom-aiern-modeline-irc-stylize 'identity)
 
-#+begin_src emacs-lisp
+    ;; Whether display the environment version.
+    (doom-aiern-modeline-env-version t)
+    ;; Or for individual languages
+    (doom-aiern-modeline-env-enable-python t)
+    (doom-aiern-modeline-env-enable-ruby t)
+    (doom-aiern-modeline-env-enable-perl t)
+    (doom-aiern-modeline-env-enable-go t)
+    (doom-aiern-modeline-env-enable-elixir t)
+    (doom-aiern-modeline-env-enable-rust t)
+
+    ;; Change the executables to use for the language version string
+    (doom-aiern-modeline-env-python-executable "python") ; or `python-shell-interpreter'
+    (doom-aiern-modeline-env-ruby-executable "ruby")
+    (doom-aiern-modeline-env-perl-executable "perl")
+    (doom-aiern-modeline-env-go-executable "go")
+    (doom-aiern-modeline-env-elixir-executable "iex")
+    (doom-aiern-modeline-env-rust-executable "rustc")
+
+    ;; What to dispaly as the version while a new one is being loaded
+    (doom-aiern-modeline-env-load-string "...")
+
+    ;; Hooks that run before/after the modeline version string is updated
+    (doom-aiern-modeline-before-update-env-hook nil)
+    (doom-aiern-modeline-after-update-env-hook nil))
+;; doom-aiern-modeline:3 ends here
+
+;; evil
+
+;; As mentioned before, both ~evil~ and ~aiern~ require
+;; [[https://github.com/justbur/emacs-bind-map][emacs-bind-map]], by
+;; [[https://github.com/justbur][Justin Burkett]]:
+
+
+;; [[file:README.org::*evil][evil:1]]
 (meq/up evil
     :use-package-preconfig (bind-map)
-#+end_src
+;; evil:1 ends here
 
-More evil! Courtesy of [[https://github.com/mohsenil85/evil-evilified-state][this]] and
-[[https://github.com/syl20bnr/spacemacs][this]]:
 
-#+begin_src emacs-lisp
-    :use-package-postconfig (evil-evilified-state)
-#+end_src
 
-You can't escape the power of the dark side...
+;; More evil! Courtesy of [[https://github.com/mohsenil85/evil-evilified-state][this]] and
+;; [[https://github.com/syl20bnr/spacemacs][this]]:
 
-#+begin_src emacs-lisp
-    :gsetq (evil-escape-key-sequence nil)
-#+end_src
 
-This allows me to disable ~evil-insert-state~:
+;; [[file:README.org::*evil][evil:2]]
+:use-package-postconfig (evil-evilified-state)
+;; evil:2 ends here
 
-#+begin_src emacs-lisp
-    :leaf (evil :advice
-        (:override evil-insert-state (lambda (&rest args) (interactive)
-            (meq/disable-all-modal-modes))))
-#+end_src
 
-¯\_(ツ)_/¯
 
-#+begin_src emacs-lisp
-    ;; :demon
-        ;; TODO
-        ;; ((alloy-chord "\"\"") 'evil-ex)
-        ;; ((alloy-chord "") 'meq/toggle-evil-ex-cosmoem)
-    :config
-        ;; From: https://www.reddit.com/r/emacs/comments/lp45zd/help_requested_in_configuring_ryomodal/gp3rfx9?utm_source=share&utm_medium=web2x&context=3
-        ;; Kept for documentation porpoises
-        ;; (eval
-        ;;       `(ryo-modal-keys
-        ;;             ("l l" ,(alloy-simulate-key ":wq <RET>") :first '(evil-normal-state) :name "wq")
-        ;;             ("l p" ,(alloy-simulate-key ":q <RET>") :first '(evil-normal-state) :name "q")
-        ;;             ("l o" ,(alloy-simulate-key ":w <RET>") :first '(evil-normal-state) :name "w")
-        ;;             ("l q" ,(alloy-simulate-key ":q! <RET>") :first '(evil-normal-state) :name "q!")))
+;; You can't escape the power of the dark side...
 
-        ;; Use to get command name:
-        ;; Eg: (cdr (assoc "q" evil-ex-commands))
-        ;; Then "C-x C-e" (eval-last-sexp)
 
-        ;; TODO: How do I create a keymap `evil-ex-keymap' out of the `evil-ex-commands' alist?
+;; [[file:README.org::*evil][evil:3]]
+:gsetq (evil-escape-key-sequence nil)
+;; evil:3 ends here
 
-        ;; (cosmoem-def :show-funs #'meq/evil-ex-cosmoem-show
-        ;;     :hide-funs #'meq/evil-ex-cosmoem-hide
-        ;;     :toggle-funs #'meq/evil-ex-cosmoem-toggle
-        ;;     :keymap 'evil-ex-keymap
-        ;;     ;; :transient t
-        ;; )
 
-        ;; (defun meq/evil-ex-cosmoem-toggle nil (interactive))
-        ;; (defun meq/evil-ex-show-top-level nil (interactive)
-        ;;     (meq/which-key-show-top-level 'evil-ex-keymap))
 
-        ;; (defun meq/toggle-evil-ex (ua) (interactive "p")
-        ;;     (if (= ua 4)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap nil t)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap)))
-        ;; (defun meq/toggle-evil-ex-cosmoem (ua) (interactive "p")
-        ;;     (if (= ua 4)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t t)
-        ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t)))
-    )
-#+end_src
+;; This allows me to disable ~evil-insert-state~:
 
-** olivetti
 
-#+begin_src emacs-lisp
+;; [[file:README.org::*evil][evil:4]]
+:leaf (evil :advice
+    (:override evil-insert-state (lambda (&rest args) (interactive)
+        (meq/disable-all-modal-modes))))
+;; evil:4 ends here
+
+
+
+;; ¯\_(ツ)_/¯
+
+
+;; [[file:README.org::*evil][evil:5]]
+;; :demon
+    ;; TODO
+    ;; ((alloy-chord "\"\"") 'evil-ex)
+    ;; ((alloy-chord "") 'meq/toggle-evil-ex-cosmoem)
+:config
+    ;; From: https://www.reddit.com/r/emacs/comments/lp45zd/help_requested_in_configuring_ryomodal/gp3rfx9?utm_source=share&utm_medium=web2x&context=3
+    ;; Kept for documentation porpoises
+    ;; (eval
+    ;;       `(ryo-modal-keys
+    ;;             ("l l" ,(alloy-simulate-key ":wq <RET>") :first '(evil-normal-state) :name "wq")
+    ;;             ("l p" ,(alloy-simulate-key ":q <RET>") :first '(evil-normal-state) :name "q")
+    ;;             ("l o" ,(alloy-simulate-key ":w <RET>") :first '(evil-normal-state) :name "w")
+    ;;             ("l q" ,(alloy-simulate-key ":q! <RET>") :first '(evil-normal-state) :name "q!")))
+
+    ;; Use to get command name:
+    ;; Eg: (cdr (assoc "q" evil-ex-commands))
+    ;; Then "C-x C-e" (eval-last-sexp)
+
+    ;; TODO: How do I create a keymap `evil-ex-keymap' out of the `evil-ex-commands' alist?
+
+    ;; (cosmoem-def :show-funs #'meq/evil-ex-cosmoem-show
+    ;;     :hide-funs #'meq/evil-ex-cosmoem-hide
+    ;;     :toggle-funs #'meq/evil-ex-cosmoem-toggle
+    ;;     :keymap 'evil-ex-keymap
+    ;;     ;; :transient t
+    ;; )
+
+    ;; (defun meq/evil-ex-cosmoem-toggle nil (interactive))
+    ;; (defun meq/evil-ex-show-top-level nil (interactive)
+    ;;     (meq/which-key-show-top-level 'evil-ex-keymap))
+
+    ;; (defun meq/toggle-evil-ex (ua) (interactive "p")
+    ;;     (if (= ua 4)
+    ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap nil t)
+    ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap)))
+    ;; (defun meq/toggle-evil-ex-cosmoem (ua) (interactive "p")
+    ;;     (if (= ua 4)
+    ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t t)
+    ;;         (funcall 'meq/toggle-inner 'evil-mode "evil-ex" (meq/fbatp evil-mode) 'evil-ex-keymap t)))
+)
+;; evil:5 ends here
+
+;; olivetti
+
+
+;; [[file:README.org::*olivetti][olivetti:1]]
 (meq/up olivetti :gsetq (olivetti-body-width 0.60))
-#+end_src
+;; olivetti:1 ends here
 
-** one-on-one
+;; one-on-one
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*one-on-one][one-on-one:1]]
 ;; !!! THE ORDER HERE MATTERS! !!!
 (meq/up oneonone
     :if (not (meq/exwm-p))
@@ -635,11 +679,12 @@ This allows me to disable ~evil-insert-state~:
     :gsetq
         (1on1-minibuffer-frame-width 10000)
         (1on1-minibuffer-frame-height 10000))
-#+end_src
+;; one-on-one:1 ends here
 
-** rainbow-identifiers
+;; rainbow-identifiers
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*rainbow-identifiers][rainbow-identifiers:1]]
 (meq/up rainbow-identifiers
     ;; Adapted From:
     ;; Answer: https://stackoverflow.com/a/31253253/10827766
@@ -648,17 +693,19 @@ This allows me to disable ~evil-insert-state~:
     ;;                                                             (rainbow-identifiers-mode 1)))
     ;; :upnsd-preconfig (xxh)
     )
-#+end_src
+;; rainbow-identifiers:1 ends here
 
-** vlf
+;; vlf
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*vlf][vlf:1]]
 (meq/up vlf :gsetq (vlf-application 'always))
-#+end_src
+;; vlf:1 ends here
 
-** writeroom-mode
+;; writeroom-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*writeroom-mode][writeroom-mode:1]]
 (meq/up writeroom-mode
     :disabled t
     :demon ((alloy-chord "zz") 'meq/after-init)
@@ -677,29 +724,33 @@ This allows me to disable ~evil-insert-state~:
         (writeroom-fringes-outside-margins t)
         (writeroom-width 0.75)
         (writeroom-mode-line t))
-#+end_src
+;; writeroom-mode:1 ends here
 
-** dockerfile-mode
+;; dockerfile-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*dockerfile-mode][dockerfile-mode:1]]
 (use-package dockerfile-mode :mode ("\\Dockerfile\\'"))
-#+end_src
+;; dockerfile-mode:1 ends here
 
-** hy-mode
+;; hy-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*hy-mode][hy-mode:1]]
 (use-package hy-mode :mode ("\\.hy\\'") :use-package-preconfig (lispy) (sly) (ob-hy))
-#+end_src
+;; hy-mode:1 ends here
 
-** markdown-mode
+;; markdown-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*markdown-mode][markdown-mode:1]]
 (use-package markdown-mode :mode ("\\.md\\'"))
-#+end_src
+;; markdown-mode:1 ends here
 
-** nix-mode
+;; nix-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*nix-mode][nix-mode:1]]
 (use-package nix-mode
     :commands (org-babel-execute:nix)
     :mode ("\\.nix\\'")
@@ -729,11 +780,12 @@ This allows me to disable ~evil-insert-state~:
                     (if (eq args nil) "" args)
                     (org-babel-process-file-name in-file))
             ""))))
-#+end_src
+;; nix-mode:1 ends here
 
-** org-mode
+;; org-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*org-mode][org-mode:1]]
 ;; Adapted From: https://www.reddit.com/r/emacs/comments/ouzud7/error_usepackage_yankpadcatch_invalid_version/h76b6vo?utm_source=share&utm_medium=web2x&context=3
 (meq/upnsd org
     :mode ("\\.org\\'" . org-mode)
@@ -849,21 +901,23 @@ This allows me to disable ~evil-insert-state~:
         ;; User: https://emacs.stackexchange.com/users/29861/doltes
         (org-edit-src-content-indentation 0))
 (delete "--anti-riot" command-line-args)
-#+end_src
+;; org-mode:1 ends here
 
-** vimrc-mode
+;; vimrc-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*vimrc-mode][vimrc-mode:1]]
 (use-package vimrc-mode
     :commands
         (org-babel-execute:vimrc
         org-babel-expand-body:vimrc)
     :mode "\\.vim\\(rc\\)?\\'")
-#+end_src
+;; vimrc-mode:1 ends here
 
-** xonsh-mode
+;; xonsh-mode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*xonsh-mode][xonsh-mode:1]]
 (use-package xonsh-mode
     :commands (org-babel-execute:xonsh org-babel-expand-body:xonsh)
     :mode ("\\.xonshrc\\'" "\\.xsh\\'")
@@ -885,11 +939,12 @@ This allows me to disable ~evil-insert-state~:
                     (if (eq args nil) "" args)
                     (org-babel-process-file-name in-file))
             ""))))
-#+end_src
+;; xonsh-mode:1 ends here
 
-** doom-themes
+;; doom-themes
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*doom-themes][doom-themes:1]]
 (meq/up doom-themes
     :deino (deino-themes-light (:color blue) nil "A deino for light themes!" ("`" nil "cancel"))
         (deino-themes-dark (:color blue) nil "A deino for dark themes!" ("`" nil "cancel"))
@@ -947,52 +1002,57 @@ This allows me to disable ~evil-insert-state~:
             (orange-purple . C-o)
             (flamingo-pink-purple . C-p)
             (ghostfreak-green . g))))
-#+end_src
+;; doom-themes:1 ends here
 
-** windmove
+;; windmove
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*windmove][windmove:1]]
 (meq/up windmove
     :config (winner-mode)
     :demon ((alloy-chord "ww") 'deino-wb/body)
     :deino (deino-wb nil nil ("b" deino-buffer/body "buffer") ("w" deino-window/body "window"))
-#+end_src
+;; windmove:1 ends here
 
-The ~sorrow~ config below is adapted from
-[[https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-window-moving][here]]:
 
-#+begin_src emacs-lisp
-    :sorrow ("w" :deino '(deino-window (:columns 5) "w"
-        ("`" nil "cancel")
-        ("s" deino-buffer/body "buffer" :color blue)
-        ("B" balance-windows "balance-windows")
-        ("t" toggle-window-spilt "toggle-window-spilt")
-        ("H" shrink-window-horizontally "shrink-window-horizontally")
-        ("K" shrink-window "shrink-window")
-        ("J" enlarge-window "enlarge-window")
-        ("L" enlarge-window-horizontally "enlarge-window-horizontally")
-        ("R" reverse-windows "reverse-windows")
-        ("h" windmove-left "←")
-        ("j" windmove-down "↓")
-        ("k" windmove-up "↑")
-        ("l" windmove-right "→")
-        ("q" deino-move-splitter-left "X←")
-        ("w" deino-move-splitter-down "X↓")
-        ("e" deino-move-splitter-up "X↑")
-        ("r" deino-move-splitter-right "X→")
-        ("F" follow-mode "Follow")
-        ("v" (lambda nil (interactive) (split-window-right) (windmove-right)) "vertical")
-        ("x" (lambda nil (interactive) (split-window-below) (windmove-down)) "horizontal")
-        ("d" delete-window "delete")
-        ("O" delete-other-windows "only this")
-        ("z" (progn (winner-undo) (setq this-command 'winner-undo)) "undo")
-        ("Z" winner-redo "reset")
-        ("o" other-window "other-window"))))
-#+end_src
 
-** ace-window
+;; The ~sorrow~ config below is adapted from
+;; [[https://github.com/abo-abo/hydra/wiki/Window-Management#deluxe-window-moving][here]]:
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*windmove][windmove:2]]
+:sorrow ("w" :deino '(deino-window (:columns 5) "w"
+    ("`" nil "cancel")
+    ("s" deino-buffer/body "buffer" :color blue)
+    ("B" balance-windows "balance-windows")
+    ("t" toggle-window-spilt "toggle-window-spilt")
+    ("H" shrink-window-horizontally "shrink-window-horizontally")
+    ("K" shrink-window "shrink-window")
+    ("J" enlarge-window "enlarge-window")
+    ("L" enlarge-window-horizontally "enlarge-window-horizontally")
+    ("R" reverse-windows "reverse-windows")
+    ("h" windmove-left "←")
+    ("j" windmove-down "↓")
+    ("k" windmove-up "↑")
+    ("l" windmove-right "→")
+    ("q" deino-move-splitter-left "X←")
+    ("w" deino-move-splitter-down "X↓")
+    ("e" deino-move-splitter-up "X↑")
+    ("r" deino-move-splitter-right "X→")
+    ("F" follow-mode "Follow")
+    ("v" (lambda nil (interactive) (split-window-right) (windmove-right)) "vertical")
+    ("x" (lambda nil (interactive) (split-window-below) (windmove-down)) "horizontal")
+    ("d" delete-window "delete")
+    ("O" delete-other-windows "only this")
+    ("z" (progn (winner-undo) (setq this-command 'winner-undo)) "undo")
+    ("Z" winner-redo "reset")
+    ("o" other-window "other-window"))))
+;; windmove:2 ends here
+
+;; ace-window
+
+
+;; [[file:README.org::*ace-window][ace-window:1]]
 (meq/up ace-window
     :deino+ (deino-window (:color red)
         ("a" (lambda nil (interactive) (ace-window 1) (add-hook 'ace-window-end-once-hook
@@ -1003,23 +1063,26 @@ The ~sorrow~ config below is adapted from
                                                                 'deino-window/body)) "Delete Other")
         ("E" ace-swap-window "ace-swap-window")
         ("W" ace-delete-window "ace-delete-window" :exit t)))
-#+end_src
+;; ace-window:1 ends here
 
-** alamode
+;; alamode
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*alamode][alamode:1]]
 (meq/upnsd alamode)
-#+end_src
+;; alamode:1 ends here
 
-** cosmog
+;; cosmog
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*cosmog][cosmog:1]]
 (meq/upnsd cosmog :prime ("c" deino-cosmog/body "cosmog"))
-#+end_src
+;; cosmog:1 ends here
 
-** helm
+;; helm
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*helm][helm:1]]
 (meq/up helm
     ;; :commands (helm-M-x helm-mini helm-mode)
     :deino+ (deino-execute nil
@@ -1032,13 +1095,14 @@ The ~sorrow~ config below is adapted from
         (helm-flx)
         (helm-swoop)
         (helm-ido-like))
-#+end_src
+;; helm:1 ends here
 
-** magit
+;; magit
 
-Adapted From: https://github.com/asok/.emacs.d/blob/master/inits/init-hydra.el#L62
+;; Adapted From: https://github.com/asok/.emacs.d/blob/master/inits/init-hydra.el#L62
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*magit][magit:1]]
 (meq/up magit :deino (deino-magit (:color blue :columns 8) "g"
   "It's just like magit!"
   ("s" magit-status "status")
@@ -1049,25 +1113,28 @@ Adapted From: https://github.com/asok/.emacs.d/blob/master/inits/init-hydra.el#L
   ("c" magit-git-command "command")
   ("p" magit-process "process")
   ("`" nil "cancel")))
-#+end_src
+;; magit:1 ends here
 
-** modalka
+;; modalka
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*modalka][modalka:1]]
 (meq/up modalka)
-#+end_src
+;; modalka:1 ends here
 
-** objed
+;; objed
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*objed][objed:1]]
 (meq/up objed)
-#+end_src
+;; objed:1 ends here
 
-** projectile
+;; projectile
 
-Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/
+;; Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-emacs/
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*projectile][projectile:1]]
 (meq/up projectile
     :use-package-preconfig (counsel-projectile :config (counsel-projectile-mode 1)) (helm-projectile)
     ;; Adapted From: https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-16
@@ -1114,33 +1181,36 @@ Adapted From: https://sam217pa.github.io/2016/09/23/keybindings-strategies-in-em
                 ("g"   helm-projectile-rg "helm-projectile-rg")
                 ("C-f" helm-projectile-find-file-in-known-projects "find file in known projects")
                 ("`"   nil "cancel"))))
-#+end_src
+;; projectile:1 ends here
 
-** restart-emacs
+;; restart-emacs
 
-Cool [[https://github.com/iqbalansari/restart-emacs][package]] by
-[[https://github.com/iqbalansari][Iqbal Ansari]]!
+;; Cool [[https://github.com/iqbalansari/restart-emacs][package]] by
+;; [[https://github.com/iqbalansari][Iqbal Ansari]]!
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*restart-emacs][restart-emacs:1]]
 (meq/up restart-emacs
     :demon ((alloy-chord "aa") 'deino-restart/body)
     :deino (deino-restart (:color blue) "r"
             ("`" nil "cancel")
             ("l" meq/reload-emacs "reload")
             ("s" restart-emacs "restart")))
-#+end_src
+;; restart-emacs:1 ends here
 
-** ryo modal
+;; ryo modal
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*ryo modal][ryo modal:1]]
 (meq/up ryo-modal :demon ((alloy-chord "KK") 'meq/ryo-execute-with-current-bindings)
     :config ;; From: https://github.com/Kungsgeten/ryo-modal#which-key-integration
         (push '((nil . "ryo:.*:") . (nil . "")) which-key-replacement-alist))
-#+end_src
+;; ryo modal:1 ends here
 
-** vterm
+;; vterm
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*vterm][vterm:1]]
 (meq/up vterm :use-package-postconfig (multi-vterm)
     :if (not (member system-type '(windows-nt ms-dos)))
     :demon ((alloy-chord "vv") 'meq/shell)
@@ -1148,11 +1218,12 @@ Cool [[https://github.com/iqbalansari/restart-emacs][package]] by
         (vterm-shell (meq/ued* "vterm-start.sh"))
         (vterm-always-compile-module t)
         (vterm-kill-buffer-on-exit t))
-#+end_src
+;; vterm:1 ends here
 
-** xah-fly-keys
+;; xah-fly-keys
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*xah-fly-keys][xah-fly-keys:1]]
 (meq/up xah-fly-keys
     :commands xah-fly-keys
     :sorrow ("m" :deino
@@ -1160,11 +1231,12 @@ Cool [[https://github.com/iqbalansari/restart-emacs][package]] by
                     "A modal deino!"
                     ("`" nil "cancel")
                     ("x" meq/toggle-xah "xah-fly-keys")) :name "modal modes"))
-#+end_src
+;; xah-fly-keys:1 ends here
 
-** doc
+;; doc
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*doc][doc:1]]
 (use-package doc
     :commands (meq/dired-create-doc-markdown meq/dired-create-and-open-doc-markdown)
     :upnsd-preconfig (titan :gsetq (meq/var/titan-snippets-dir (meq/ued-siluam "titan" "snippets")))
@@ -1173,11 +1245,12 @@ Cool [[https://github.com/iqbalansari/restart-emacs][package]] by
             ("\\.doc\\.org\\'" . doc-org-mode))
     :uru (doc-org-mode nil deino-doc-org (:color blue :inherit (deino-org-usually/heads)) "t d o"
             ("d" (meq/insert-snippet "org titan template") "template")))
-#+end_src
+;; doc:1 ends here
 
-** fell
+;; fell
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*fell][fell:1]]
 (use-package fell
     :commands (meq/dired-create-fell-markdown meq/dired-create-and-open-fell-markdown)
     :upnsd-preconfig (titan :gsetq (meq/var/titan-snippets-dir (meq/ued-siluam "titan" "snippets")))
@@ -1186,13 +1259,14 @@ Cool [[https://github.com/iqbalansari/restart-emacs][package]] by
             ("\\.fell\\.org\\'" . fell-org-mode))
     :uru (fell-org-mode nil deino-fell-org (:color blue :inherit (deino-org-usually/heads)) "t f o"
             ("f" (meq/insert-snippet "org titan template") "template")))
-#+end_src
+;; fell:1 ends here
 
-* postface
+;; postface
 
-And there you have it!
+;; And there you have it!
 
-#+begin_src emacs-lisp
+
+;; [[file:README.org::*postface][postface:1]]
 (alloy-def :keymaps 'universal-argument-map (alloy-chord "  ") 'universal-argument-more)
 (alloy-def :keymaps '(override aiern-insert-state-map evil-insert-state-map)
     (naked "RET") 'newline-and-indent
@@ -1233,4 +1307,4 @@ And there you have it!
     (eval `(add-hook 'kill-emacs-hook #'(lambda nil (interactive)
         ;; Adapted From: http://ergoemacs.org/emacs/elisp_file_name_dir_name.html
         (when (get-file-buffer ,testing) (delete-file ,testing) (copy-file ,resting ,testing))))))
-#+end_src
+;; postface:1 ends here

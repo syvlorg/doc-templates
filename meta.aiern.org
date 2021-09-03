@@ -1,4 +1,5 @@
 #+setupfile: README.org
+#+property: header-args:emacs-lisp :comments none
 
 The tangle functions are adapted from [[https://emacs.stackexchange.com/a/29884/31428][this answer on the emacs Stack Exchange]],
 which was written by [[https://emacs.stackexchange.com/users/2710/andrew-swann][Andrew Swann]].
@@ -1279,21 +1280,10 @@ tangle-setup:
 
 tangle: tangle-setup
 |yes yes | fd . $(mkfileDir) \
-    -HIe org \
+    -He org \
     -E testing.aiern.org \
     -E resting.aiern.org \
-    -E profiles \
-    -E lib \
-    -E var \
     -x $(mkfileDir)/backup-tangle.sh
-|yes yes | fd . $(mkfileDir)/profiles/damascus \
-    -HIe org \
-    -E .local \
-    -E lib \
-    -E var \
-    -x $(mkfileDir)/backup-tangle.sh
-|-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/graphene/README.org
-|-$(mkfileDir)/backup-tangle.sh $(mkfileDir)/profiles/nano/README.org
 |fd . $(mkfileDir) \
     -HIe sh \
     -E .local \
@@ -1550,8 +1540,6 @@ super-push-only: tangle push-only
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
 (meq/upnsd alloy
     :upnsd-postconfig (lode) (prime)
-        (uru :config (prime "u u" uru "uru")
-                    (prime "u m" minoru "minoru"))
     :use-package-preconfig (command-log-mode)
         ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
         (use-package-chords)
@@ -1569,12 +1557,12 @@ super-push-only: tangle push-only
             "\e[D" [left]
             "\eOC" [right]
             "\e[C" [right]
-            "M-x" 'meq/M-x)
-    :deino (deino-restart (:color blue) "r"
-            ("`" nil "cancel")
-            ("l" meq/reload-emacs "reload")
-            ("s" restart-emacs "restart"))
+            "M-x" 'meq/M-x
+            (alloy-chord "  ") 'universal-argument)
     :custom (alloy-implicit-naked t))
+(meq/upnsd uru :demon ((alloy-chord "uu") 'uru) ((alloy-chord "ii") 'minoru)
+    :prime ("u u" uru "uru")
+            ("u m" minoru "minoru"))
 #+end_src
 
 ** meq-which-key-config.el
@@ -1656,6 +1644,7 @@ super-push-only: tangle push-only
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :exports none
 (meq/upnsd sorrow
     :primer+ ("t" "toggles")
+    :demon ((alloy-chord "kk") 'meq/sorrow-execute-with-current-bindings)
     :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
         (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
 #+end_src
@@ -1693,84 +1682,18 @@ super-push-only: tangle push-only
 #+name: 20210804184605617540800
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
 ;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
-(when (version< emacs-version "27") (load (concat (file-name-directory load-file-name) "early-init.el")))
+(when (version< emacs-version "27") (load (concat
+                                            (file-name-directory load-file-name)
+                                            "early-init.el")))
 
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up the `use-package' keywords for `exwm' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(mapc #'(lambda (config) (interactive)
-            (load (meq/ued-lib (concat "meq-" (symbol-name config) "-config"))))
-    '(hydra alloy which-key cosmoem sorrow))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Set up `exwm' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(load (meq/ued-lib "meq-exwm-config"))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Load the profile's `early-init' if it exists ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(if (member "--profile-early-init" command-line-args)
-    (meq/load-from-cla "--profile-early-init")
-    (meq/cl "early-init.el"))
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Use an alternate `lib' ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(meq/load-from-cla "--profile-lib")
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defun meq/reload-first-init nil (interactive) (org-babel-load-file (meq/ued* "REEDME.org")))
+(meq/reload-first-init)
 #+end_src
 
 * profiles
-** damascus
-*** init.el
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210811234927547343000
-
-#+name: 20210811234927547343000
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
-;;; $EMACSDIR/init.el -*- lexical-binding: t; -*-
-(when (version< emacs-version "27") (load (meq/ued "early-init.el")))
-
-(custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- '(meq/var/current-theme 'ghostfreak-green-dark)
- '(meq/var/current-theme-mode "dark")
- '(safe-local-variable-values '((eval message "eval 1"))))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
-
-(defun meq/reload-init nil (interactive)
-    (org-babel-load-file (meq/ued "README.org")))
-(meq/reload-init)
-#+end_src
-
 ** graphene
 *** init.el
 
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210818012945822500800
-
-#+name: 20210818012945822500800
 #+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
 (meq/up project-persist)
 (meq/up ido-completing-read+)

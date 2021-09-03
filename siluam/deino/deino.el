@@ -1613,8 +1613,9 @@ Arguments are same as of `defdeino'."
           (func `(defun ,(meq/inconcat nname "/body") nil (interactive)
                   (if (not deino-enabled-temporarily)
                     (,(meq/inconcat nname "-usually/body"))
-                    (setq deino-enabled-temporarily nil)
-                    (,(meq/inconcat nname "-temporarily/body"))))))
+                    (unwind-protect
+                      (,(meq/inconcat nname "-temporarily/body"))
+                      (setq deino-enabled-temporarily nil))))))
     (eval `(,deino-funk
       ,(meq/inconcat nname "-usually")
       ,body
