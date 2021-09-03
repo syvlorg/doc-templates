@@ -231,7 +231,7 @@ Next, for specific profiles, if applicable, we will add any arguments necessary 
 (cl-case (intern meq/var/profile-name)
     (damascus (meq/push-to-cla '(--literate-config)))
     (nano (meq/push-to-cla '(--profile-lib profiles/nano/lisp/nano.el)))
-    (graphene (meq/push-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el))))
+    (graphene (meq/push-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el --literate-config))))
 #+end_src
 
 ** After Vars

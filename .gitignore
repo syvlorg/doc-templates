@@ -4,27 +4,17 @@
 !*/
 
 !**/**/*.org
-
 !**/**/README.*
-**/**/README.el
-
-!**/**/org-tangle.sh
-
 !**/**/custom.el
-
 !**/**/makefile
-
 !**/**/*.mk
-
-!/siluam/**/**
-
-!/themes/screenshots/**/**
-
 !**/**/*.git*
 
+!/siluam/**/**
+!/themes/screenshots/**/**
+
+!/org-tangle.sh
 !/borg.gif
 
+**/**/README.el
 **/**/.local
-
-/lib
-/epkgs
