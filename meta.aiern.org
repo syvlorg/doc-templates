@@ -1280,9 +1280,12 @@ tangle-setup:
 
 tangle: tangle-setup
 |yes yes | fd . $(mkfileDir) \
-    -He org \
+    -HId 1 -e org \
     -E testing.aiern.org \
     -E resting.aiern.org \
+    -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/siluam \
+    -HIe org \
     -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
     -HIe sh \
@@ -1686,29 +1689,6 @@ super-push-only: tangle push-only
                                             (file-name-directory load-file-name)
                                             "early-init.el")))
 
-(defun meq/reload-first-init nil (interactive) (org-babel-load-file (meq/ued* "REEDME.org")))
+(defun meq/reload-first-init nil (interactive) (meq/cl (meq/ued* "REEDME.org")))
 (meq/reload-first-init)
-#+end_src
-
-* profiles
-** graphene
-*** init.el
-
-#+begin_src emacs-lisp :tangle (meq/tangle-path) :comments link
-(meq/up project-persist)
-(meq/up ido-completing-read+)
-(meq/up ppd-sr-speedbar)
-(meq/up smartparens)
-(meq/up company)
-(meq/up web-mode)
-(meq/up smex)
-(meq/up flycheck)
-
-(with-eval-after-load 'graphene (cond ((or
-            (equal system-type 'windows-nt)
-            (equal system-type 'ms-dos))
-        (require 'graphene-windows-defaults))
-    ((equal system-type 'darwin) (require 'graphene-osx-defaults))
-    (t (require 'graphene-linux-defaults))))
-(load-theme 'dracula-purple-dark)
 #+end_src

@@ -48,8 +48,10 @@ command-line, and otherwise, load the profile's usual ~init~ if it exists.
 #+begin_src emacs-lisp
 (meq/if-item-in-cla "--profile-init"
     (meq/load-from-cla "--profile-init")
-    (if (string= meq/var/profile-name "damascus")
-        (org-babel-load-file (meq/ued "README.org"))
+    (if meq/var/literate-config
+        (org-babel-load-file (if (f-exists? (meq/ued "REEDME.org"))
+                                (meq/ued "REEDME.org")
+                                (meq/ued "README.org")))
         (meq/cl "init.el")))
 #+end_src
 

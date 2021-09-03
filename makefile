@@ -42,9 +42,12 @@ tangle-setup:
 
 tangle: tangle-setup
 |yes yes | fd . $(mkfileDir) \
-    -He org \
+    -HId 1 -e org \
     -E testing.aiern.org \
     -E resting.aiern.org \
+    -x $(mkfileDir)/backup-tangle.sh
+|yes yes | fd . $(mkfileDir)/siluam \
+    -HIe org \
     -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
     -HIe sh \

@@ -67,7 +67,13 @@
 ;;;###autoload
 (defun meq/ued (&rest args) (f-full (apply #'f-join user-emacs-directory args)))
 ;;;###autoload
-(defun meq/cl (&rest args) (let* ((path (apply #'meq/ued args))) (when (f-exists? path) (load path))))
+(defun meq/cl (&rest args)
+    (let* ((path (apply #'meq/ued args))
+            (path-exists (f-exists? path))
+            (org-file* (when path-exists (f-ext path)))
+            (org-file (and org-file* (string= org-file* "org"))))
+        (when path-exists
+            (if org-file (org-babel-load-file path) (load path)))))
 
 ;;;###autoload
 (defun meq/timestamp nil (interactive) (format-time-string "%Y%m%d%H%M%S%N"))

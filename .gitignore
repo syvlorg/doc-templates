@@ -1,41 +1,30 @@
 *
 
 # From: https://jasonstitt.com/gitignore-whitelisting-patterns
-# !*/
+!*/
 
-!*.org
 !**/**/*.org
 
-!README.*
 !**/**/README.*
+**/**/README.el
 
-!org-tangle.sh
 !**/**/org-tangle.sh
 
-!makefile
+!**/**/custom.el
+
 !**/**/makefile
 
-!*.mk
 !**/**/*.mk
 
-!profiles
-!profiles/damascus
-!profiles/damascus/**
-profiles/damascus/.cosmog.
-profiles/damascus/.local
-profiles/damascus/auto-save-list
-profiles/damascus/eln-cache
-profiles/damascus/etc
-profiles/damascus/var
+!/siluam/**/**
 
-!siluam
-!siluam/**
+!/themes/screenshots/**/**
 
-!themes
-!themes/screenshots
-!themes/screenshots/**
-
-!*.git*
 !**/**/*.git*
 
-!borg.gif
+!/borg.gif
+
+**/**/.local
+
+/lib
+/epkgs

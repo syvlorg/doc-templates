@@ -229,8 +229,16 @@ Next, for specific profiles, if applicable, we will add any arguments necessary 
 
 #+begin_src emacs-lisp
 (cl-case (intern meq/var/profile-name)
+    (damascus (meq/push-to-cla '(--literate-config)))
     (nano (meq/push-to-cla '(--profile-lib profiles/nano/lisp/nano.el)))
     (graphene (meq/push-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el))))
+#+end_src
+
+** After Vars
+
+#+begin_src emacs-lisp
+(defvar meq/var/literate-config (member "--literate-config" command-line-args))
+(delete "--literate-config" command-line-args)
 #+end_src
 
 ** Silva Scientiae
@@ -635,7 +643,7 @@ These are any last-minute steps before running any specific Emacs profile.
                         (load (concat spacemacs-path "funcs.el"))
                         (spacemacs-bootstrap/init-use-package)))
         (patrick (advice-add #'reload-config :override #'(lambda nil (interactive)
-                    (org-babel-load-file (meq/ued-profiles "patrick" "readme.org")))))
+                    (meq/cl (meq/ued-profiles "patrick" "readme.org")))))
         (alhassy (require 'quelpa-use-package))))
 #+end_src
 
