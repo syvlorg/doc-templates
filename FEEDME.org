@@ -1,5 +1,5 @@
-#+setupfile: README.org
-#+property: header-args :tangle yes
+#+setupfile: ./settings.org
+#+property: header-args:emacs-lisp+ :tangle yes
 
 * আবারো স্বাগতম! Hello Again!
 
@@ -49,8 +49,8 @@ command-line, and otherwise, load the profile's usual ~init~ if it exists.
 (meq/if-item-in-cla "--profile-init"
     (meq/load-from-cla "--profile-init")
     (if meq/var/literate-config
-        (org-babel-load-file (if (f-exists? (meq/ued "REEDME.org"))
-                                (meq/ued "REEDME.org")
+        (meq/cl (if (f-exists? (meq/ued "FEEDME.org"))
+                                (meq/ued "FEEDME.org")
                                 (meq/ued "README.org")))
         (meq/cl "init.el")))
 #+end_src

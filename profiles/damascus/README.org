@@ -1,5 +1,5 @@
-#+setupfile: ../../README.org
-#+property: header-args :tangle yes
+#+setupfile: ../../settings.org
+#+property: header-args:emacs-lisp+ :tangle yes
 
 * হ্যালো হ্যাটট্রিক! Hello hat trick!
 

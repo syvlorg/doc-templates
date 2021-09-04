@@ -1,14 +1,5 @@
-#!/usr/bin/env mdsh
-
-# TODO: Implement saku as well
-
-#+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
-#+property: header-args:emacs-lisp :comments both
-
-# Adapted From:
-# Answer: https://stackoverflow.com/a/65232183/10827766
-# User: https://stackoverflow.com/users/776405/whil
-#+startup: show3levels
+#+setupfile: ./settings.org
+#+property: header-args:emacs-lisp+ :tangle yes
 
 #+begin_quote
 Like Chemacs, but worse! — John Oliver (... Yeah, no; I wish! Maybe some day!)
@@ -228,10 +219,10 @@ doesn't already exist in the list and the argument is an option, as when prefixe
 Next, for specific profiles, if applicable, we will add any arguments necessary to be able to run the profile.
 
 #+begin_src emacs-lisp
-(cl-case (intern meq/var/profile-name)
-    (damascus (meq/push-to-cla '(--literate-config)))
-    (nano (meq/push-to-cla '(--profile-lib profiles/nano/lisp/nano.el)))
-    (graphene (meq/push-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el --literate-config))))
+(pcase meq/var/profile-name
+    ("damascus" (meq/push-to-cla '(--literate-config)))
+    ("nano" (meq/push-to-cla '(--profile-lib profiles/nano/lisp/nano.el)))
+    ("graphene" (meq/push-to-cla '(--profile-lib profiles/graphene/lisp/graphene.el --literate-config))))
 #+end_src
 
 ** After Vars
@@ -317,7 +308,7 @@ build and activate the drone."
 
 ** Straight and a bit /too/ narrow
 :PROPERTIES:
-:header-args: :tangle no
+:header-args:emacs-lisp+: :tangle no
 :END:
 
 Before I was assimilated, I used [[https://github.com/raxod502][Radon Rosborough's]]
@@ -366,6 +357,8 @@ From here on out, til mentioned otherwise, the configuration is more or less aga
     (setq straight-disable-byte-compilation (member "--no-byte-compilation" command-line-args)))
 (delete "--no-byte-compilation" command-line-args)
 #+end_src
+
+And then install ~straight.el~:
 
 #+begin_src emacs-lisp
 (eval-and-compile
@@ -636,15 +629,15 @@ These are any last-minute steps before running any specific Emacs profile.
                             "layers"
                             "+distributions"
                             "spacemacs-bootstrap")))
-    (cl-case (intern meq/var/profile-name)
-        (doom (load (meq/ued-lib "ido-completing-read+" "ido-completing-read+.el")))
-        (spacemacs (progn
+    (pcase meq/var/profile-name
+        ("doom" (load (meq/ued-lib "ido-completing-read+" "ido-completing-read+.el")))
+        ("spacemacs" (progn
                         (load (concat spacemacs-path "packages.el"))
                         (load (concat spacemacs-path "funcs.el"))
                         (spacemacs-bootstrap/init-use-package)))
-        (patrick (advice-add #'reload-config :override #'(lambda nil (interactive)
+        ("patrick" (advice-add #'reload-config :override #'(lambda nil (interactive)
                     (meq/cl (meq/ued-profiles "patrick" "readme.org")))))
-        (alhassy (require 'quelpa-use-package))))
+        ("alhassy" (require 'quelpa-use-package))))
 #+end_src
 
 ** Party in the CLA
@@ -723,7 +716,7 @@ And finally, if ~item~ was originally a file that exists, load it, and if it's a
 ~org-babel-load-file~ it:
 
 #+begin_src emacs-lisp
-                (unless is-dir (if org-file (org-babel-load-file file) (load file))))))))
+                (meq/cl file))))))
 #+end_src
 
 *** Yay, we're early!

@@ -15,6 +15,9 @@
 
 !/org-tangle.sh
 !/borg.gif
+!/git-subtree
 
 **/**/README.el
 **/**/.local
+/lib
+/epkgs
