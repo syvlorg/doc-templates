@@ -1670,8 +1670,7 @@ super-push-only: tangle push-only
 (add-to-list 'load-path (concat pre-user-emacs-directory "lib/org/lisp"))
 (require 'org-loaddefs)
 
-;; TODO: Where did I get this?
-;; TODO: Apply this to all other instances of `call-process'
+;; Adapted From: https://github.com/emacscollective/borg/blob/master/borg.el#L912
 (defun meq/call (program buffer-name &rest args)
   (let ((process-connection-type nil)
         (buffer (generate-new-buffer buffer-name)))
@@ -1682,7 +1681,7 @@ super-push-only: tangle push-only
       (pop-to-buffer buffer)
       (error "%s failed" program))))
 
-;; TODO: Where did I get this?
+;; Adapted From: https://code.orgmode.org/bzg/org-mode/src/master/lisp/org.el#L222
 (defun meq/org-babel-load-file-advice (file &optional compile)
   "Load Emacs Lisp source code blocks in the Org FILE.
 This function exports the source code using `org-babel-tangle'
@@ -1692,21 +1691,11 @@ byte-compiled before it is loaded."
   (interactive "fFile to load: \nP")
   (let ((tangled-file (concat (file-name-sans-extension file) ".el")))
     ;; Tangle only if the Org file is newer than the Elisp file.
-    (message "%s becomes %s" file tangled-file)
     (unless (org-file-newer-than-p
-	     tangled-file
-	     (file-attribute-modification-time
-	      (file-attributes (file-truename file))))
-    ;; (org-babel-tangle-file file
-    ;;                          tangled-file
-    ;;                          (rx string-start
-    ;;                              (or "emacs-lisp" "elisp")
-    ;;                              string-end)))
-
-    ;; TODO: Incorporate this from above
-    ;; TODO: Where did I get this?
-    (meq/call (concat pre-user-emacs-directory "org-tangle.sh") "*literally-configuring*" file))
-
+                tangled-file
+                (file-attribute-modification-time
+                    (file-attributes (file-truename file))))
+        (meq/call (concat pre-user-emacs-directory "org-tangle.sh") "*literally-configuring*" file))
     (if compile
 	(progn
 	  (byte-compile-file tangled-file)
@@ -1718,7 +1707,7 @@ byte-compiled before it is loaded."
 (advice-add #'org-babel-load-file :override #'meq/org-babel-load-file-advice)
 
 (defun meq/reload-early-init nil (interactive)
-    (org-babel-load-file (concat pre-user-emacs-directory "README.org")))
+    (org-babel-load-file (concat pre-user-emacs-directory "README.org") t))
 (meq/reload-early-init)
 #+end_src
 
