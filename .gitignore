@@ -20,5 +20,4 @@
 **/**/README.el
 **/**/README.elc
 **/**/.local
-/lib
 /epkgs
