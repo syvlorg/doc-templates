@@ -600,7 +600,8 @@ extract active aiern bidings."
     (with-eval-after-load 'olivetti
         (unless (or (derived-mode-p 'dired-mode) (meq/xwinp) (meq/fbatp olivetti-mode)) (olivetti-mode 1)))
     (with-eval-after-load 'rainbow-identifiers
-        (unless (meq/fbatp rainbow-identifiers-mode) (rainbow-identifiers-mode 1)))
+        (unless (meq/fbatp rainbow-identifiers-mode) (rainbow-identifiers-mode 1))
+        (setq rainbow-identifiers-faces-to-override (face-list)))
     ;; (when (meq/exwm-p) (if (or
     ;;                         (meq/current-modal-modes)
     ;;                         (not (meq/xwinp))
