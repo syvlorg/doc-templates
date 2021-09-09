@@ -162,8 +162,8 @@
         path = lib/olivetti
         url = https://github.com/rnkn/olivetti.git
 [submodule "org"]
-        path = lib/org
-        url = https://code.orgmode.org/bzg/org-mode.git
+	path = lib/org
+	url = https://code.orgmode.org/bzg/org-mode.git
 [submodule "org-contrib"]
         path = lib/org-contrib
         url = https://git.sr.ht/~bzg/org-contrib
