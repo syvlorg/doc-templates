@@ -1,4 +1,5 @@
 #+setupfile: ./settings.org
+#+include: ./settings.org
 #+property: header-args:emacs-lisp+ :tangle yes
 
 * আবারো স্বাগতম! Hello Again!

@@ -7,10 +7,14 @@
 (require 'ox)
 (require 'ob-tangle)
 
-(when (file-exists-p "~/.emacs.d/README.org")
-    (org-babel-lob-ingest "~/.emacs.d/README.org"))
-(when (file-exists-p "~/.emacs.d/strange.aiern.org")
-    (org-babel-lob-ingest "~/.emacs.d/strange.aiern.org"))
+(let* ((file (cond
+                ((file-exists-p "~/.emacs.d/settings.org") "~/.emacs.d/settings.org")
+                ((file-exists-p "home/.emacs.d/settings.org") "home/.emacs.d/settings.org"))))
+    (when file (org-babel-lob-ingest file)))
+(let* ((file (cond
+                ((file-exists-p "~/.emacs.d/strange.aiern.org") "~/.emacs.d/strange.aiern.org")
+                ((file-exists-p "home/.emacs.d/strange.aiern.org") "home/.emacs.d/strange.aiern.org"))))
+    (when file (org-babel-lob-ingest file)))
 
 (defun meq/get-header nil (interactive)
     (nth 4 (org-heading-components)))

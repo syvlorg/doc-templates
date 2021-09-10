@@ -1,4 +1,5 @@
 #+setupfile: ./settings.org
+#+include: ./settings.org
 #+property: header-args:emacs-lisp+ :tangle yes
 
 #+begin_quote
@@ -244,9 +245,15 @@ managed by... well... you'll see.
 
 #+begin_src emacs-lisp
 (let ((default-directory (concat pre-user-emacs-directory "lib")))
-    (byte-recompile-directory default-directory nil)
     (normal-top-level-add-to-load-path '("."))
-    (normal-top-level-add-subdirs-to-load-path))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/a"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/borg"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/closql"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/dash"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/emacsql"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/epkg"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/f"))
+    (add-to-list 'load-path (concat pre-user-emacs-directory "lib/s")))
 #+end_src
 
 The second directory consists of the packages I develop, as git subtrees:
@@ -269,7 +276,7 @@ The second directory consists of the packages I develop, as git subtrees:
 (require 'borg)
 #+end_src
 
-I would like to force adding the git submodules:
+I would like to force adding the git submodules and clone a depth of ~1~:
 
 #+begin_src emacs-lisp
 (defun meq/borg-assimilate-advice (package url &optional partially)
@@ -287,7 +294,7 @@ build and activate the drone."
   (message "Assimilating %s..." package)
   (let ((default-directory borg-top-level-directory))
     (borg--maybe-reuse-gitdir package)
-    (borg--call-git package "submodule" "add" "-f" "--name" package url
+    (borg--call-git package "submodule" "add" "-f" "--depth" "1" "--name" package url
                     (file-relative-name (borg-worktree package)))
     (borg--sort-submodule-sections ".gitmodules")
     (borg--call-git package "add" ".gitmodules")
@@ -298,6 +305,120 @@ build and activate the drone."
   (borg--refresh-magit)
   (message "Assimilating %s...done" package))
 (advice-add #'borg-assimilate :override #'meq/borg-assimilate-advice)
+#+end_src
+
+Then I'll assimilate the packages from my ~.gitmodules~ file,
+with help of [[https://stackoverflow.com/a/28686228/10827766][this]],
+by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]]:
+
+#+begin_src emacs-lisp
+(require 'a) (require 'dash) (require 's) (require 'f)
+(advice-add #'borg--maybe-confirm-unsafe-action :override #'ignore)
+(advice-add #'borg--maybe-reuse-gitdir :override #'ignore)
+(let* ((gitmodules (->> (concat pre-user-emacs-directory ".gitmodules") f-read s-chomp s-lines (--map (s-split " " it))))
+        (command)
+        (sub (lambda (string) (interactive) (string-match-p (regexp-quote "submodule") string)))
+        (url (lambda (string) (interactive) (string-match-p (regexp-quote "url") string)))
+        (slash (lambda (string) (interactive) (string-match-p (regexp-quote "/") string))))
+    (mapc #'(lambda (pkg) (interactive)
+                (apply #'borg-assimilate pkg))
+        ;; Adapted From:
+        ;; Answer: https://stackoverflow.com/a/9366300/10827766
+        ;; User: https://stackoverflow.com/users/267442/spec
+        (remove nil (mapcar #'(lambda (line) (interactive)
+            (let* ((string* (string-trim (string-join line " "))))
+                (when (funcall sub string*) (add-to-list 'command (cadr (split-string string* "\"")) t))
+                (when (funcall url string*) (add-to-list 'command (string-trim (cadr (split-string string* "="))) t)
+                                                (unwind-protect
+                                                    (unless (funcall slash (car command)) command)
+                                                    (setq command nil))))) gitmodules))))
+(advice-remove #'borg--maybe-confirm-unsafe-action #'ignore)
+(advice-remove #'borg--maybe-reuse-gitdir #'ignore)
+;; (mapc #'(lambda (blist) (interactive)
+;;             (funcall #'borg-assimilate
+;;                 (symbol-name (car blist))
+;;                 (cadr blist)))
+;;         '((ace-window "https://github.com/abo-abo/ace-window.git")
+;;             (all-the-icons "https://github.com/domtronn/all-the-icons.el.git")
+;;             (async "https://github.com/jwiegley/emacs-async.git")
+;;             (auto-package-update "https://github.com/rranelli/auto-package-update.el.git")
+;;             (avy "https://github.com/abo-abo/avy.git")
+;;             (bind-map "https://github.com/justbur/emacs-bind-map.git")
+;;             (command-log-mode "https://github.com/lewang/command-log-mode.git")
+;;             (company "https://github.com/company-mode/company-mode.git")
+;;             (counsel-projectile "https://github.com/ericdanan/counsel-projectile.git")
+;;             (dired-hacks "https://github.com/Fuco1/dired-hacks.git")
+;;             (dired-sidebar "https://github.com/jojojames/dired-sidebar.git")
+;;             (dmenu "https://github.com/lujun9972/el-dmenu.git")
+;;             (dockerfile-mode "https://github.com/spotify/dockerfile-mode.git")
+;;             (doom-themes "https://github.com/hlissner/emacs-doom-themes.git")
+;;             (evil "https://github.com/emacs-evil/evil.git")
+;;             (evil-god-state "https://github.com/gridaphobe/evil-god-state.git")
+;;             (exec-path-from-shell "https://github.com/purcell/exec-path-from-shell.git")
+;;             (exwm "https://github.com/ch11ng/exwm.git")
+;;             (flx "https://github.com/lewang/flx.git")
+;;             (flycheck "https://github.com/flycheck/flycheck.git")
+;;             (gcmh "https://gitlab.com/koral/gcmh.git")
+;;             (god-mode "https://github.com/emacsorphanage/god-mode.git")
+;;             (helm "https://github.com/emacs-helm/helm.git")
+;;             (helm-flx "https://github.com/PythonNut/helm-flx.git")
+;;             (helm-projectile "https://github.com/bbatsov/helm-projectile.git")
+;;             (helm-smex "https://github.com/ptrv/helm-smex.git")
+;;             (helm-swoop "https://github.com/emacsorphanage/helm-swoop.git")
+;;             (ht "https://github.com/Wilfred/ht.el.git")
+;;             (hy-mode "https://github.com/hylang/hy-mode.git")
+;;             (hydra "https://github.com/abo-abo/hydra.git")
+;;             (ibuffer-sidebar "https://github.com/jojojames/ibuffer-sidebar.git")
+;;             (ido-completing-read+ "https://github.com/DarwinAwardWinner/ido-completing-read-plus.git")
+;;             (iedit "https://github.com/victorhge/iedit.git")
+;;             (ivy "https://github.com/abo-abo/swiper.git")
+;;             (key-chord "https://github.com/emacsorphanage/key-chord.git")
+;;             (leaf "https://github.com/conao3/leaf.el.git")
+;;             (leaf-keywords "https://github.com/conao3/leaf-keywords.el.git")
+;;             (lispy "https://github.com/abo-abo/lispy.git")
+;;             (magit "https://github.com/magit/magit.git")
+;;             (markdown-mode "https://github.com/jrblevin/markdown-mode.git")
+;;             (modalka "https://github.com/mrkkrp/modalka.git")
+;;             (multi-vterm "https://github.com/suonlight/multi-vterm.git")
+;;             (nix-mode "https://github.com/NixOS/nix-mode.git")
+;;             (no-littering "https://github.com/emacscollective/no-littering.git")
+;;             (ob-hy "https://github.com/brantou/ob-hy.git")
+;;             (objed "https://github.com/clemera/objed.git")
+;;             (olivetti "https://github.com/rnkn/olivetti.git")
+;;             (org-contrib "https://git.sr.ht/~bzg/org-contrib")
+;;             (ox-gfm "https://github.com/larstvei/ox-gfm.git")
+;;             (ox-pandoc "https://github.com/kawabata/ox-pandoc.git")
+;;             (ppd-sr-speedbar "https://github.com/rdallasgray/ppd-sr-speedbar.git")
+;;             (prescient "https://github.com/raxod502/prescient.el.git")
+;;             (project-persist "https://github.com/rdallasgray/project-persist.git")
+;;             (project-persist-drawer "https://github.com/rdallasgray/project-persist-drawer.git")
+;;             (projectile "https://github.com/bbatsov/projectile.git")
+;;             (quelpa "https://github.com/quelpa/quelpa.git")
+;;             (quelpa-leaf "https://github.com/quelpa/quelpa-leaf.git")
+;;             (quelpa-use-package "https://github.com/quelpa/quelpa-use-package.git")
+;;             (rainbow-identifiers "https://github.com/Fanael/rainbow-identifiers.git")
+;;             (rainbow-mode "https://github.com/emacsmirror/rainbow-mode.git")
+;;             (restart-emacs "https://github.com/iqbalansari/restart-emacs.git")
+;;             (ryo-modal "https://github.com/kungsgeten/ryo-modal.git")
+;;             (shrink-path "https://gitlab.com/bennya/shrink-path.el.git")
+;;             (sly "https://github.com/joaotavora/sly.git")
+;;             (smartparens "https://github.com/Fuco1/smartparens.git")
+;;             (smex "https://github.com/nonsequitur/smex.git")
+;;             (sr-speedbar "https://github.com/emacsorphanage/sr-speedbar.git")
+;;             (system-packages "https://gitlab.com/jabranham/system-packages.git")
+;;             (transient "https://github.com/magit/transient.git")
+;;             (use-package "https://github.com/jwiegley/use-package.git")
+;;             (use-package-hydra "https://gitlab.com/to1ne/use-package-hydra.git")
+;;             (vimrc-mode "https://github.com/mcandre/vimrc-mode.git")
+;;             (vlfi "https://github.com/m00natic/vlfi.git")
+;;             (vterm "https://github.com/akermu/emacs-libvterm.git")
+;;             (web-mode "https://github.com/fxbois/web-mode.git")
+;;             (which-key "https://github.com/justbur/emacs-which-key.git")
+;;             (with-editor "https://github.com/magit/with-editor.git")
+;;             (xah-fly-keys "https://github.com/xahlee/xah-fly-keys.git")
+;;             (xelb "https://github.com/ch11ng/xelb.git")
+;;             (xonsh-mode "https://github.com/seanfarley/xonsh-mode.git")
+;;             (yasnippet "https://github.com/joaotavora/yasnippet.git")))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -520,7 +641,6 @@ And finally:
 #+begin_src emacs-lisp
 (use-package use-package-extras
     :demand t
-    :init (require 'a) (require 'dash) (require 's) (require 'f)
     :config
         (meq/up meq :load-emacs-file-preconfig ("naked"))
         (meq/up leaf :use-package-preconfig
@@ -737,33 +857,4 @@ If there's an alternate library directory or file the user wants to load,
 
 #+begin_src emacs-lisp
 (meq/load-from-cla "--profile-early-lib" t)
-#+end_src
-
-* Addendum
-
-These are just a few blocks I use regularly in my ~org~ files, whether in ~noweb~, naming, or otherwise:
-
-** username
-
-#+name: username
-#+begin_src text
-shadowrylander
-#+end_src
-
-** hash-deprecated
-
-# Adapted From: https://www.reddit.com/r/emacs/comments/4o9f0e/anyone_have_disabled_parts_of_their_config_being/d4apjey?utm_source=share&utm_medium=web2x&context=3
-
-#+name: hash-deprecated
-#+begin_src emacs-lisp :var name="" :tangle no
-(md5 (concat (replace-regexp-in-string "/" "" (
-    org-format-outline-path (org-get-outline-path))) (
-        nth 4 (org-heading-components)) name))
-#+end_src
-
-** hash
-
-#+name: hash
-#+begin_src emacs-lisp :tangle no
-(format-time-string "%Y%m%d%H%M%S%N")
 #+end_src

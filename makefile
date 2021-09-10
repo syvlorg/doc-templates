@@ -8,13 +8,23 @@ test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 
 init:
+|git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
 subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive --remote
 |git -C $(mkfileDir) submodule sync
+|-git -C $(mkfileDir) submodule add --depth 1 --name borg -f https://github.com/emacscollective/borg.git lib/borg
+|-git -C $(mkfileDir) submodule add --depth 1 --name closql -f https://github.com/emacscollective/closql.git lib/closql
+|-git -C $(mkfileDir) submodule add --depth 1 --name emacsql -f https://github.com/skeeto/emacsql.git lib/emacsql
+|-git -C $(mkfileDir) submodule add --depth 1 --name epkg -f https://github.com/emacscollective/epkg.git lib/epkg
+|-git -C $(mkfileDir) submodule add --depth 1 --name org -f https://code.orgmode.org/bzg/org-mode.git lib/org
+|-git -C $(mkfileDir) submodule add --depth 1 --name alhassy -f https://github.com/alhassy/alhassy.github.io.git lib/alhassy
+|-git -C $(mkfileDir) submodule add --depth 1 --name a.el -f https://github.com/plexus/a.el.git lib/a
+|-git -C $(mkfileDir) submodule add --depth 1 --name dash.el -f https://github.com/magnars/dash.el.git lib/dash
+|-git -C $(mkfileDir) submodule add --depth 1 --name f.el -f https://github.com/rejeep/f.el.git lib/f
+|-git -C $(mkfileDir) submodule add --depth 1 --name s.el -f https://github.com/magnars/s.el.git lib/s
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
-|cd $(mkfileDir)lib/org; make all; make autoloads
 
 pull: init
 |git -C $(mkfileDir) pull

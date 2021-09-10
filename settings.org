@@ -1,3 +1,4 @@
+#+setupfile: ./lib/alhassy/AlBasmala.org
 #+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
 #+property: header-args:emacs-lisp :comments both
 
@@ -5,3 +6,24 @@
 # Answer: https://stackoverflow.com/a/65232183/10827766
 # User: https://stackoverflow.com/users/776405/whil
 #+startup: show3levels
+
+These are just a few blocks I use regularly in my ~org~ files, whether in ~noweb~, naming, or otherwise:
+
+#+name: username
+#+begin_src text
+shadowrylander
+#+end_src
+
+# Adapted From: https://www.reddit.com/r/emacs/comments/4o9f0e/anyone_have_disabled_parts_of_their_config_being/d4apjey?utm_source=share&utm_medium=web2x&context=3
+
+#+name: hash-deprecated
+#+begin_src emacs-lisp :var name="" :tangle no
+(md5 (concat (replace-regexp-in-string "/" "" (
+    org-format-outline-path (org-get-outline-path))) (
+        nth 4 (org-heading-components)) name))
+#+end_src
+
+#+name: hash
+#+begin_src emacs-lisp :tangle no
+(format-time-string "%Y%m%d%H%M%S%N")
+#+end_src

@@ -1,4 +1,5 @@
 #+setupfile: ./settings.org
+#+include: ./settings.org
 #+property: header-args:emacs-lisp+ :comments none
 
 The tangle functions are adapted from [[https://emacs.stackexchange.com/a/29884/31428][this answer on the emacs Stack Exchange]],
@@ -255,10 +256,14 @@ trees with the :notangle: tag."
 
 #+name: 20210601225401786848500
 #+begin_src emacs-lisp :tangle (meq/tangle-path)
-(when (file-exists-p "~/.emacs.d/README.org")
-    (org-babel-lob-ingest "~/.emacs.d/README.org"))
-(when (file-exists-p "~/.emacs.d/strange.aiern.org")
-    (org-babel-lob-ingest "~/.emacs.d/strange.aiern.org"))
+(let* ((file (cond
+                ((file-exists-p "~/.emacs.d/settings.org") "~/.emacs.d/settings.org")
+                ((file-exists-p "home/.emacs.d/settings.org") "home/.emacs.d/settings.org"))))
+    (when file (org-babel-lob-ingest file)))
+(let* ((file (cond
+                ((file-exists-p "~/.emacs.d/strange.aiern.org") "~/.emacs.d/strange.aiern.org")
+                ((file-exists-p "home/.emacs.d/strange.aiern.org") "home/.emacs.d/strange.aiern.org"))))
+    (when file (org-babel-lob-ingest file)))
 
 (defun meq/get-header nil (interactive)
     (nth 4 (org-heading-components)))
@@ -1246,13 +1251,23 @@ test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 
 init:
+|git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
 subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive --remote
 |git -C $(mkfileDir) submodule sync
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/borg.git lib/borg
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/closql.git lib/closql
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkg.git lib/epkg
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode.git lib/org
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/alhassy/alhassy.github.io.git lib/alhassy
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/plexus/a.el.git lib/a
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/magnars/dash.el.git lib/dash
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/magnars/s.el.git lib/s
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
-|cd $(mkfileDir)lib/org; make all; make autoloads
 
 pull: init
 |git -C $(mkfileDir) pull
@@ -1665,6 +1680,19 @@ super-push-only: tangle push-only
 ;;; $EMACSDIR/early-init.el -*- lexical-binding: t; -*-
 
 (defvar pre-user-emacs-directory (file-name-directory load-file-name))
+
+;; Adapted From:
+;; Answer: https://stackoverflow.com/a/443413/10827766
+;; User: https://stackoverflow.com/users/12274/jb
+;; And:
+;; Answer: https://emacs.stackexchange.com/a/693/31428
+;; User: https://emacs.stackexchange.com/users/504/itsjeyd
+(require 'compile)
+(let* ((default-directory (concat pre-user-emacs-directory "lib/org"))
+        (compilation-read-command)
+        (compile-command))
+    (compile "make all")
+    (while (not (process-list)) (compile "make autoloads")))
 
 ;; To get the latest version of `org-mode', require the load-file before
 ;; byte-compilation of `lib'
