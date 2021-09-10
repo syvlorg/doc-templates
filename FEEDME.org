@@ -8,33 +8,166 @@ This is the ~init.el~ of my version of a literate configuration for
 [[https://www.gnu.org/software/emacs/][GNU Emacs]].
 
 * Mama Mia!
-** Keywords Next Door
-
-This loop sets up all the necessary [[https://github.com/jwiegley/use-package][use-package]] keywords for the
-[[https://github.com/ch11ng/exwm][Emacs X Window Manager]] by
-[[https://github.com/ch11ng][Chris Feng]]; it includes the settings for the following:
-
-- [[https://github.com/abo-abo/hydra][hydra]] by [[https://github.com/abo-abo][Oleh Krehel]]
-- [[https://github.com/shadowrylander/alloy][alloy]], forked from
-[[https://github.com/noctuid/general.el][general.el]] by [[https://github.com/noctuid][Fox Kiester]]
-- [[https://github.com/justbur/emacs-which-key][emacs-which-key]] by [[https://github.com/justbur][Justin Burkett]]
-- [[https://gitlab.com/shadowrylander/cosmoem][cosmoem]], forked from
-[[https://gitlab.com/jjzmajic/hercules.el][hercules.el]] by [[https://gitlab.com/jjzmajic][jjzmajic]]
-- [[https://github.com/shadowrylander/sorrow][sorrow]], forked from
-[[https://github.com/Kungsgeten/ryo-modal][ryo-modal]] by [[https://github.com/Kungsgeten][Erik Sjöstrand]]
-
-#+begin_src emacs-lisp
-(mapc #'(lambda (config) (interactive)
-            (load (meq/ued-lib (concat "meq-" (symbol-name config) "-config"))))
-    '(hydra alloy which-key cosmoem sorrow))
-#+end_src
-
 ** It's fun to stay at the E.X.W.M.
 
-This will set up ~EXWM~ for all profiles:
+This sets up and requires the [[https://github.com/ch11ng/exwm][Emacs X Window Manager]] by
+[[https://github.com/ch11ng][Chris Feng]] for all profiles:
 
 #+begin_src emacs-lisp
-(load (meq/ued-lib "meq-exwm-config"))
+(meq/up exwm
+#+end_src
+
+I want to run the following application on ~EXWM~ startup:
+- [[https://github.com/alacritty/alacritty][Alacritty]]
+- [[https://obsidian.md/][Obsidian]]
+
+#+begin_src emacs-lisp
+    :init/defun* (post-exwm nil (interactive)
+                    (unless (get-buffer "Alacritty") (meq/run "alacritty"))
+                    (unless (get-buffer "obsidian") (meq/run "obsidian")))
+    :hook (exwm-init . post-exwm)
+#+end_src
+
+Before ~EXWM~, load the ~fringe~ package, and afterwards, load
+[[https://github.com/lujun9972/el-dmenu/blob/e8cc9b27c79d3ecc252267c082ab8e9c82eab264/dmenu.el][dmenu]]:
+
+#+begin_src emacs-lisp
+    :use-package-preconfig (fringe :load-emacs-file-preconfig ("fringe")
+                        :config
+                            ;; (fringe-mode (quote (1 . 1)) nil (fringe))
+                            ;; (fringe-mode '(3 . 0))
+                            ;; (fringe-mode 'none)
+                            ;; (fringe-mode 1)
+                            )
+    :use-package-postconfig (dmenu)
+#+end_src
+
+#+begin_src emacs-lisp
+    :config
+        (require 'scroll-bar)
+        ;; Adapted From: https://github.com/ch11ng/exwm/blob/master/exwm-config.el#L34
+        (require 'exwm-config)
+        ;; Set the initial workspace number.
+        (unless (get 'exwm-workspace-number 'saved-value)
+            (setq exwm-workspace-number 4))
+        ;; Make class name the buffer name
+        (add-hook 'exwm-update-class-hook
+                    (lambda ()
+                    (exwm-workspace-rename-buffer exwm-class-name)))
+        ;; Global keybindings.
+        (unless (get 'exwm-input-global-keys 'saved-value)
+            (setq exwm-input-global-keys
+                `(
+#+end_src
+
+These keybindings will run my major-mode-based deino, i.e. the ~exwm-global~ deino in this case:
+
+#+begin_src emacs-lisp
+                    ([?\s-p] . uru)
+                    ([?\s-`] . uru)
+                    ([?\s-z] . uru)
+#+end_src
+
+Switch buffers quickly:
+
+#+begin_src emacs-lisp
+                    (,(naked "s-tab") . next-buffer)
+                    (,(naked "s-<iso-lefttab>") . previous-buffer)
+                    (,(naked "M-s-tab") . previous-buffer)
+#+end_src
+
+~[s]uper-q~ will activate my buffer deino:
+
+#+begin_src emacs-lisp
+                    ([?\s-q] . deino-buffer/body)
+#+end_src
+
+#+begin_src emacs-lisp
+                    ;; 's-N': Switch to certain workspace.
+                    ,@(mapcar (lambda (i)
+                                `(,(kbd (format "s-%d" i)) .
+                                (lambda ()
+                                    (interactive)
+                                    (exwm-workspace-switch-create ,i))))
+                            (number-sequence 0 9)))))
+        ;; Line-editing shortcuts
+        (unless (get 'exwm-input-simulation-keys 'saved-value)
+            (setq exwm-input-simulation-keys
+                '(([?\C-b] . [left])
+                    ([?\C-f] . [right])
+                    ([?\C-p] . [up])
+                    ([?\C-n] . [down])
+                    ([?\C-a] . [home])
+                    ([?\C-e] . [end])
+                    ([?\M-v] . [prior])
+                    ([?\C-v] . [next])
+                    ([?\C-d] . [delete])
+                    ([?\C-k] . [S-end delete]))))
+        ;; Enable EXWM
+        (exwm-enable)
+        ;; Configure Ido
+        (exwm-config-ido)
+        ;; Other configurations
+        (exwm-config-misc)
+
+        ;; (exwm-config-default)
+        ;; (exwm-enable)
+#+end_src
+
+Don't tile anything!
+
+#+begin_src emacs-lisp
+    :gsetq (exwm-manage-force-tiling t)
+        ;; Adapted From: https://www.reddit.com/r/emacs/comments/8yf6dx/key_chords_in_exwm/
+        ;; (exwm-input-line-mode-passthrough t)
+#+end_src
+
+#+begin_src emacs-lisp
+    :which-key-change-ryo ("e" "exwm")
+#+end_src
+
+This is my general ~exwm~ deino, leading to all the other ~exwm~ deinos:
+
+#+begin_src emacs-lisp
+    :deino (deino-exwm nil "e e"
+                ("`" nil "cancel")
+                ("XF86PowerOff" deino-exwm/power/body "power")
+                ("s" deino-exwm/shells/body "shells"))
+#+end_src
+
+I can reboot, power off, and suspend using this one:
+
+#+begin_src emacs-lisp
+            (deino-exwm/power (:color blue) "e p"
+                ("r" (meq/run "reboot") "reboot")
+                ("q" (meq/run "poweroff") "poweroff")
+                ("XF86PowerOff" (meq/run "systemctl suspend" "suspend") "suspend"))
+#+end_src
+
+And run my shells and terminals using this one:
+
+#+begin_src emacs-lisp
+            (deino-exwm/shells (:color blue) "e s"
+                ("a" (meq/run "alacritty") "alacritty"))
+#+end_src
+
+I use the power button to trigger the general ~exwm~ deino:
+
+#+begin_src emacs-lisp
+    :demon ((naked "XF86PowerOff") 'deino-exwm/body)
+#+end_src
+
+And finally, here's the global ~exwm~ deino, triggered by [[https://github.com/shadowrylander/uru][uru]]:
+
+#+begin_src emacs-lisp
+    :uru (exwm-mode t deino-exwm-global (:color blue) "e g"
+        ("`" nil "cancel")
+        ("c" exwm-input-release-keyboard "char mode")
+        ("l" exwm-input-grab-keyboard "line mode")
+        ("r" exwm-reset "reset")
+        ("w" exwm-workspace-switch "workspace switch")
+        ("i" meq/run-interactive "run")
+        ("b" deino-buffer/body "buffers")))
 #+end_src
 
 ** Let 'er rip!

@@ -12,7 +12,7 @@ init:
 |-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
 subinit:
-|git -C $(mkfileDir) submodule update --init --depth 1 --recursive --remote
+|git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode.git lib/org
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/alhassy/alhassy.github.io.git lib/alhassy
@@ -25,6 +25,7 @@ subinit:
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
+|cd $(mkfileDir)/lib/org; make all; make autoloads
 
 pull: init
 |git -C $(mkfileDir) pull

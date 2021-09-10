@@ -317,7 +317,7 @@ I most likely already checked the code of the package I want to install:
 And I /would/ like to reuse my ~gitdir~, thank you for asking!
 
 #+begin_src emacs-lisp
-(defun borg--maybe-reuse-gitdir (pkg)
+(defun meq/borg--maybe-reuse-gitdir-advice (pkg)
   (let ((gitdir (borg-gitdir pkg))
         (topdir (borg-worktree pkg)))
     (when (and (file-exists-p gitdir)
@@ -327,15 +327,20 @@ And I /would/ like to reuse my ~gitdir~, thank you for asking!
 #+end_src
 
 Then I'll assimilate the packages from my ~.gitmodules~ file,
-with help of [[https://stackoverflow.com/a/28686228/10827766][this]],
-by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]]:
+with the help of [[https://stackoverflow.com/a/28686228/10827766][this]],
+by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov]], as well as the following:
+- [[https://github.com/plexus/a.el][a.el]] by [[https://github.com/plexus][Arne Brasseur]]
+- [[https://github.com/rejeep/f.el][f.el]] by [[https://github.com/rejeep][Johan Andersson]]
+- [[https://github.com/magnars/dash.el][dash.el]] by [[https://github.com/magnars][Magnar Sveen]]
+- [[https://github.com/magnars/s.el][s.el]] by [[https://github.com/magnars][Magnar Sveen]]
 
 #+begin_src emacs-lisp
 (require 'a) (require 'dash) (require 's) (require 'f)
 (let* ((gitmodules (->> (concat pre-user-emacs-directory ".gitmodules") f-read s-chomp s-lines (--map (s-split " " it))))
         (command)
-        (sub (lambda (string) (interactive) (s-contains? "submodule" string)))
-        (url (lambda (string) (interactive) (s-contains? "url" string)))
+        (sub (lambda (string) (interactive) (s-contains? "[submodule" string)))
+        (url (lambda (string) (interactive) (s-contains? "url =" string)))
+        (path (lambda (string) (interactive) (s-contains? "path =" string)))
         (slash (lambda (string) (interactive) (s-contains? (f-path-separator) string))))
     (mapc #'(lambda (pkg) (interactive)
                 (apply #'borg-assimilate pkg))
@@ -345,95 +350,17 @@ by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov
         (remove nil (mapcar #'(lambda (line) (interactive)
             (let* ((string* (string-trim (string-join line " "))))
                 (when (funcall sub string*) (add-to-list 'command (cadr (split-string string* "\"")) t))
-                (when (funcall url string*) (add-to-list 'command (string-trim (cadr (split-string string* "="))) t)
+                (when (and
+                        (funcall path string*)
+                        (f-exists? (concat
+                                    pre-user-emacs-directory
+                                    (string-trim (cadr (split-string string* "=")))))) (setq command nil))
+                (when (and
+                        command
+                        (funcall url string*)) (add-to-list 'command (string-trim (cadr (split-string string* "="))) t)
                                                 (unwind-protect
                                                     (unless (funcall slash (car command)) command)
                                                     (setq command nil))))) gitmodules))))
-(mapc #'(lambda (blist) (interactive)
-            (funcall #'borg-assimilate
-                (symbol-name (car blist))
-                (cadr blist)))
-        '((ace-window "https://github.com/abo-abo/ace-window.git")
-            (all-the-icons "https://github.com/domtronn/all-the-icons.el.git")
-            (async "https://github.com/jwiegley/emacs-async.git")
-            (auto-package-update "https://github.com/rranelli/auto-package-update.el.git")
-            (avy "https://github.com/abo-abo/avy.git")
-            (bind-map "https://github.com/justbur/emacs-bind-map.git")
-            (command-log-mode "https://github.com/lewang/command-log-mode.git")
-            (company "https://github.com/company-mode/company-mode.git")
-            (counsel-projectile "https://github.com/ericdanan/counsel-projectile.git")
-            (dired-hacks "https://github.com/Fuco1/dired-hacks.git")
-            (dired-sidebar "https://github.com/jojojames/dired-sidebar.git")
-            (dmenu "https://github.com/lujun9972/el-dmenu.git")
-            (dockerfile-mode "https://github.com/spotify/dockerfile-mode.git")
-            (doom-themes "https://github.com/hlissner/emacs-doom-themes.git")
-            (evil "https://github.com/emacs-evil/evil.git")
-            (evil-god-state "https://github.com/gridaphobe/evil-god-state.git")
-            (exec-path-from-shell "https://github.com/purcell/exec-path-from-shell.git")
-            (exwm "https://github.com/ch11ng/exwm.git")
-            (flx "https://github.com/lewang/flx.git")
-            (flycheck "https://github.com/flycheck/flycheck.git")
-            (gcmh "https://gitlab.com/koral/gcmh.git")
-            (god-mode "https://github.com/emacsorphanage/god-mode.git")
-            (helm "https://github.com/emacs-helm/helm.git")
-            (helm-flx "https://github.com/PythonNut/helm-flx.git")
-            (helm-projectile "https://github.com/bbatsov/helm-projectile.git")
-            (helm-smex "https://github.com/ptrv/helm-smex.git")
-            (helm-swoop "https://github.com/emacsorphanage/helm-swoop.git")
-            (ht "https://github.com/Wilfred/ht.el.git")
-            (hy-mode "https://github.com/hylang/hy-mode.git")
-            (hydra "https://github.com/abo-abo/hydra.git")
-            (ibuffer-sidebar "https://github.com/jojojames/ibuffer-sidebar.git")
-            (ido-completing-read+ "https://github.com/DarwinAwardWinner/ido-completing-read-plus.git")
-            (iedit "https://github.com/victorhge/iedit.git")
-            (ivy "https://github.com/abo-abo/swiper.git")
-            (key-chord "https://github.com/emacsorphanage/key-chord.git")
-            (leaf "https://github.com/conao3/leaf.el.git")
-            (leaf-keywords "https://github.com/conao3/leaf-keywords.el.git")
-            (lispy "https://github.com/abo-abo/lispy.git")
-            (magit "https://github.com/magit/magit.git")
-            (markdown-mode "https://github.com/jrblevin/markdown-mode.git")
-            (modalka "https://github.com/mrkkrp/modalka.git")
-            (multi-vterm "https://github.com/suonlight/multi-vterm.git")
-            (nix-mode "https://github.com/NixOS/nix-mode.git")
-            (no-littering "https://github.com/emacscollective/no-littering.git")
-            (ob-hy "https://github.com/brantou/ob-hy.git")
-            (objed "https://github.com/clemera/objed.git")
-            (olivetti "https://github.com/rnkn/olivetti.git")
-            (org-contrib "https://git.sr.ht/~bzg/org-contrib")
-            (ox-gfm "https://github.com/larstvei/ox-gfm.git")
-            (ox-pandoc "https://github.com/kawabata/ox-pandoc.git")
-            (ppd-sr-speedbar "https://github.com/rdallasgray/ppd-sr-speedbar.git")
-            (prescient "https://github.com/raxod502/prescient.el.git")
-            (project-persist "https://github.com/rdallasgray/project-persist.git")
-            (project-persist-drawer "https://github.com/rdallasgray/project-persist-drawer.git")
-            (projectile "https://github.com/bbatsov/projectile.git")
-            (quelpa "https://github.com/quelpa/quelpa.git")
-            (quelpa-leaf "https://github.com/quelpa/quelpa-leaf.git")
-            (quelpa-use-package "https://github.com/quelpa/quelpa-use-package.git")
-            (rainbow-identifiers "https://github.com/Fanael/rainbow-identifiers.git")
-            (rainbow-mode "https://github.com/emacsmirror/rainbow-mode.git")
-            (restart-emacs "https://github.com/iqbalansari/restart-emacs.git")
-            (ryo-modal "https://github.com/kungsgeten/ryo-modal.git")
-            (shrink-path "https://gitlab.com/bennya/shrink-path.el.git")
-            (sly "https://github.com/joaotavora/sly.git")
-            (smartparens "https://github.com/Fuco1/smartparens.git")
-            (smex "https://github.com/nonsequitur/smex.git")
-            (sr-speedbar "https://github.com/emacsorphanage/sr-speedbar.git")
-            (system-packages "https://gitlab.com/jabranham/system-packages.git")
-            (transient "https://github.com/magit/transient.git")
-            (use-package "https://github.com/jwiegley/use-package.git")
-            (use-package-hydra "https://gitlab.com/to1ne/use-package-hydra.git")
-            (vimrc-mode "https://github.com/mcandre/vimrc-mode.git")
-            (vlfi "https://github.com/m00natic/vlfi.git")
-            (vterm "https://github.com/akermu/emacs-libvterm.git")
-            (web-mode "https://github.com/fxbois/web-mode.git")
-            (which-key "https://github.com/justbur/emacs-which-key.git")
-            (with-editor "https://github.com/magit/with-editor.git")
-            (xah-fly-keys "https://github.com/xahlee/xah-fly-keys.git")
-            (xelb "https://github.com/ch11ng/xelb.git")
-            (xonsh-mode "https://github.com/seanfarley/xonsh-mode.git")
-            (yasnippet "https://github.com/joaotavora/yasnippet.git")))
 #+end_src
 
 #+begin_src emacs-lisp
@@ -643,10 +570,6 @@ And as stated before, from
 ** Extra, extra!
 
 This sets up the following:
-- [[https://github.com/plexus/a.el][a.el]] by [[https://github.com/plexus][Arne Brasseur]]
-- [[https://github.com/rejeep/f.el][f.el]] by [[https://github.com/rejeep][Johan Andersson]]
-- [[https://github.com/magnars/dash.el][dash.el]] by [[https://github.com/magnars][Magnar Sveen]]
-- [[https://github.com/magnars/s.el][s.el]] by [[https://github.com/magnars][Magnar Sveen]]
 - [[https://github.com/shadowrylander/meq][meq]] by yours truely! :D
 - [[https://github.com/conao3/leaf.el][leaf.el]] by [[https://github.com/conao3][Naoya Yamashita]]
 
@@ -661,6 +584,218 @@ And finally:
         (meq/up leaf :use-package-preconfig
             (use-package-ensure-system-package)
             (leaf-keywords)))
+#+end_src
+
+*** Heil Hydra!
+
+This sets up [[https://github.com/abo-abo/hydra][hydra]] by [[https://github.com/abo-abo][Oleh Krehel]],
+as well as its ~use-package~ keywords:
+
+#+begin_src emacs-lisp
+(meq/up hydra
+    :custom (hydra-hint-display-type 'lv)
+    :bind (:map hydra-base-map ("~" . hydra--universal-argument))
+#+end_src
+
+This bit sets up the following:
+- [[https://github.com/shadowrylander/janus][janus]] by yours truely! :D
+- [[https://gitlab.com/to1ne/use-package-hydra][use-package-hydra]] by [[https://gitlab.com/to1ne][to1ne]]
+- [[https://github.com/shadowrylander/use-package-deino][use-package-deino]] by yours truely! :D
+- [[https://github.com/shadowrylander/deino][deino]], forked from
+[[https://github.com/abo-abo/hydra][hydra]] by [[https://github.com/abo-abo][Oleh Krehel]]
+
+#+begin_src emacs-lisp
+    :upnsd-preconfig (janus)
+    :use-package-preconfig (use-package-hydra)
+    :upnsd-postconfig (use-package-deino) (deino :custom (deino-hint-display-type 'lv)))
+#+end_src
+
+*** Alloy-z!
+
+Here is the configuration for [[https://github.com/shadowrylander/alloy][alloy]], forked from
+[[https://github.com/noctuid/general.el][general.el]] by [[https://github.com/noctuid][Fox Kiester]]:
+
+#+begin_src emacs-lisp
+(meq/upnsd alloy
+#+end_src
+
+This sets up the following:
+- [[https://github.com/shadowrylander/lode][lode]] by yours truely! :D
+- [[https://github.com/shadowrylander/prime][prime]] by yours truely! :D
+- [[https://github.com/lewang/command-log-mode][command-log-mode]] by [[https://github.com/lewang][Le Wang]]
+- [[https://github.com/waymondo/use-package-chords][use-package-chords]] by
+[[https://github.com/waymondo][justin talbott]]
+
+#+begin_src emacs-lisp
+    :upnsd-postconfig (lode) (prime)
+    :use-package-preconfig (command-log-mode)
+        ;; Important: https://github.com/noctuid/general.el/issues/53#issuecomment-307262154
+        (use-package-chords)
+#+end_src
+
+I don't like having to unbind keys before reassigning them:
+
+#+begin_src emacs-lisp
+    :config
+        (alloy-auto-unbind-keys)
+#+end_src
+
+This binds some fundamental keys to the following keymaps:
+
+#+begin_src emacs-lisp :tangle no
+(defvar demon-run '(global override
+    aiern-insert-state-map
+    aiern-normal-state-map
+    aiern-god-state-map
+    evil-insert-state-map
+    evil-normal-state-map
+    evil-god-state-map))
+#+end_src
+
+#+begin_src emacs-lisp
+        (alloy-def :keymaps demon-run
+            ;; Adapted From:
+            ;; Answer: https://stackoverflow.com/a/4557027/10827766
+            ;; User: https://stackoverflow.com/users/387076/gilles-so-stop-being-evil
+            "\eOA" [up]
+            "\e[A" [up]
+            "\eOB" [down]
+            "\e[B" [down]
+            "\eOD" [left]
+            "\e[D" [left]
+            "\eOC" [right]
+            "\e[C" [right]
+            "M-x" 'meq/M-x
+            (alloy-chord "  ") 'universal-argument)
+#+end_src
+
+And finally, this allows ~alloy~ to assume ~kbd~ is being used, or in this case,
+[[https://www.emacswiki.org/emacs/naked.el][naked]]:
+
+#+begin_src emacs-lisp
+    :custom (alloy-implicit-naked t))
+#+end_src
+
+**** UwU
+
+This sets up my package [[https://github.com/shadowrylander/uru][uru]], which activates ~deinos~ based on the
+current major-mode, as mentioned in
+[[magic medusa hydra][https://codeberg.org/dr.ops/medusa/src/branch/main/medusa.org#headline-4]],
+by [[Andy Drop][https://codeberg.org/dr.ops]]:
+
+#+begin_src emacs-lisp
+(meq/upnsd uru :demon ((alloy-chord "uu") 'uru) ((alloy-chord "ii") 'minoru)
+    :prime ("u u" uru "uru")
+            ("u m" minoru "minoru"))
+#+end_src
+
+*** Um... Which-Key was that, again...?
+
+The incredible [[https://github.com/justbur/emacs-which-key][emacs-which-key]] by
+the incredible [[https://github.com/justbur][Justin Burkett]]:
+
+#+begin_src emacs-lisp
+(meq/up which-key :deino (deino/which-key (:color blue :columns 4) "w"
+        ("`" nil "cancel")
+        ("a" cosmoem-any-popup-showing-p "any popup showing")
+        ("h" meq/which-key--hide-popup "hide-popup")
+        ("s" meq/which-key--show-popup "show-popup")
+        ("r" meq/which-key--refresh-popup "refresh-popup")
+        ("t" meq/toggle-which-key "toggle")
+        ("l" meq/which-key-show-top-level "meq/toplevel")
+        ("L" which-key-show-top-level "toplevel"))
+    :gsetq
+        (which-key-enable-extended-define-key t)
+        (which-key-idle-delay 0.1)
+        (which-key-idle-secondary-delay nil)
+        (which-key-allow-evil-operators t)
+
+        ;; NOTE: This will cause the which-key maps for the operator states to show up,
+        ;; breaking functionality such as `d 13 <arrow-down>', etc.
+        ;; (which-key-show-operator-state-maps t)
+
+        ;; TODO: Choose a fun one!
+        (which-key-separator " × ")
+        ;; (which-key-separator " |-> ")
+
+        (which-key-popup-type 'side-window)
+        (which-key-side-window-location '(right bottom left top))
+
+        ;; If this percentage is too small, the keybindings frame will appear at the bottom
+        (which-key-side-window-max-width 0.5)
+
+        (which-key-side-window-max-height 0.25))
+#+end_src
+
+*** Get in the bag, Nebby!
+
+#+begin_export html
+<p align="center"><a href="https://bulbapedia.bulbagarden.net/wiki/Nebby"><img src="nebby.webp"></a></p>
+#+end_export
+
+Meet the [[https://gitlab.com/shadowrylander/cosmoem][cosmoem]] named
+[[https://bulbapedia.bulbagarden.net/wiki/Nebby][Nebby]], forked from
+[[https://gitlab.com/jjzmajic/hercules.el][hercules.el]] by [[https://gitlab.com/jjzmajic][jjzmajic]]!
+
+#+begin_src emacs-lisp
+(meq/upnsd cosmoem
+#+end_src
+
+This loads my [[https://github.com/shadowrylander/meta][meta]] package, which allows me to create ~deinos~ out of
+keymaps automagically:
+
+#+begin_src emacs-lisp
+    :upnsd-postconfig (meta)
+#+end_src
+
+#+begin_src emacs-lisp
+    :config (prime ", m" map-of-infinity/body "map-of-infinity")
+    :which-key-change-ryo ("," "damascus")
+#+end_src
+
+This ~deino~ leads to a bunch of other useful ~deinos~, as well as a few useful functions:
+
+#+begin_src emacs-lisp
+    :deino (map-of-infinity nil ", m"
+            ("`" nil "cancel")
+            ("w" deino/which-key/body "which-key")
+            ("h" deino/cosmoem/body "cosmoem")
+            ("d" meq/disable-all-modal-modes "disable all modal modes" :color blue)
+            ("t" toggles/body "toggles")
+            ("k" all-keymaps/body "all keymaps"))
+#+end_src
+
+The ~deino~ for this package:
+
+#+begin_src emacs-lisp
+        (deino/cosmoem (:color blue) ", c"
+            ("`" nil "cancel")
+            ("h" cosmoem-hide-all-modal-modes "hide all modal modes"))
+#+end_src
+
+A ~deino~ for all my modal-mode toggles:
+
+#+begin_src emacs-lisp
+        (toggles (:color blue) ", t" ("`" nil "cancel"))
+#+end_src
+
+A ~deino~ for all my modal-mode keymaps:
+
+#+begin_src emacs-lisp
+        (all-keymaps (:color blue) ", k" ("`" nil "cancel")))
+#+end_src
+
+*** That's rough, buddy
+
+And finally, [[https://github.com/shadowrylander/sorrow][sorrow]], forked from
+[[https://github.com/Kungsgeten/ryo-modal][ryo-modal]] by [[https://github.com/Kungsgeten][Erik Sjöstrand]]:
+
+#+begin_src emacs-lisp
+(meq/upnsd sorrow
+    :primer+ ("t" "toggles")
+    :demon ((alloy-chord "kk") 'meq/sorrow-execute-with-current-bindings)
+    :config ;; From: https://github.com/shadowrylander/sorrow#which-key-integration
+        (push '((nil . "sorrow:.*:") . (nil . "")) which-key-replacement-alist))
 #+end_src
 
 ** Yellow Brick Executable Road
