@@ -317,9 +317,9 @@ by [[https://stackoverflow.com/users/596361/mirzhan-irkegulov][Mirzhan Irkegulov
 (advice-add #'borg--maybe-reuse-gitdir :override #'ignore)
 (let* ((gitmodules (->> (concat pre-user-emacs-directory ".gitmodules") f-read s-chomp s-lines (--map (s-split " " it))))
         (command)
-        (sub (lambda (string) (interactive) (string-match-p (regexp-quote "submodule") string)))
-        (url (lambda (string) (interactive) (string-match-p (regexp-quote "url") string)))
-        (slash (lambda (string) (interactive) (string-match-p (regexp-quote "/") string))))
+        (sub (lambda (string) (interactive) (s-contains? "submodule" string)))
+        (url (lambda (string) (interactive) (s-contains? "url" string)))
+        (slash (lambda (string) (interactive) (s-contains? (f-path-separator) string))))
     (mapc #'(lambda (pkg) (interactive)
                 (apply #'borg-assimilate pkg))
         ;; Adapted From:

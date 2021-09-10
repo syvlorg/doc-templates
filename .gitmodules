@@ -1,6 +1,37 @@
-[submodule "exec-path-from-shell"]
-	path = lib/exec-path-from-shell
-	url = https://github.com/purcell/exec-path-from-shell.git
+[submodule "a.el"]
+	path = lib/a.el
+	url = https://github.com/plexus/a.el.git
+[submodule "alhassy"]
+	path = lib/alhassy
+	url = https://github.com/alhassy/alhassy.github.io.git
+[submodule "borg"]
+	path = lib/borg
+	url = https://github.com/emacscollective/borg.git
+[submodule "closql"]
+	path = lib/closql
+	url = https://github.com/emacscollective/closql.git
+[submodule "dash.el"]
+	path = lib/dash.el
+	url = https://github.com/magnars/dash.el.git
+[submodule "emacsql"]
+	path = lib/emacsql
+	url = https://github.com/skeeto/emacsql.git
+[submodule "epkg"]
+	path = lib/epkg
+	url = https://github.com/emacscollective/epkg.git
+[submodule "f.el"]
+	path = lib/f.el
+	url = https://github.com/rejeep/f.el.git
+[submodule "org"]
+	path = lib/org
+	url = https://code.orgmode.org/bzg/org-mode.git
+[submodule "s.el"]
+	path = lib/s.el
+	url = https://github.com/magnars/s.el.git
+
+[submodule "evil-god-state"]
+	path = lib/evil-god-state
+	url = https://github.com/gridaphobe/evil-god-state.git
 [submodule "exwm"]
 	path = lib/exwm
 	url = https://github.com/ch11ng/exwm.git
@@ -130,10 +161,6 @@
 [submodule "profiles/spacemacs"]
         path = profiles/spacemacs
         url = https://github.com/syl20bnr/spacemacs.git
-
-[submodule "evil-god-state"]
-	path = lib/evil-god-state
-	url = https://github.com/gridaphobe/evil-god-state.git
 [submodule "project-persist"]
 	path = lib/project-persist
 	url = https://github.com/rdallasgray/project-persist.git
@@ -164,6 +191,9 @@
 [submodule "ryo-modal"]
 	path = lib/ryo-modal
 	url = https://github.com/kungsgeten/ryo-modal.git
+[submodule "exec-path-from-shell"]
+	path = lib/exec-path-from-shell
+	url = https://github.com/purcell/exec-path-from-shell.git
 [submodule "shrink-path"]
 	path = lib/shrink-path
 	url = https://gitlab.com/bennya/shrink-path.el.git
