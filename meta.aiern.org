@@ -384,8 +384,6 @@ subinit:
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/plexus/a.el.git lib/a
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
-|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkgs.git epkgs
-|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkgs.git var/epkgs
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
 |cd $(mkfileDir)/lib/org; make all; make autoloads
 
