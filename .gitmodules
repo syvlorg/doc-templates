@@ -394,3 +394,9 @@
 [submodule "zoom-frm"]
         path = lib/zoom-frm
         url = https://github.com/emacsmirror/zoom-frm.git
+[submodule "epkgs"]
+	path = epkgs
+	url = https://github.com/emacsmirror/epkgs.git
+[submodule "var/epkgs"]
+	path = var/epkgs
+	url = https://github.com/emacsmirror/epkgs.git
