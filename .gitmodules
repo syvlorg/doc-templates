@@ -256,7 +256,7 @@
 	url = https://github.com/rejeep/f.el.git
 [submodule "lib/org"]
 	path = lib/org
-	url = https://code.orgmode.org/bzg/org-mode.git
+	url = https://code.orgmode.org/bzg/org-mode
 [submodule "lib/s"]
 	path = lib/s
 	url = https://github.com/magnars/s.el.git

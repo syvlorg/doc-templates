@@ -400,7 +400,7 @@ init:
 subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
-|-git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode.git lib/org
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode lib/org
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/<<username>>/<<username>>.github.io.git lib/<<username>>.github.io
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/borg.git lib/borg
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/closql.git lib/closql
