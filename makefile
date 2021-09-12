@@ -9,7 +9,6 @@ killTest := emacsclient -s test -e "(kill-emacs)"
 
 init:
 |git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
-|-sudo cp $(mkfileDir)/git-subtree $$(git --exec-path)/
 
 subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
@@ -24,30 +23,22 @@ subinit:
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/plexus/a.el.git lib/a
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
-|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkgs.git epkgs
-|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkgs.git var/epkgs
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
 |cd $(mkfileDir)/lib/org; make all; make autoloads
 
-pull: init
+pull: init subinit
 |git -C $(mkfileDir) pull
-|git -C $(mkfileDir) subtree pull-all
 
-add:
-|git submodule foreach git stash
+add: init
 |git -C $(mkfileDir) add .
 
-commit:
+commit: init
 |-git -C $(mkfileDir) commit --allow-empty-message -am ""
 
 cammit: add commit
 
-push-only: cammit
+push: cammit
 |-git -C $(mkfileDir) push
-
-push: push-only init
-|git -C $(mkfileDir) subtree prune
-|-git -C $(mkfileDir) subtree push-all
 
 tangle-setup:
 |cp $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
@@ -59,17 +50,9 @@ tangle: tangle-setup
     -E testing.aiern.org \
     -E resting.aiern.org \
     -x $(mkfileDir)/backup-tangle.sh
-|yes yes | fd . $(mkfileDir)/siluam \
-    -HIe org \
-    -x $(mkfileDir)/backup-tangle.sh
 |fd . $(mkfileDir) \
-    -HIe sh \
-    -E .local \
-    -E lib \
-    -E var \
+    -HId 1 -e sh \
     -x chmod +x
-
-subtree-prep: tangle push-only
 
 pre-test: subinit
 
@@ -139,4 +122,3 @@ doom-remacs: delete-doom tangle test-update-doom-and-kill test-doom
 graphene-remacs: delete-graphene tangle test-update-graphene-and-kill test-graphene
 nano-remacs: delete-nano tangle test-update-nano-and-kill test-nano
 super-push: tangle push
-super-push-only: tangle push-only

@@ -1,69 +1,96 @@
-[remote "aiern"]
-    url = git@github.com:shadowrylander/aiern
-    fetch = +refs/heads/*:refs/remotes/aiern/*
-[remote "doom-aiern-modeline"]
-    url = git@github.com:shadowrylander/doom-aiern-modeline
-    fetch = +refs/heads/*:refs/remotes/doom-aiern-modeline/*
-[remote "alloy"]
-    url = git@github.com:shadowrylander/alloy.git
-    fetch = +refs/heads/*:refs/remotes/alloy/*
-[remote "alamode"]
-    url = git@github.com:shadowrylander/alamode
-    fetch = +refs/heads/*:refs/remotes/alamode/*
-[remote "use-package-extras"]
-    url = git@github.com:shadowrylander/use-package-extras
-    fetch = +refs/heads/*:refs/remotes/use-package-extras/*
-[remote "deino"]
-    url = git@github.com:shadowrylander/deino
-    fetch = +refs/heads/*:refs/remotes/deino/*
-[remote "use-package-deino"]
-    url = git@github.com:shadowrylander/use-package-deino
-    fetch = +refs/heads/*:refs/remotes/use-package-deino/*
-[remote "sorrow"]
-    url = git@github.com:shadowrylander/sorrow
-    fetch = +refs/heads/*:refs/remotes/sorrow/*
-[remote "lode"]
-    url = git@github.com:shadowrylander/lode
-    fetch = +refs/heads/*:refs/remotes/lode/*
-[remote "meq"]
-    url = git@github.com:shadowrylander/meq.git
-    fetch = +refs/heads/*:refs/remotes/meq/*
-[remote "aiern-god-state"]
-    url = git@github.com:shadowrylander/aiern-god-state
-    fetch = +refs/heads/*:refs/remotes/aiern-god-state/*
-[remote "janus"]
-    url = git@github.com:shadowrylander/janus
-    fetch = +refs/heads/*:refs/remotes/janus/*
-[remote "titan"]
-    url = git@github.com:shadowrylander/titan
-    fetch = +refs/heads/*:refs/remotes/titan/*
-[remote "fell"]
-    url = git@github.com:shadowrylander/fell
-    fetch = +refs/heads/*:refs/remotes/fell/*
-[remote "doc"]
-    url = git@github.com:shadowrylander/doc
-    fetch = +refs/heads/*:refs/remotes/doc/*
-[remote "cosmoem"]
-    url = git@gitlab.com:shadowrylander/cosmoem
-    fetch = +refs/heads/*:refs/remotes/cosmoem/*
-[remote "cosmog"]
-    url = git@github.com:shadowrylander/cosmog
-    fetch = +refs/heads/*:refs/remotes/cosmog/*
-[remote "prime"]
-    url = git@github.com:shadowrylander/prime
-    fetch = +refs/heads/*:refs/remotes/prime/*
-[remote "uru"]
-    url = git@github.com:shadowrylander/uru
-    fetch = +refs/heads/*:refs/remotes/uru/*
-[remote "meta"]
-    url = git@github.com:shadowrylander/meta
-    fetch = +refs/heads/*:refs/remotes/meta/*
-[remote "riot"]
-    url = git@github.com:shadowrylander/riot
-    fetch = +refs/heads/*:refs/remotes/riot/*
-[remote "evil-evilified-state"]
-    url = git@github.com:shadowrylander/evil-evilified-state
-    fetch = +refs/heads/*:refs/remotes/evil-evilified-state/*
-[remote "helm-ido-like-guide"]
-    url = git@github.com:shadowrylander/helm-ido-like-guide
-    fetch = +refs/heads/*:refs/remotes/helm-ido-like-guide/*
+[submodule "aiern"]
+	url = https://github.com/shadowrylander/aiern.git
+	pushurl = git@github.com:shadowrylander/aiern.git
+	active = true
+[submodule "doom-aiern-modeline"]
+	url = https://github.com/shadowrylander/doom-aiern-modeline.git
+	pushurl = git@github.com:shadowrylander/doom-aiern-modeline.git
+	active = true
+[submodule "alloy"]
+	url = https://github.com/shadowrylander/alloy.git
+	pushurl = git@github.com:shadowrylander/alloy.git
+	active = true
+[submodule "alamode"]
+	url = https://github.com/shadowrylander/alamode.git
+	pushurl = git@github.com:shadowrylander/alamode.git
+	active = true
+[submodule "use-package-extras"]
+	url = https://github.com/shadowrylander/use-package-extras.git
+	pushurl = git@github.com:shadowrylander/use-package-extras.git
+	active = true
+[submodule "deino"]
+	url = https://github.com/shadowrylander/deino.git
+	pushurl = git@github.com:shadowrylander/deino.git
+	active = true
+[submodule "use-package-deino"]
+	url = https://github.com/shadowrylander/use-package-deino.git
+	pushurl = git@github.com:shadowrylander/use-package-deino.git
+	active = true
+[submodule "sorrow"]
+	url = https://github.com/shadowrylander/sorrow.git
+	pushurl = git@github.com:shadowrylander/sorrow.git
+	active = true
+[submodule "lode"]
+	url = https://github.com/shadowrylander/lode.git
+	pushurl = git@github.com:shadowrylander/lode.git
+	active = true
+[submodule "meq"]
+	url = https://github.com/shadowrylander/meq.git
+	pushurl = git@github.com:shadowrylander/meq.git
+	active = true
+[submodule "aiern-god-state"]
+	url = https://github.com/shadowrylander/aiern-god-state.git
+	pushurl = git@github.com:shadowrylander/aiern-god-state.git
+	active = true
+[submodule "cosmoem"]
+	url = https://gitlab.com/shadowrylander/cosmoem.git
+	pushurl = git@gitlab.com:shadowrylander/cosmoem.git
+	active = true
+[submodule "janus"]
+	url = https://github.com/shadowrylander/janus.git
+	pushurl = git@github.com:shadowrylander/janus.git
+	active = true
+[submodule "titan"]
+	url = https://github.com/shadowrylander/titan.git
+	pushurl = git@github.com:shadowrylander/titan.git
+	active = true
+[submodule "fell"]
+	url = https://github.com/shadowrylander/fell.git
+	pushurl = git@github.com:shadowrylander/fell.git
+	active = true
+[submodule "cosmog"]
+	url = https://github.com/shadowrylander/cosmog.git
+	pushurl = git@github.com:shadowrylander/cosmog.git
+	active = true
+[submodule "riot"]
+	url = https://github.com/shadowrylander/riot.git
+	pushurl = git@github.com:shadowrylander/riot.git
+	active = true
+[submodule "evil-evilified-state"]
+	url = https://github.com/shadowrylander/evil-evilified-state.git
+	pushurl = git@github.com:shadowrylander/evil-evilified-state.git
+	active = true
+[submodule "helm-ido-like-guide"]
+	url = https://github.com/shadowrylander/helm-ido-like-guide.git
+	pushurl = git@github.com:shadowrylander/helm-ido-like-guide.git
+	active = true
+[submodule "prime"]
+	url = https://github.com/shadowrylander/prime.git
+	pushurl = git@github.com:shadowrylander/prime.git
+	active = true
+[submodule "uru"]
+	url = https://github.com/shadowrylander/uru.git
+	pushurl = git@github.com:shadowrylander/uru.git
+	active = true
+[submodule "meta"]
+	url = https://github.com/shadowrylander/meta.git
+	pushurl = git@github.com:shadowrylander/meta.git
+	active = true
+[submodule "doc"]
+	url = https://github.com/shadowrylander/doc.git
+	pushurl = git@github.com:shadowrylander/doc.git
+	active = true
+[submodule "aiern-aiernhide-state"]
+	url = https://github.com/shadowrylander/aiern-aiernhide-state.git
+	pushurl = git@github.com:shadowrylander/aiern-aiernhide-state.git
+	active = true

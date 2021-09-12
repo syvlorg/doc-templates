@@ -31,6 +31,14 @@ Both ~evil~ and ~aiern~ require [[https://github.com/justbur/emacs-bind-map][ema
     :use-package-preconfig (bind-map)
 #+end_src
 
+More aiern! Courtesy of [[https://github.com/shadowrylander/aiern-aiernhide-state][this]],
+[[https://github.com/mohsenil85/evil-evilified-state][this]], and
+[[https://github.com/syl20bnr/spacemacs][this]]:
+
+#+begin_src emacs-lisp
+    :use-package-postconfig (aiern-aiernhide-state)
+#+end_src
+
 The ~:meta-aiern~ keyword, from my very own [[https://github.com/shadowrylander/meta][meta]] package,
 creates a hydra out of the keymaps passed to it, in this case being ~aiern-normal-state-map~ and
 ~aiern-insert-state-map~:
@@ -167,7 +175,7 @@ And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindi
 
 #+begin_src emacs-lisp
 (meq/upnsd damascus
-    :use-package-postconfig (rainbow-mode :config (rainbow-mode 1))
+    :use-package-postconfig (rainbow-mode :config (rainbow-mode 1)) (help-fns+)
     :alloy (:keymaps 'override
         (alloy-chord "kk") 'meq/test
         "¡" 'ignore "¹" 'ignore "½" 'ignore "⅓" 'ignore "¼" 'ignore "⅛" 'ignore "²" 'ignore "⅜" 'ignore
@@ -179,7 +187,8 @@ And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindi
         "ô" 'ignore "ò" 'ignore "à" 'ignore "á" 'ignore "â" 'ignore "ä" 'ignore "æ" 'ignore "ã" 'ignore
         "å" 'ignore "ā" 'ignore "ß" 'ignore "ç" 'ignore "ñ" 'ignore "¿" 'ignore)
     :load-emacs-file-preconfig ("damascus")
-    :load-emacs-file-postconfig ("help+20") ("help-fns+")
+    :load-emacs-file-postconfig ("help+20")
+    ;; :hook
         ;; (find-file . meq/set-buffer-save-without-query)
     :gsetq
         (indent-tabs-mode nil
@@ -625,14 +634,15 @@ This allows me to disable ~evil-insert-state~:
 ;; !!! THE ORDER HERE MATTERS! !!!
 (meq/up oneonone
     :if (not (meq/exwm-p))
-    :load-emacs-file-preconfig
-        ("fit-frame") ("autofit-frame")
-        ;; ("buff-menu+")
-        ("compile-") ("compile+") ("grep+") ("dired+") ("dired-details") ("dired-details+")
-        ("doremi") ("hexrgb") ("frame-fns") ("faces+") ("doremi-frm") ("eyedropper") ("facemenu+")
-        ("frame+") ("help+") ("info+") ("menu-bar+") ("mouse+") ("setup-keys") ("strings")
-        ;; ("simple+")
-        ("frame-cmds") ("thumb-frm") ("window+") ("zoom-frm") ("oneonone")
+    :load-emacs-file-preconfig ("eyedropper") ("setup-keys")
+    :use-package-preconfig
+        (fit-frame) (autofit-frame)
+        ;; (buff-menu+)
+        (compile-) (compile+) (grep+) (dired+) (dired-details) (dired-details+)
+        (doremi) (hexrgb) (frame-fns) (faces+) (doremi-frm) (facemenu+)
+        (frame+) (help+) (info+) (menu-bar+) (mouse+) (strings)
+        ;; (simple+)
+        (frame-cmds) (thumb-frm) (window+) (zoom-frm)
     :gsetq
         (1on1-minibuffer-frame-width 10000)
         (1on1-minibuffer-frame-height 10000))

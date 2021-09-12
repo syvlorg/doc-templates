@@ -11,10 +11,24 @@ This is the ~init.el~ of my version of a literate configuration for
 ** It's fun to stay at the E.X.W.M.
 
 This sets up and requires the [[https://github.com/ch11ng/exwm][Emacs X Window Manager]] by
-[[https://github.com/ch11ng][Chris Feng]] for all profiles:
+[[https://github.com/ch11ng][Chris Feng]] for all profiles,
+but only when no window-manager is currently running; adapted from
+[[https://emacs.stackexchange.com/users/418/gregoryg][gregoryg's]] answer
+[[https://emacs.stackexchange.com/a/60455/31428][here]]:
 
 #+begin_src emacs-lisp
-(meq/up exwm
+(when (get-buffer "*window-manager*")
+  (kill-buffer "*window-manager*"))
+(when (get-buffer "*window-manager-error*")
+  (kill-buffer "*window-manager-error*"))
+(when (executable-find "wmctrl")
+  (shell-command "wmctrl -m ; echo $?" "*window-manager*" "*window-manager-error*"))
+
+  ;; if there was an error detecting the window manager, initialize EXWM
+  (when (and (get-buffer "*window-manager-error*")
+             (eq window-system 'x))
+    ;; exwm startup goes here
+    (meq/up exwm
 #+end_src
 
 I want to run the following application on ~EXWM~ startup:
@@ -167,7 +181,7 @@ And finally, here's the global ~exwm~ deino, triggered by [[https://github.com/s
         ("r" exwm-reset "reset")
         ("w" exwm-workspace-switch "workspace switch")
         ("i" meq/run-interactive "run")
-        ("b" deino-buffer/body "buffers")))
+        ("b" deino-buffer/body "buffers"))))
 #+end_src
 
 ** Let 'er rip!
