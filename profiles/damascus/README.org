@@ -18,6 +18,7 @@ This is my version of [[https://github.com/emacs-evil/evil][evil]]; this first b
 
 #+begin_src emacs-lisp
 (use-package aiern
+    :gsetq (state)
     :hook (after-init . (lambda nil (interactive)
         (aiern-mode 1)
         (push 'aiern-mode meq/var/ignored-modal-modes)
@@ -177,7 +178,6 @@ And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindi
 (meq/upnsd damascus
     :use-package-postconfig (rainbow-mode :config (rainbow-mode 1)) (help-fns+)
     :alloy (:keymaps 'override
-        (alloy-chord "kk") 'meq/test
         "¡" 'ignore "¹" 'ignore "½" 'ignore "⅓" 'ignore "¼" 'ignore "⅛" 'ignore "²" 'ignore "⅜" 'ignore
         "¾" 'ignore "³" 'ignore "⁴" 'ignore "⅚" 'ignore "⁵" 'ignore "⅝" 'ignore "⁶" 'ignore "⅞" 'ignore
         "⁷" 'ignore "⁸" 'ignore "⁹" 'ignore "∅" 'ignore "ⁿ" 'ignore "⁰" 'ignore "·" 'ignore "—" 'ignore
@@ -563,10 +563,10 @@ More evil! Courtesy of [[https://github.com/mohsenil85/evil-evilified-state][thi
     :use-package-postconfig (evil-evilified-state)
 #+end_src
 
-You can't escape the power of the dark side...
+You can't escape the power of the dark side... (Also, ~state~) is not set for some reason...
 
 #+begin_src emacs-lisp
-    :gsetq (evil-escape-key-sequence nil)
+    :gsetq (evil-escape-key-sequence nil) (state)
 #+end_src
 
 This allows me to disable ~evil-insert-state~:

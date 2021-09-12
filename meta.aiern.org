@@ -441,6 +441,9 @@ tangle: tangle-setup
     -HId 1 -e sh \
     -x chmod +x
 
+clean:
+|fd . $(mkfileDir) -HIe elc -x rm
+
 pre-test: subinit
 
 test: pre-test
