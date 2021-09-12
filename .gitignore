@@ -18,7 +18,6 @@
 !/git-subtree
 
 **/**/README.el
-**/**/README.elc
 **/**/.local
 /lib
 /epkgs
