@@ -489,4 +489,4 @@
         pushurl = git@github.com:shadowrylander/doc.git
 [submodule "lib/shadowrylander.github.io"]
 	path = lib/shadowrylander.github.io
-	url = https://github.com/shadowrylander/shadowrylander.github.io
+	url = https://github.com/shadowrylander/shadowrylander.github.io.git
