@@ -11,8 +11,8 @@ init:
 |-git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
 
 subinit:
-|git -C $(mkfileDir) submodule update --init --depth 1 --recursive
-|git -C $(mkfileDir) submodule sync
+|-git -C $(mkfileDir) submodule update --init --depth 1 --recursive
+|-git -C $(mkfileDir) submodule sync
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode lib/org
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/shadowrylander.github.io.git lib/shadowrylander.github.io
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/borg.git lib/borg
@@ -24,7 +24,7 @@ subinit:
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
-|cd $(mkfileDir)/lib/org; make all; make autoloads
+|-cd $(mkfileDir)/lib/org; make all; make autoloads
 
 pull: init subinit
 |git -C $(mkfileDir) pull
