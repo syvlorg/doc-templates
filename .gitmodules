@@ -236,9 +236,6 @@
 [submodule "lib/a"]
 	path = lib/a
 	url = https://github.com/plexus/a.el.git
-[submodule "lib/alhassy"]
-	path = lib/alhassy
-	url = https://github.com/alhassy/alhassy.github.io.git
 [submodule "lib/borg"]
 	path = lib/borg
 	url = https://github.com/emacscollective/borg.git
@@ -490,3 +487,6 @@
         path = lib/zoom-frm
         url = https://github.com/emacsmirror/zoom-frm.git
         pushurl = git@github.com:shadowrylander/doc.git
+[submodule "lib/shadowrylander.github.io"]
+	path = lib/shadowrylander.github.io
+	url = https://github.com/shadowrylander/shadowrylander.github.io

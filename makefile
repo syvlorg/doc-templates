@@ -1,20 +1,20 @@
-# Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 .RECIPEPREFIX := |
 .DEFAULT_GOAL := emacs
 
+# Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
 test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 
 init:
-|git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
+|-git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
 
 subinit:
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode.git lib/org
-|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/alhassy/alhassy.github.io.git lib/alhassy
+|-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/shadowrylander.github.io.git lib/shadowrylander.github.io
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/borg.git lib/borg
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/closql.git lib/closql
 |-git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/epkg.git lib/epkg
@@ -61,6 +61,9 @@ pre-test: subinit
 
 test: pre-test
 |emacs
+
+nw-test: pre-test
+|emacs -nw
 
 test-doom: pre-test
 |emacs --doom
@@ -120,6 +123,7 @@ delete-nano:
 |rm -rf $(mkfileDir)/profiles/nano/.local
 
 emacs: tangle test
+emacs-nw: tangle nw-test
 remacs: delete tangle test-update-and-kill test
 doom-remacs: delete-doom tangle test-update-doom-and-kill test-doom
 graphene-remacs: delete-graphene tangle test-update-graphene-and-kill test-graphene

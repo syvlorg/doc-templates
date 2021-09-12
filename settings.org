@@ -1,4 +1,4 @@
-#+setupfile: ./lib/alhassy/AlBasmala.org
+#+setupfile: ./lib/shadowrylander.github.io/solgaleo.org
 #+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
 #+property: header-args:emacs-lisp :comments both
 
