@@ -6,12 +6,14 @@ mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
 test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
+makefly := make -f $(mkfileDir)/makefly
 
 init: pre-init tangle
 
 pre-init:
 |-git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/settings.git
+|git -C $(mkfileDir)/settings checkout main
 
 tangle-setup:
 |cp $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
@@ -27,7 +29,7 @@ tangle: tangle-setup
     -HId 1 -e sh \
     -x chmod +x
 
-subinit:
+subinit: init
 |git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode lib/org
 |git -C $(mkfileDir)/lib/org checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/shadowrylander.github.io.git lib/shadowrylander.github.io
@@ -53,13 +55,13 @@ subinit:
 |cd $(mkfileDir)/lib/org; make; make autoloads
 # |git -C $(mkfileDir) submodule foreach 'git -C $$toplevel config submodule.$$name.ignore all'
 
-pull: init subinit
+pull: subinit
 |git -C $(mkfileDir) pull
 
-add: init
+add: pre-init
 |git -C $(mkfileDir) add .
 
-commit: init
+commit: pre-init
 |-git -C $(mkfileDir) commit --allow-empty-message -am ""
 
 cammit: add commit

@@ -4,26 +4,21 @@
 [submodule "aiern"]
         path = lib/aiern
         url = https://github.com/shadowrylander/aiern.git
-        pushurl = git@github.com:shadowrylander/aiern.git
 [submodule "aiern-aiernhide-state"]
 	path = lib/aiern-aiernhide-state
 	url = https://github.com/shadowrylander/aiern-aiernhide-state.git
-        pushurl = git@github.com:shadowrylander/aiern-aiernhide-state.git
 [submodule "aiern-god-state"]
         path = lib/aiern-god-state
         url = https://github.com/shadowrylander/aiern-god-state.git
-        pushurl = git@github.com:shadowrylander/aiern-god-state.git
 [submodule "alamode"]
         path = lib/alamode
         url = https://github.com/shadowrylander/alamode.git
-        pushurl = git@github.com:shadowrylander/alamode.git
 [submodule "all-the-icons"]
         path = lib/all-the-icons
         url = https://github.com/domtronn/all-the-icons.el.git
 [submodule "alloy"]
         path = lib/alloy
         url = https://github.com/shadowrylander/alloy.git
-        pushurl = git@github.com:shadowrylander/alloy.git
 [submodule "async"]
         path = lib/async
         url = https://github.com/jwiegley/emacs-async.git
@@ -57,18 +52,15 @@
 [submodule "cosmoem"]
         path = lib/cosmoem
         url = https://gitlab.com/shadowrylander/cosmoem.git
-        pushurl = git@gitlab.com:shadowrylander/cosmoem.git
 [submodule "cosmog"]
         path = lib/cosmog
         url = https://github.com/shadowrylander/cosmog.git
-        pushurl = git@github.com:shadowrylander/cosmog.git
 [submodule "counsel-projectile"]
         path = lib/counsel-projectile
         url = https://github.com/ericdanan/counsel-projectile.git
 [submodule "deino"]
         path = lib/deino
         url = https://github.com/shadowrylander/deino.git
-        pushurl = git@github.com:shadowrylander/deino.git
 [submodule "dired+"]
         path = lib/dired+
         url = https://github.com/emacsmirror/dired-plus.git
@@ -96,7 +88,6 @@
 [submodule "doom-aiern-modeline"]
         path = lib/doom-aiern-modeline
         url = https://github.com/shadowrylander/doom-aiern-modeline.git
-        pushurl = git@github.com:shadowrylander/doom-aiern-modeline.git
 [submodule "doom-themes"]
         path = lib/doom-themes
         url = https://github.com/hlissner/emacs-doom-themes.git
@@ -121,7 +112,6 @@
 [submodule "evil-evilified-state"]
         path = lib/evil-evilified-state
         url = https://github.com/shadowrylander/evil-evilified-state.git
-        pushurl = git@github.com:shadowrylander/evil-evilified-state.git
 [submodule "evil-god-state"]
         path = lib/evil-god-state
         url = https://github.com/gridaphobe/evil-god-state.git
@@ -140,7 +130,6 @@
 [submodule "fell"]
         path = lib/fell
         url = https://github.com/shadowrylander/fell.git
-        pushurl = git@github.com:shadowrylander/fell.git
 [submodule "fit-frame"]
         path = lib/fit-frame
         url = https://github.com/emacsmirror/fit-frame.git
@@ -177,7 +166,6 @@
 [submodule "helm-ido-like-guide"]
         path = lib/helm-ido-like-guide
         url = https://github.com/shadowrylander/helm-ido-like-guide.git
-        pushurl = git@github.com:shadowrylander/helm-ido-like-guide.git
 [submodule "helm-projectile"]
         path = lib/helm-projectile
         url = https://github.com/bbatsov/helm-projectile.git
@@ -223,7 +211,6 @@
 [submodule "janus"]
         path = lib/janus
         url = https://github.com/shadowrylander/janus.git
-        pushurl = git@github.com:shadowrylander/janus.git
 [submodule "key-chord"]
         path = lib/key-chord
         url = https://github.com/emacsorphanage/key-chord.git
@@ -266,7 +253,6 @@
 [submodule "lode"]
         path = lib/lode
         url = https://github.com/shadowrylander/lode.git
-        pushurl = git@github.com:shadowrylander/lode.git
 [submodule "magit"]
         path = lib/magit
         url = https://github.com/magit/magit.git
@@ -279,11 +265,9 @@
 [submodule "meq"]
         path = lib/meq
         url = https://github.com/shadowrylander/meq.git
-        pushurl = git@github.com:shadowrylander/meq.git
 [submodule "meta"]
         path = lib/meta
         url = https://github.com/shadowrylander/meta.git
-        pushurl = git@github.com:shadowrylander/meta.git
 [submodule "modalka"]
         path = lib/modalka
         url = https://github.com/mrkkrp/modalka.git
@@ -316,7 +300,7 @@
         url = https://github.com/emacsmirror/oneonone.git
 [submodule "org-contrib"]
         path = lib/org-contrib
-        url = https://git.sr.ht/~bzg/org-contrib.git
+        url = https://git.sr.ht/~bzg/org-contrib
 [submodule "ox-gfm"]
         path = lib/ox-gfm
         url = https://github.com/larstvei/ox-gfm.git
@@ -332,7 +316,6 @@
 [submodule "prime"]
         path = lib/prime
         url = https://github.com/shadowrylander/prime.git
-        pushurl = git@github.com:shadowrylander/prime.git
 [submodule "profiles/alhassy"]
         path = profiles/alhassy
         url = https://github.com/alhassy/emacs.d.git
@@ -390,7 +373,6 @@
 [submodule "riot"]
         path = lib/riot
         url = https://github.com/shadowrylander/riot.git
-        pushurl = git@github.com:shadowrylander/riot.git
 [submodule "ryo-modal"]
         path = lib/ryo-modal
         url = https://github.com/kungsgeten/ryo-modal.git
@@ -412,7 +394,6 @@
 [submodule "sorrow"]
         path = lib/sorrow
         url = https://github.com/shadowrylander/sorrow.git
-        pushurl = git@github.com:shadowrylander/sorrow.git
 [submodule "sr-speedbar"]
         path = lib/sr-speedbar
         url = https://github.com/emacsorphanage/sr-speedbar.git
@@ -428,25 +409,21 @@
 [submodule "titan"]
         path = lib/titan
         url = https://github.com/shadowrylander/titan.git
-        pushurl = git@github.com:shadowrylander/titan.git
 [submodule "transient"]
         path = lib/transient
         url = https://github.com/magit/transient.git
 [submodule "uru"]
         path = lib/uru
         url = https://github.com/shadowrylander/uru.git
-        pushurl = git@github.com:shadowrylander/uru.git
 [submodule "use-package"]
         path = lib/use-package
         url = https://github.com/jwiegley/use-package.git
 [submodule "use-package-deino"]
         path = lib/use-package-deino
         url = https://github.com/shadowrylander/use-package-deino.git
-        pushurl = git@github.com:shadowrylander/use-package-deino.git
 [submodule "use-package-extras"]
         path = lib/use-package-extras
         url = https://github.com/shadowrylander/use-package-extras.git
-        pushurl = git@github.com:shadowrylander/use-package-extras.git
 [submodule "use-package-hydra"]
         path = lib/use-package-hydra
         url = https://gitlab.com/to1ne/use-package-hydra.git
@@ -486,12 +463,9 @@
 [submodule "zoom-frm"]
         path = lib/zoom-frm
         url = https://github.com/emacsmirror/zoom-frm.git
-        pushurl = git@github.com:shadowrylander/doc.git
 [submodule "lib/shadowrylander.github.io"]
 	path = lib/shadowrylander.github.io
 	url = https://github.com/shadowrylander/shadowrylander.github.io.git
-        pushurl = git@github.com:shadowrylander/shadowrylander.github.io.git
 [submodule "settings"]
 	path = settings
 	url = https://github.com/shadowrylander/settings.git
-        pushurl = git@github.com:shadowrylander/settings.git
