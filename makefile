@@ -7,8 +7,25 @@ mkfileDir := $(dir $(mkfilePath))
 test := emacs --bg-daemon=test
 killTest := emacsclient -s test -e "(kill-emacs)"
 
-init:
+init: pre-init tangle
+
+pre-init:
 |-git -C $(mkfileDir) config include.path "$(mkfileDir)/.gitconfig"
+|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/settings.git
+
+tangle-setup:
+|cp $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
+|chmod +x $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
+
+tangle: tangle-setup
+|yes yes | fd . $(mkfileDir) \
+    -HId 1 -e org \
+    -E testing.aiern.org \
+    -E resting.aiern.org \
+    -x $(mkfileDir)/backup-tangle.sh
+|fd . $(mkfileDir) \
+    -HId 1 -e sh \
+    -x chmod +x
 
 subinit:
 |git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode lib/org
@@ -39,20 +56,6 @@ cammit: add commit
 
 push: cammit
 |-git -C $(mkfileDir) push
-
-tangle-setup:
-|cp $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
-|chmod +x $(mkfileDir)/org-tangle.sh $(mkfileDir)/backup-tangle.sh
-
-tangle: tangle-setup
-|yes yes | fd . $(mkfileDir) \
-    -HId 1 -e org \
-    -E testing.aiern.org \
-    -E resting.aiern.org \
-    -x $(mkfileDir)/backup-tangle.sh
-|fd . $(mkfileDir) \
-    -HId 1 -e sh \
-    -x chmod +x
 
 clean:
 |fd . $(mkfileDir) -HIe elc -x rm

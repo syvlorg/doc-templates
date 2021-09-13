@@ -1,5 +1,5 @@
-#+setupfile: ./settings.org
-#+include: ./settings.org
+#+setupfile: ./settings/README.org
+#+include: ./settings/README.org
 
 * lib
 ** eyedropper.el

@@ -490,3 +490,8 @@
 [submodule "lib/shadowrylander.github.io"]
 	path = lib/shadowrylander.github.io
 	url = https://github.com/shadowrylander/shadowrylander.github.io.git
+        pushurl = git@github.com:shadowrylander/shadowrylander.github.io.git
+[submodule "settings"]
+	path = settings
+	url = https://github.com/shadowrylander/settings.git
+        pushurl = git@github.com:shadowrylander/settings.git

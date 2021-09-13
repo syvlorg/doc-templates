@@ -8,8 +8,8 @@
 (require 'ob-tangle)
 
 (let* ((file (cond
-                ((file-exists-p "~/.emacs.d/settings.org") "~/.emacs.d/settings.org")
-                ((file-exists-p "home/.emacs.d/settings.org") "home/.emacs.d/settings.org"))))
+                ((file-exists-p "~/.emacs.d/settings/README.org") "~/.emacs.d/settings/README.org")
+                ((file-exists-p "home/.emacs.d/settings/README.org") "home/.emacs.d/settings/README.org"))))
     (when file (org-babel-lob-ingest file)))
 (let* ((file (cond
                 ((file-exists-p "~/.emacs.d/strange.aiern.org") "~/.emacs.d/strange.aiern.org")
