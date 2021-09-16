@@ -186,7 +186,6 @@ And this is mostly adapted from [[https://sam217pa.github.io/2016/09/23/keybindi
         "î" 'ignore "ī" 'ignore "ō" 'ignore "œ" 'ignore "ø" 'ignore "õ" 'ignore "ö" 'ignore "ó" 'ignore
         "ô" 'ignore "ò" 'ignore "à" 'ignore "á" 'ignore "â" 'ignore "ä" 'ignore "æ" 'ignore "ã" 'ignore
         "å" 'ignore "ā" 'ignore "ß" 'ignore "ç" 'ignore "ñ" 'ignore "¿" 'ignore)
-    :load-emacs-file-preconfig ("damascus")
     :load-emacs-file-postconfig ("help+20")
     ;; :hook
         ;; (find-file . meq/set-buffer-save-without-query)
@@ -634,7 +633,6 @@ This allows me to disable ~evil-insert-state~:
 ;; !!! THE ORDER HERE MATTERS! !!!
 (meq/up oneonone
     :if (not (meq/exwm-p))
-    :load-emacs-file-preconfig ("eyedropper") ("setup-keys")
     :use-package-preconfig
         (fit-frame) (autofit-frame)
         ;; (buff-menu+)
@@ -1212,7 +1210,7 @@ And there you have it!
     (naked "RET") 'newline-and-indent
     (alloy-chord ";'") 'meq/end-of-line-and-indented-new-line)
 
-(meq/when-item-in-cla "--update" (meq/straight-upgrade))
+(when meq/var/update (meq/straight-upgrade))
 
 (let* ((testing (meq/ued* "testing.aiern.org"))
         (resting (meq/ued* "resting.aiern.org"))

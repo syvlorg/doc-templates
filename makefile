@@ -4,9 +4,7 @@
 # Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
-test := emacs --bg-daemon=test
-killTest := emacsclient -s test -e "(kill-emacs)"
-makefly := make -f $(mkfileDir)/makefly
+makefly := make -f $(mkfileDir)/makefly.mk
 
 init: pre-init tangle
 
@@ -32,8 +30,6 @@ tangle: tangle-setup
 subinit: init
 |git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode lib/org
 |git -C $(mkfileDir)/lib/org checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/shadowrylander/shadowrylander.github.io.git lib/shadowrylander.github.io
-|git -C $(mkfileDir)/lib/shadowrylander.github.io checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/borg.git lib/borg
 |git -C $(mkfileDir)/lib/borg checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/closql.git lib/closql
@@ -47,9 +43,10 @@ subinit: init
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/plexus/a.el.git lib/a
 |git -C $(mkfileDir)/lib/a checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
-|git -C $(mkfileDir)/lib/a checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
 |git -C $(mkfileDir)/lib/f checkout master
+|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
+|git -C $(mkfileDir)/lib/emacsql checkout master
+|$(makefly) subinit
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
 |cd $(mkfileDir)/lib/org; make; make autoloads
@@ -69,78 +66,6 @@ cammit: add commit
 push: cammit
 |-git -C $(mkfileDir) push
 
-clean:
-|fd . $(mkfileDir) -HIe elc -x rm
-
-pre-test: subinit
-
-test: pre-test
-|emacs
-
-nw-test: pre-test
-|emacs -nw
-
-test-doom: pre-test
-|emacs --doom
-
-test-graphene: pre-test
-|emacs --graphene
-
-test-nano: pre-test
-|emacs --nano
-
-pest: pre-test
-|emacs -p
-
-update-test: pre-test
-|emacs --update
-
-no-config-test:
-|emacs -Q
-
-test-and-kill-pre: pre-test
-|-emacsclient -s test -e "(kill-emacs)"
-
-test-and-kill: test-and-kill-pre
-|$(test)
-|$(killTest)
-
-test-new-and-kill: test-and-kill-pre
-|$(test) -Q
-|$(killTest)
-
-test-update-and-kill: test-and-kill-pre
-|$(test) --update
-|$(killTest)
-
-test-update-doom-and-kill: test-and-kill-pre
-|$(test) --udoom
-|$(killTest)
-
-test-update-graphene-and-kill: test-and-kill-pre
-|$(test) --graphene --update
-|$(killTest)
-
-test-update-nano-and-kill: test-and-kill-pre
-|$(test) --nano --update
-|$(killTest)
-
-delete-doom:
-|rm -rf $(mkfileDir)/profiles/doom/.local
-
-delete:
-|rm -rf $(mkfileDir)/profiles/damascus/.local
-
-delete-graphene:
-|rm -rf $(mkfileDir)/profiles/graphene/.local
-
-delete-nano:
-|rm -rf $(mkfileDir)/profiles/nano/.local
-
-emacs: tangle test
-emacs-nw: tangle nw-test
-remacs: delete tangle test-update-and-kill test
-doom-remacs: delete-doom tangle test-update-doom-and-kill test-doom
-graphene-remacs: delete-graphene tangle test-update-graphene-and-kill test-graphene
-nano-remacs: delete-nano tangle test-update-nano-and-kill test-nano
 super-push: tangle push
+
+include tests.mk

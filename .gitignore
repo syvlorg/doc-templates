@@ -9,6 +9,7 @@
 !**/**/makefile
 !**/**/*.mk
 !**/**/*.git*
+!**/**/*.dep
 
 !/siluam/**/**
 !/themes/screenshots/**/**

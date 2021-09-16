@@ -275,20 +275,8 @@ trees with the :notangle: tag."
     (string-remove-suffix "-theme.el" (meq/get-header)))
 #+end_src
 
-* makefly
+* makefly.mk
 
-#+begin_src makefile :tangle (meq/tangle-path)
-
-#+end_src
-
-* makefile
-
-#+call: hash() :exports none
-
-#+RESULTS:
-: 20210622004216528168500
-
-#+name: 20210622004216528168500
 #+begin_src makefile :tangle (meq/tangle-path)
 .RECIPEPREFIX := |
 .DEFAULT_GOAL := emacs
@@ -296,9 +284,22 @@ trees with the :notangle: tag."
 # Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
 mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
 mkfileDir := $(dir $(mkfilePath))
-test := emacs --bg-daemon=test
-killTest := emacsclient -s test -e "(kill-emacs)"
-makefly := make -f $(mkfileDir)/makefly
+
+subinit:
+|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/<<username>>/<<username>>.github.io.git lib/<<username>>.github.io
+|git -C $(mkfileDir)/lib/<<username>>.github.io checkout master
+#+end_src
+
+* makefile
+
+#+begin_src makefile :tangle (meq/tangle-path)
+.RECIPEPREFIX := |
+.DEFAULT_GOAL := emacs
+
+# Adapted From: https://www.systutorials.com/how-to-get-the-full-path-and-directory-of-a-makefile-itself/
+mkfilePath := $(abspath $(lastword $(MAKEFILE_LIST)))
+mkfileDir := $(dir $(mkfilePath))
+makefly := make -f $(mkfileDir)/makefly.mk
 
 init: pre-init tangle
 
@@ -324,8 +325,6 @@ tangle: tangle-setup
 subinit: init
 |git -C $(mkfileDir) submodule add --depth 1 -f https://code.orgmode.org/bzg/org-mode lib/org
 |git -C $(mkfileDir)/lib/org checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/<<username>>/<<username>>.github.io.git lib/<<username>>.github.io
-|git -C $(mkfileDir)/lib/<<username>>.github.io checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/borg.git lib/borg
 |git -C $(mkfileDir)/lib/borg checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/emacscollective/closql.git lib/closql
@@ -339,9 +338,10 @@ subinit: init
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/plexus/a.el.git lib/a
 |git -C $(mkfileDir)/lib/a checkout master
 |git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/rejeep/f.el.git lib/f
-|git -C $(mkfileDir)/lib/a checkout master
-|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
 |git -C $(mkfileDir)/lib/f checkout master
+|git -C $(mkfileDir) submodule add --depth 1 -f https://github.com/skeeto/emacsql.git lib/emacsql
+|git -C $(mkfileDir)/lib/emacsql checkout master
+|$(makefly) subinit
 |git -C $(mkfileDir) submodule update --init --depth 1 --recursive
 |git -C $(mkfileDir) submodule sync
 |cd $(mkfileDir)/lib/org; make; make autoloads
@@ -361,31 +361,27 @@ cammit: add commit
 push: cammit
 |-git -C $(mkfileDir) push
 
-clean:
-|fd . $(mkfileDir) -HIe elc -x rm
+super-push: tangle push
+
+include tests.mk
+#+end_src
+
+* tests.mk
+
+#+begin_src makefile :tangle (meq/tangle-path)
+.RECIPEPREFIX := |
+.DEFAULT_GOAL := emacs
+test := emacs --bg-daemon=test
+killTest := emacsclient -s test -e "(kill-emacs)"
+profile := "damascus"
+
+echo:
+|echo $(profile)
 
 pre-test: subinit
 
-test: pre-test
-|emacs
-
-nw-test: pre-test
-|emacs -nw
-
-test-doom: pre-test
-|emacs --doom
-
-test-graphene: pre-test
-|emacs --graphene
-
-test-nano: pre-test
-|emacs --nano
-
 pest: pre-test
 |emacs -p
-
-update-test: pre-test
-|emacs --update
 
 no-config-test:
 |emacs -Q
@@ -393,49 +389,44 @@ no-config-test:
 test-and-kill-pre: pre-test
 |-emacsclient -s test -e "(kill-emacs)"
 
-test-and-kill: test-and-kill-pre
-|$(test)
-|$(killTest)
-
 test-new-and-kill: test-and-kill-pre
 |$(test) -Q
 |$(killTest)
 
-test-update-and-kill: test-and-kill-pre
-|$(test) --update
+test-new-nw-and-kill: test-and-kill-pre
+|$(test) -Q -nw
 |$(killTest)
 
-test-update-doom-and-kill: test-and-kill-pre
-|$(test) --udoom
+clean-all:
+|fd . $(mkfileDir) -HIe elc -x rm
+
+pre-clean:
+|fd . $(mkfileDir) -HId 1 -e elc -x rm
+
+clean: pre-clean
+|fd . $(mkfileDir)/profiles/$(profile) -HIe elc -x rm
+
+delete: clean
+|rm -rf $(mkfileDir)/profiles/$(profile)/.local
+
+test: pre-test
+|emacs --profile $(profile)
+
+nw-test: pre-test
+|emacs -nw --profile $(profile)
+
+test-and-kill: test-and-kill-pre
+|$(test) --profile $(profile)
 |$(killTest)
 
-test-update-graphene-and-kill: test-and-kill-pre
-|$(test) --graphene --update
+test-nw-and-kill: test-and-kill-pre
+|$(test) -nw --profile $(profile)
 |$(killTest)
-
-test-update-nano-and-kill: test-and-kill-pre
-|$(test) --nano --update
-|$(killTest)
-
-delete-doom:
-|rm -rf $(mkfileDir)/profiles/doom/.local
-
-delete:
-|rm -rf $(mkfileDir)/profiles/damascus/.local
-
-delete-graphene:
-|rm -rf $(mkfileDir)/profiles/graphene/.local
-
-delete-nano:
-|rm -rf $(mkfileDir)/profiles/nano/.local
 
 emacs: tangle test
 emacs-nw: tangle nw-test
-remacs: delete tangle test-update-and-kill test
-doom-remacs: delete-doom tangle test-update-doom-and-kill test-doom
-graphene-remacs: delete-graphene tangle test-update-graphene-and-kill test-graphene
-nano-remacs: delete-nano tangle test-update-nano-and-kill test-nano
-super-push: tangle push
+remacs: delete emacs
+remacs-nw: delete emacs-nw
 #+end_src
 
 * lib
@@ -509,6 +500,9 @@ super-push: tangle push
       (pop-to-buffer buffer)
       (error "%s failed" program))))
 
+(defun meq/call-tangle (file)
+  (meq/call (concat pre-user-emacs-directory "org-tangle.sh") "*literally-configuring*" file))
+
 ;; Adapted From: https://code.orgmode.org/bzg/org-mode/src/master/lisp/org.el#L222
 (defun meq/org-babel-load-file-advice (file &optional compile)
   "Load Emacs Lisp source code blocks in the Org FILE.
@@ -523,7 +517,7 @@ byte-compiled before it is loaded."
                 tangled-file
                 (file-attribute-modification-time
                     (file-attributes (file-truename file))))
-        (meq/call (concat pre-user-emacs-directory "org-tangle.sh") "*literally-configuring*" file))
+        (meq/call-tangle file))
     (if compile
         (progn
             (byte-compile-file tangled-file)
