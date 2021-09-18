@@ -1,10 +1,9 @@
-#!/usr/bin/env mdsh
-#+property: header-args -n -r -l "[{(<%s>)}]" :tangle-mode (identity 0444) :noweb yes :mkdirp yes
-#+startup: show3levels
+#+setupfile: ./settings/README.org
+#+include: ./settings/README.org
 
-* doc
+* doc.el
 
-#+begin_src emacs-lisp :tangle doc.el
+#+begin_src emacs-lisp :tangle (meq/tangle-path)
 ;;; doc.el --- a simple package                     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Jeet Ray
