@@ -32,8 +32,7 @@
 ;;; Code:
 
 (require 'titan)
-(defun meq/doc-ph-func nil)
-(meq/mapc-ddm "doc")
+(meq/mapc-ddm "doc" '(("\\.doc\\.md\\'" . doc-markdown-mode) ("\\.doc\\.org\\'" . doc-org-mode)))
 (provide 'doc)
 ;;; doc.el ends here
 #+end_src
