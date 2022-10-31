@@ -1,8 +1,4 @@
-;; doc.el
-
-
-;; [[file:README.org::*doc.el][doc.el:1]]
-;;; doc.el --- a simple package                     -*- lexical-binding: t; -*-
+;;; doc-templates.el --- a simple package                     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Jeet Ray
 
@@ -29,8 +25,7 @@
 
 ;;; Code:
 
-(require 'titan)
+(require 'titan-templates)
 (meq/mapc-ddm "doc" '(("\\.doc\\.md\\'" . doc-markdown-mode) ("\\.doc\\.org\\'" . doc-org-mode)))
-(provide 'doc)
-;;; doc.el ends here
-;; doc.el:1 ends here
+(provide 'doc-templates)
+;;; doc-templates.el ends here

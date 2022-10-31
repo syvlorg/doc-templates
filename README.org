@@ -1,10 +1,7 @@
-#+setupfile: ./settings/README.org
-#+include: ./settings/README.org
-
-* doc.el
+* doc-templates.el
 
 #+begin_src emacs-lisp :tangle (meq/tangle-path)
-;;; doc.el --- a simple package                     -*- lexical-binding: t; -*-
+;;; doc-templates.el --- a simple package                     -*- lexical-binding: t; -*-
 
 ;; Copyright (C) 2021  Jeet Ray
 
@@ -31,8 +28,8 @@
 
 ;;; Code:
 
-(require 'titan)
+(require 'titan-templates)
 (meq/mapc-ddm "doc" '(("\\.doc\\.md\\'" . doc-markdown-mode) ("\\.doc\\.org\\'" . doc-org-mode)))
-(provide 'doc)
-;;; doc.el ends here
+(provide 'doc-templates)
+;;; doc-templates.el ends here
 #+end_src
